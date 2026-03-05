@@ -258,10 +258,12 @@ a {
   max-width: 1220px;
   margin: 0 auto;
   padding: 95px 14px 70px;
+
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 24px;
-  align-items: start; /* IMPORTANT */
+
+  align-items: start;  /* CRITICAL FIX */
 }
 
 .filters {
@@ -272,8 +274,8 @@ a {
   box-shadow: 0 6px 18px rgba(187, 141, 150, 0.18);
 
   position: sticky;
-  top: 90px; /* height of navbar */
-  align-self: start; /* IMPORTANT for grid */
+  top: 90px;        /* navbar height */
+  align-self: start; /* VERY IMPORTANT */
   height: fit-content;
 }
 .filters h3 {
