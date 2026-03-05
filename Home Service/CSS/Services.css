@@ -263,20 +263,24 @@ a {
   gap: 24px;
 }
 
+.service-grid {
+  margin-left: 304px; /* 280px width + 24px gap */
+}
+
 .filters {
+  position: fixed;              /* Make it completely fixed */
+  top: 90px;                    /* Same height as navbar */
+  left: calc((100% - 1220px) / 2 + 14px); 
+  width: 280px;                 /* Same as grid column */
+  
   background: #fff;
   border-radius: 18px;
   padding: 20px;
   border: 2px solid var(--card-border);
   box-shadow: 0 6px 18px rgba(187, 141, 150, 0.18);
-  align-self: flex-start;
-  position: sticky;
-  top: 90px; /* Adjusted to account for navbar height */
-  z-index: 100;
-  margin-top: 24px; /* Add space between hero and filters */
-  height: fit-content; /* Ensure it doesn't stretch */
+  height: fit-content;
+  z-index: 999;
 }
-
 .filters h3 {
   margin: 0 0 16px;
   font-size: 14px;
