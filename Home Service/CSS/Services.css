@@ -261,25 +261,20 @@ a {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 24px;
-}
-
-.service-grid {
-  margin-left: 304px; /* 280px width + 24px gap */
+  align-items: start; /* IMPORTANT */
 }
 
 .filters {
-  position: fixed;              /* Make it completely fixed */
-  top: 90px;                    /* Same height as navbar */
-  left: calc((100% - 1220px) / 2 + 14px); 
-  width: 280px;                 /* Same as grid column */
-  
   background: #fff;
   border-radius: 18px;
   padding: 20px;
   border: 2px solid var(--card-border);
   box-shadow: 0 6px 18px rgba(187, 141, 150, 0.18);
+
+  position: sticky;
+  top: 90px; /* height of navbar */
+  align-self: start; /* IMPORTANT for grid */
   height: fit-content;
-  z-index: 999;
 }
 .filters h3 {
   margin: 0 0 16px;
