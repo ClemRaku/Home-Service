@@ -17,7 +17,7 @@ body {
   font-family: "Poppins", sans-serif;
   background: var(--bg);
   color: var(--text);
-  overflow-x: hidden;
+  
 }
 
 a {
@@ -56,18 +56,25 @@ a {
   top: 90px; /* adjusted for navbar height */
 }
 
-.hero {
-  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.35)),
-    url(../Image/home-1.jpg) center/cover no-repeat;
-  min-height: 220px;
-  color: #fff;
-  position: relative;
-  margin-top: 0;
-  padding-top: 0;
-  z-index: 1;
-  width: 100%;
-  box-sizing: border-box;
+.hero{
+
+  background:
+  linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),
+  url("../Image/home-1.jpg") center/cover no-repeat;
+
+  min-height:320px;
+
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+  color:#fff;
+
+  padding-top:80px; /* space for navbar */
 }
+
 
 .logo-circle img{
   width: 38px;
@@ -258,12 +265,9 @@ a {
   max-width: 1220px;
   margin: 0 auto;
   padding: 95px 14px 70px;
-
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 24px;
-
-  align-items: start;  /* CRITICAL FIX */
 }
 
 .filters {
@@ -272,12 +276,12 @@ a {
   padding: 20px;
   border: 2px solid var(--card-border);
   box-shadow: 0 6px 18px rgba(187, 141, 150, 0.18);
-
+  align-self: flex-start;
   position: sticky;
-  top: 90px;        /* navbar height */
-  align-self: start; /* VERY IMPORTANT */
-  height: fit-content;
+  top: 90px;
+  z-index: 1;
 }
+
 .filters h3 {
   margin: 0 0 16px;
   font-size: 14px;
