@@ -271,9 +271,10 @@ a {
   box-shadow: 0 6px 18px rgba(187, 141, 150, 0.18);
   align-self: flex-start;
   position: sticky;
-  top: 84px; /* Adjusted to account for navbar height + padding */
-  z-index: 1;
+  top: 90px; /* Adjusted to account for navbar height */
+  z-index: 100;
   margin-top: 24px; /* Add space between hero and filters */
+  height: fit-content; /* Ensure it doesn't stretch */
 }
 
 .filters h3 {
