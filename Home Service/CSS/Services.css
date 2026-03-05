@@ -6,16 +6,6 @@
   --muted: #5f5f5f;
   --card-border: #efd9dc;
 }
-.navbar {
-  position: sticky;
-  top: 0;
-}
-
-.filters {
-  position: sticky;
-  top: 70px; /* assuming the navbar height is 70px */
-}
-
 * {
   box-sizing: border-box;
 }
@@ -35,15 +25,16 @@ a {
   color: inherit;
 }
 
-.hero {
-  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.35)),
-    url(../Image/home-0.png) center/cover no-repeat;
-  min-height: 220px;
-  color: #fff;
-  position: relative;
-}
-
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
   max-width: 1220px;
   margin: 0 auto;
   padding: 14px 14px;
@@ -51,9 +42,25 @@ a {
   align-items: center;
   justify-content: space-between;
   color: #151515;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(15px);
+}
+
+.filters {
   position: sticky;
-  top: 0;
+  top: 90px; /* adjusted for navbar height */
+}
+
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.35)),
+    url(../Image/home-0.png) center/cover no-repeat;
+  min-height: 220px;
+  color: #fff;
+  position: relative;
+  margin-top: 70px; /* Space for fixed navbar */
 }
 
 .logo-circle img{
