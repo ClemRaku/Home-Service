@@ -62,7 +62,8 @@ a {
   min-height: 220px;
   color: #fff;
   position: relative;
-  margin-top: 0; /* Remove space for navbar */
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .logo-circle img{
