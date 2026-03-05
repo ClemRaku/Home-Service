@@ -6,6 +6,15 @@
   --muted: #5f5f5f;
   --card-border: #efd9dc;
 }
+.navbar {
+  position: sticky;
+  top: 0;
+}
+
+.filters {
+  position: sticky;
+  top: 70px; /* assuming the navbar height is 70px */
+}
 
 * {
   box-sizing: border-box;
@@ -43,6 +52,8 @@ a {
   justify-content: space-between;
   color: #151515;
   border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  position: sticky;
+  top: 0;
 }
 
 .logo-circle img{
@@ -226,6 +237,9 @@ a {
   border: 2px solid var(--card-border);
   box-shadow: 0 6px 18px rgba(187, 141, 150, 0.18);
   align-self: flex-start;
+  position: sticky;
+  top: 70px;
+  z-index: 1;
 }
 
 .filters h3 {
