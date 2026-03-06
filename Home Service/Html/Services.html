@@ -1274,6 +1274,82 @@
     </section>
   </main>
 
+  <div class="booking-modal-overlay" id="bookingModalOverlay" aria-hidden="true">
+    <div class="booking-modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+      <div class="booking-modal-header">
+        <div>
+          <h2 id="bookingTitle">Book Your Service</h2>
+          <p>Fill in the details and we'll get back to you shortly</p>
+        </div>
+        <button class="booking-close-btn" id="bookingCloseBtn" type="button" aria-label="Close booking form">×</button>
+      </div>
+
+      <form class="booking-form">
+        <div class="booking-field-grid">
+          <label>
+            Full Name <span>*</span>
+            <input type="text" placeholder="John Doe" required />
+          </label>
+          <label>
+            Email Address <span>*</span>
+            <input type="email" placeholder="john@example.com" required />
+          </label>
+          <label>
+            Phone Number <span>*</span>
+            <input type="tel" placeholder="+1 (555) 123-4567" required />
+          </label>
+          <label>
+            Service Type <span>*</span>
+            <select id="bookingServiceType" required>
+              <option value="">Select service type</option>
+              <option>Cleaning Services</option>
+              <option>Plumbing Services</option>
+              <option>Electrical Services</option>
+              <option>Painting & Renovation Services</option>
+              <option>Appliance Repair Services</option>
+              <option>Pest Control Services</option>
+              <option>Home Improvement & Maintenance Services</option>
+              <option>Gardening & Landscaping Services</option>
+              <option>Moving & Logistics Services</option>
+              <option>Home Security Services</option>
+              <option>Healthcare Services</option>
+            </select>
+          </label>
+          <label>
+            Preferred Date <span>*</span>
+            <input type="date" required />
+          </label>
+          <label>
+            Preferred Time <span>*</span>
+            <select required>
+              <option value="">Select time</option>
+              <option>08:00 AM - 10:00 AM</option>
+              <option>10:00 AM - 12:00 PM</option>
+              <option>12:00 PM - 02:00 PM</option>
+              <option>02:00 PM - 04:00 PM</option>
+              <option>04:00 PM - 06:00 PM</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Service Address <span>*</span>
+          <input type="text" placeholder="123 Main Street, City, State, ZIP" required />
+        </label>
+
+        <label>
+          Additional Details
+          <textarea rows="4"></textarea>
+        </label>
+
+        <div class="booking-form-actions">
+          <button type="button" class="booking-cancel-btn" id="bookingCancelBtn">Cancel</button>
+          <button type="submit" class="booking-submit-btn">Request Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   
 
   <footer class="footer">
