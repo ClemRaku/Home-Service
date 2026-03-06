@@ -358,14 +358,14 @@ a {
   margin-right: 12px;
 }
 
-.rating-info {
+.point-info {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
   margin-top: 10px;
 }
-.rating-info .stars {
+.point-info .stars {
   font-size: 12px;
 }
 
