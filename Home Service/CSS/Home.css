@@ -131,6 +131,10 @@ a {
   transform: scaleX(1);
 }
 
+.nav-links a.active::after {
+  transform: scaleX(1);
+}
+
 .auth-links {
   display: flex;
   align-items: center;

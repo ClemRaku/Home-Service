@@ -59,8 +59,8 @@ a {
 .hero{
 
   background:
-  linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),
-  url("../Image/home-1.jpg") center/cover no-repeat;
+    linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+    url("../Image/home-1.jpg") center 30%/cover no-repeat;
 
   min-height:320px;
 
@@ -139,6 +139,10 @@ a {
 }
 
 .nav-links a:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-links a.active::after {
   transform: scaleX(1);
 }
 

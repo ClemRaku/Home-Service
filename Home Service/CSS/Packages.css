@@ -42,8 +42,8 @@ button {
 .hero {
   background:
     linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-    url("../Image/home-1.jpg") center/cover no-repeat;
-  min-height: 320px;
+    url("../Image/package.jpg") center 30%/cover no-repeat;
+  min-height: 380px;
   color: #fff;
   position: relative;
 }
