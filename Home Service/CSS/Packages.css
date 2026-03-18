@@ -199,6 +199,10 @@ main {
   padding: 65px 16px 0;
 }
 
+.custom-section {
+  padding-bottom: 40px;
+}
+
 .section-heading {
   text-align: center;
   margin-bottom: 22px;
@@ -232,12 +236,20 @@ main {
   position: relative;
   overflow: hidden;
   min-height: 520px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .package-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 22px 36px rgba(15, 23, 32, 0.22);
+}
+
+.package-card--teal:hover {
+  border-color: rgba(19, 169, 156, 0.7);
+}
+
+.package-card--orange:hover {
+  border-color: rgba(245, 124, 31, 0.6);
 }
 
 .package-card--teal {
@@ -337,16 +349,12 @@ main {
 
 .package-card--featured {
   transform: translateY(-8px);
-  border: 2px solid rgba(19, 169, 156, 0.7);
 }
 
 .package-card--featured:hover {
   transform: translateY(-10px);
 }
 
-.package-card--orange.package-card--featured {
-  border-color: rgba(245, 124, 31, 0.6);
-}
 
 .package-card--featured button {
   background: var(--teal-dark);
