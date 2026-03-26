@@ -287,6 +287,19 @@ main {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.offers-status {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px dashed #cbd5e1;
+  background: #fff;
+  text-align: center;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .offer-card {
   background: #fff;
   border-radius: 14px;
