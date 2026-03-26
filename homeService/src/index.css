@@ -51,12 +51,12 @@
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width: 1920px;
+  max-width: 1920px;
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  min-height: 1080px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
