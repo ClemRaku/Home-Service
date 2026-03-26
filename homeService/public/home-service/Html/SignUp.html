@@ -23,12 +23,12 @@
     </div>
 
     <div class="signup-card">
-      <form class="signup-form">
+      <form class="signup-form" id="signupForm">
         <label>
           Full Name
           <span class="input-wrapper">
             <i data-lucide="user"></i>
-            <input type="text" placeholder="John Doe" />
+            <input type="text" name="fullName" placeholder="John Doe" required />
           </span>
         </label>
 
@@ -36,7 +36,7 @@
           Email
           <span class="input-wrapper">
             <i data-lucide="mail"></i>
-            <input type="email" placeholder="your@email.com" />
+            <input type="email" name="email" placeholder="your@email.com" required />
           </span>
         </label>
 
@@ -44,7 +44,7 @@
           Phone
           <span class="input-wrapper">
             <i data-lucide="phone"></i>
-            <input type="tel" placeholder="+1 555 123 4567" />
+            <input type="tel" name="phone" placeholder="+1 555 123 4567" required />
           </span>
         </label>
 
@@ -52,7 +52,7 @@
           Password
           <span class="input-wrapper">
             <i data-lucide="lock"></i>
-            <input type="password" placeholder="••••" />
+            <input type="password" name="password" placeholder="••••" required />
           </span>
         </label>
 
@@ -60,11 +60,12 @@
           Confirm Password
           <span class="input-wrapper">
             <i data-lucide="lock"></i>
-            <input type="password" placeholder="••••" />
+            <input type="password" name="confirmPassword" placeholder="••••" required />
           </span>
         </label>
 
         <button class="primary-btn" type="submit">Create Account</button>
+        <p class="signup-footer" id="signupMessage" aria-live="polite"></p>
         <p class="signup-footer">Already have an account? <a href="#">Sign In</a></p>
       </form>
     </div>
