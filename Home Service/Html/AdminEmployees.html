@@ -98,7 +98,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr data-status="active">
+              <tr
+                data-status="active"
+                data-location-address="123 Main St., New York, NY"
+                data-location-lat="40.7128"
+                data-location-lng="-74.0060"
+                data-map-query="40.7128,-74.0060"
+              >
                 <td>
                   <div class="employee-cell">
                     <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Smith" />
@@ -127,7 +133,13 @@
                   </div>
                 </td>
               </tr>
-              <tr data-status="active">
+              <tr
+                data-status="active"
+                data-location-address="45 Lexington Ave, New York, NY"
+                data-location-lat="40.7412"
+                data-location-lng="-73.9846"
+                data-map-query="40.7412,-73.9846"
+              >
                 <td>
                   <div class="employee-cell">
                     <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" />
@@ -156,7 +168,13 @@
                   </div>
                 </td>
               </tr>
-              <tr data-status="active">
+              <tr
+                data-status="active"
+                data-location-address="200 Broadway, New York, NY"
+                data-location-lat="40.7108"
+                data-location-lng="-74.0082"
+                data-map-query="40.7108,-74.0082"
+              >
                 <td>
                   <div class="employee-cell">
                     <img src="https://randomuser.me/api/portraits/men/64.jpg" alt="Michael Brown" />
@@ -185,7 +203,13 @@
                   </div>
                 </td>
               </tr>
-              <tr data-status="active">
+              <tr
+                data-status="active"
+                data-location-address="77 Water St, New York, NY"
+                data-location-lat="40.7044"
+                data-location-lng="-74.0079"
+                data-map-query="40.7044,-74.0079"
+              >
                 <td>
                   <div class="employee-cell">
                     <img src="https://randomuser.me/api/portraits/women/56.jpg" alt="Emily Davis" />
@@ -214,7 +238,13 @@
                   </div>
                 </td>
               </tr>
-              <tr data-status="inactive">
+              <tr
+                data-status="inactive"
+                data-location-address="80 Pine St, New York, NY"
+                data-location-lat="40.7060"
+                data-location-lng="-74.0087"
+                data-map-query="40.7060,-74.0087"
+              >
                 <td>
                   <div class="employee-cell">
                     <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="David Wilson" />
@@ -327,6 +357,51 @@
           <button type="submit" class="modal-btn save">Save Changes</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="location-modal-overlay" id="locationModal" aria-hidden="true">
+    <div class="location-modal" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
+      <div class="location-modal-head">
+        <h3 id="locationModalTitle">Employee Location</h3>
+        <button type="button" class="location-modal-close" id="locationModalCloseBtn" aria-label="Close location modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="location-employee-card">
+        <img id="locationEmployeeAvatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Employee" />
+        <div>
+          <h4 id="locationEmployeeName">John Smith</h4>
+          <span id="locationEmployeeRole">Plumber</span>
+        </div>
+      </div>
+
+      <div class="location-current-card">
+        <div class="location-current-head">
+          <i data-lucide="map-pin"></i>
+          <p>Current Location</p>
+        </div>
+        <p id="locationAddress">123 Main St., New York, NY</p>
+        <small>
+          Lat : <span id="locationLat">40.7128</span> ,
+          Lng : <span id="locationLng">-74.006</span>
+        </small>
+      </div>
+
+      <div class="location-map-wrap">
+        <div class="location-map-overlay-card">
+          <strong id="locationMapCoords">40°42'46.1"N 74°00'21.6"W</strong>
+          <a id="locationLargeMapLink" href="https://maps.google.com/?q=40.7128,-74.0060" target="_blank" rel="noopener noreferrer">View larger map</a>
+        </div>
+        <iframe
+          id="locationMapFrame"
+          src="https://maps.google.com/maps?q=40.7128,-74.0060&z=15&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Employee location map"
+        ></iframe>
+      </div>
     </div>
   </div>
 
