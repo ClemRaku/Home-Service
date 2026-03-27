@@ -18,18 +18,6 @@ const imageByCategory = {
   default: '../Image/home-1.jpg',
 };
 
-const FIELD_GROUPS = {
-  title: ['Offer Title', 'offer_title', 'title', 'name'],
-  description: ['Description', 'description', 'Offer Description', 'offer_description', 'details'],
-  discount: ['Discount', 'discount', 'discount_percent', 'percentage'],
-  promoCode: ['Promo Code', 'promo_code', 'code', 'coupon_code'],
-  validUntil: ['Valid Until', 'valid_until', 'expiry_date', 'expires_at', 'end_date'],
-  category: ['Category', 'category', 'service_category', 'type'],
-  featured: ['Featured', 'featured', 'is_featured'],
-  image: ['Image', 'image', 'image_url', 'photo', 'thumbnail'],
-  terms: ['Terms', 'terms', 'conditions', 'terms_and_conditions'],
-};
-
 const escapeHtml = (value = '') =>
   String(value)
     .replace(/&/g, '&amp;')
@@ -37,16 +25,6 @@ const escapeHtml = (value = '') =>
     .replace(/>/g, '&gt;')
     .replace(/\"/g, '&quot;')
     .replace(/'/g, '&#39;');
-
-const getFirstAvailableField = (record, keys, fallback = '') => {
-  for (const key of keys) {
-    if (record[key] !== undefined && record[key] !== null && record[key] !== '') {
-      return record[key];
-    }
-  }
-
-  return fallback;
-};
 
 const normalizeCategory = (value = '') => {
   const normalizedValue = String(value).trim().toLowerCase();
@@ -60,17 +38,6 @@ const normalizeCategory = (value = '') => {
   if (normalizedValue.includes('hvac') || normalizedValue.includes('air')) return 'hvac';
 
   return '';
-};
-
-const inferCategory = (offer) => {
-  const directCategory = getFirstAvailableField(offer, FIELD_GROUPS.category, '');
-  const normalizedCategory = normalizeCategory(directCategory);
-  if (normalizedCategory) return normalizedCategory;
-
-  const title = getFirstAvailableField(offer, FIELD_GROUPS.title, '');
-  const description = getFirstAvailableField(offer, FIELD_GROUPS.description, '');
-
-  return normalizeCategory(`${title} ${description}`) || 'cleaning';
 };
 
 const formatValidUntil = (value) => {
@@ -120,6 +87,26 @@ const normalizeTerms = (value) => {
   return [];
 };
 
+function makeOffer(offer) {
+  const title = offer['Offer Title'] || 'Untitled Offer';
+  const discount = offer.Discount || 0;
+  const promoCode = offer['Promo Code'] || 'N/A';
+  const validUntil = formatValidUntil(offer['Valid Until']);
+  const description =
+    offer.Description || 'Book this offer today and enjoy professional home service at a better price.';
+  const category = normalizeCategory(offer.Category || title || description) || 'cleaning';
+
+  return {
+    title,
+    discount,
+    promoCode,
+    validUntil,
+    description,
+    category,
+    image: imageByCategory[category] || imageByCategory.default,
+  };
+}
+
 const setActiveFilter = (targetButton) => {
   filterButtons.forEach((button) => button.classList.remove('active'));
   targetButton.classList.add('active');
@@ -153,35 +140,6 @@ const createTermsMarkup = (terms) => {
   `;
 };
 
-const normalizeOffer = (offer) => {
-  const title = getFirstAvailableField(offer, FIELD_GROUPS.title, 'Untitled Offer');
-  const description = getFirstAvailableField(
-    offer,
-    FIELD_GROUPS.description,
-    'Book this offer today and enjoy professional home service at a better price.',
-  );
-  const discount = getFirstAvailableField(offer, FIELD_GROUPS.discount, 0);
-  const promoCode = getFirstAvailableField(offer, FIELD_GROUPS.promoCode, 'N/A');
-  const validUntil = formatValidUntil(getFirstAvailableField(offer, FIELD_GROUPS.validUntil, 'N/A'));
-  const category = inferCategory(offer);
-  const featuredValue = getFirstAvailableField(offer, FIELD_GROUPS.featured, false);
-  const featured = featuredValue === true || String(featuredValue).toLowerCase() === 'true';
-  const imageSrc = getFirstAvailableField(offer, FIELD_GROUPS.image, imageByCategory[category] || imageByCategory.default);
-  const terms = normalizeTerms(getFirstAvailableField(offer, FIELD_GROUPS.terms, ''));
-
-  return {
-    title,
-    description,
-    discount,
-    promoCode,
-    validUntil,
-    category,
-    featured,
-    imageSrc,
-    terms,
-  };
-};
-
 const renderOffers = (offers) => {
   if (!offers.length) {
     offersGrid.innerHTML = '<p class="offers-status">No offers found in the Offer table.</p>';
@@ -190,13 +148,13 @@ const renderOffers = (offers) => {
 
   offersGrid.innerHTML = offers
     .map((rawOffer) => {
-      const offer = normalizeOffer(rawOffer);
+      const offer = makeOffer(rawOffer);
+      const terms = normalizeTerms(rawOffer.Terms || '');
 
       return `
         <article class="offer-card" data-category="${escapeHtml(offer.category)}">
           <div class="offer-image">
-            <img src="${escapeHtml(offer.imageSrc)}" alt="${escapeHtml(offer.title)}" />
-            ${offer.featured ? '<span class="offer-feature">Featured Offer</span>' : ''}
+            <img src="${escapeHtml(offer.image)}" alt="${escapeHtml(offer.title)}" />
             <span class="discount-badge">${escapeHtml(offer.discount)}% OFF</span>
           </div>
           <div class="offer-body">
@@ -204,7 +162,7 @@ const renderOffers = (offers) => {
             <p class="offer-desc">${escapeHtml(offer.description)}</p>
             <p class="offer-meta"><i data-lucide="ticket"></i> Promo Code: ${escapeHtml(offer.promoCode)}</p>
             <p class="offer-meta"><i data-lucide="calendar"></i> Valid until ${escapeHtml(offer.validUntil)}</p>
-            ${createTermsMarkup(offer.terms)}
+            ${createTermsMarkup(terms)}
             <button class="offer-btn">Book This Offer</button>
           </div>
         </article>

@@ -8,34 +8,17 @@ const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
 
-const setLoginMessage = (message, isError = true) => {
+function setLoginMessage(message, isError = true) {
   if (!loginMessage) return;
-
   loginMessage.textContent = message;
   loginMessage.style.color = isError ? '#d14343' : '#0f9f98';
-};
+}
 
-const normalizeValue = (value) => String(value || '').trim();
+function getText(value) {
+  return String(value || '').trim();
+}
 
-const getFieldValue = (record, keys) => {
-  for (const key of keys) {
-    if (record && record[key] !== undefined && record[key] !== null) {
-      return record[key];
-    }
-  }
-
-  return '';
-};
-
-const emailMatches = (record, email) =>
-  normalizeValue(getFieldValue(record, ['Email', 'email'])).toLowerCase() === email.toLowerCase();
-
-const passwordMatches = (record, password) =>
-  normalizeValue(getFieldValue(record, ['Password', 'password'])) === password;
-
-const getRole = (record) => normalizeValue(getFieldValue(record, ['role', 'Role'])).toLowerCase();
-
-const fetchTableRows = async (tableName) => {
+async function fetchTableRows(tableName) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${tableName}?select=*`, {
     method: 'GET',
     headers: {
@@ -51,7 +34,20 @@ const fetchTableRows = async (tableName) => {
 
   const data = await response.json();
   return Array.isArray(data) ? data : [];
-};
+}
+
+function findUser(rows, email, password) {
+  for (const row of rows) {
+    const rowEmail = getText(row.Email || row.email).toLowerCase();
+    const rowPassword = getText(row.Password || row.password);
+
+    if (rowEmail === email.toLowerCase() && rowPassword === password) {
+      return row;
+    }
+  }
+
+  return null;
+}
 
 if (closeButton) {
   closeButton.addEventListener('click', () => {
@@ -75,8 +71,8 @@ if (loginForm) {
     event.preventDefault();
 
     const formData = new FormData(loginForm);
-    const email = normalizeValue(formData.get('email'));
-    const password = String(formData.get('password') || '');
+    const email = getText(formData.get('email'));
+    const password = getText(formData.get('password'));
 
     if (!email || !password) {
       setLoginMessage('Please enter both email and password.');
@@ -91,14 +87,12 @@ if (loginForm) {
         fetchTableRows('Sign%20up'),
       ]);
 
-      const matchedEmployee = employeeRows.find(
-        (row) => emailMatches(row, email) && passwordMatches(row, password),
-      );
+      const matchedEmployee = findUser(employeeRows, email, password);
 
       if (matchedEmployee) {
         setLoginMessage('Login successful. Redirecting...', false);
 
-        if (getRole(matchedEmployee) === 'admin') {
+        if (getText(matchedEmployee.Role || matchedEmployee.role).toLowerCase() === 'admin') {
           window.location.href = 'Admin.html';
           return;
         }
@@ -107,9 +101,7 @@ if (loginForm) {
         return;
       }
 
-      const matchedSignupUser = signupRows.find(
-        (row) => emailMatches(row, email) && passwordMatches(row, password),
-      );
+      const matchedSignupUser = findUser(signupRows, email, password);
 
       if (matchedSignupUser) {
         setLoginMessage('Login successful. Redirecting...', false);
