@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Customer Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/AdminCustomer.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
+      </div>
+
+      <nav class="nav">
+        <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a class="active" href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a href="#"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="#"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="notification-badge">3</span></button>
+          <div class="admin-info">
+            <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+              alt="Admin" />
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="customers">
+        <div class="section-heading">
+          <h2>Customer Management</h2>
+          <p>Manage your customer base and track their activity</p>
+        </div>
+
+        <div class="search-card">
+          <div class="search-input">
+            <i data-lucide="search"></i>
+            <input id="customerSearch" type="text" placeholder="Search customers..." />
+          </div>
+          <div class="filter-wrapper">
+            <select id="statusFilter" class="status-select" aria-label="Filter by status">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="blacklisted">Blacklisted</option>
+            </select>
+            
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Activity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-status="active">
+                <td>
+                  <div class="customer-cell">
+                    <img
+                      src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80"
+                      alt="Robert Anderson" />
+                    <div>
+                      <h4>Robert Anderson</h4>
+                      <span>Joined 2023-02-10</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="contact-cell">
+                    <span>robert.a@email.com</span>
+                    <small>+1 345-678-9001</small>
+                  </div>
+                </td>
+                <td>123 Oak Street, New York, NY 10001</td>
+                <td>
+                  <div class="activity-cell">
+                    <span>12 bookings</span>
+                    <strong>$2450</strong>
+                  </div>
+                </td>
+                <td><span class="status-pill active">active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view"><i data-lucide="eye"></i></button>
+                    <button class="action-btn edit"><i data-lucide="pencil"></i></button>
+                    <button class="action-btn assign"><i data-lucide="user-round-x"></i></button>
+                    <button class="action-btn danger"><i data-lucide="ban"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="active">
+                <td>
+                  <div class="customer-cell">
+                    <img
+                      src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=120&q=80"
+                      alt="Jennifer Martinez" />
+                    <div>
+                      <h4>Jennifer Martinez</h4>
+                      <span>Joined 2023-04-18</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="contact-cell">
+                    <span>jennifer.m@email.com</span>
+                    <small>+1 345-678-9002</small>
+                  </div>
+                </td>
+                <td>456 Elm Avenue, Brooklyn, NY 11201</td>
+                <td>
+                  <div class="activity-cell">
+                    <span>8 bookings</span>
+                    <strong>$1680</strong>
+                  </div>
+                </td>
+                <td><span class="status-pill active">active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view"><i data-lucide="eye"></i></button>
+                    <button class="action-btn edit"><i data-lucide="pencil"></i></button>
+                    <button class="action-btn assign"><i data-lucide="user-round-x"></i></button>
+                    <button class="action-btn danger"><i data-lucide="ban"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="blacklisted">
+                <td>
+                  <div class="customer-cell">
+                    <img
+                      src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
+                      alt="William Taylor" />
+                    <div>
+                      <h4>William Taylor</h4>
+                      <span>Joined 2023-08-05</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="contact-cell">
+                    <span>william.t@email.com</span>
+                    <small>+1 345-678-9003</small>
+                  </div>
+                </td>
+                <td>789 Pine Road, Queens, NY 11354</td>
+                <td>
+                  <div class="activity-cell">
+                    <span>3 bookings</span>
+                    <strong>$420</strong>
+                  </div>
+                </td>
+                <td><span class="status-pill danger">blacklisted</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view"><i data-lucide="eye"></i></button>
+                    <button class="action-btn edit"><i data-lucide="pencil"></i></button>
+                    <button class="action-btn success"><i data-lucide="check"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="active">
+                <td>
+                  <div class="customer-cell">
+                    <img
+                      src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80"
+                      alt="Lisa Thompson" />
+                    <div>
+                      <h4>Lisa Thompson</h4>
+                      <span>Joined 2022-12-01</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="contact-cell">
+                    <span>lisa.t@email.com</span>
+                    <small>+1 345-678-9004</small>
+                  </div>
+                </td>
+                <td>321 Maple Drive, Manhattan, NY 10002</td>
+                <td>
+                  <div class="activity-cell">
+                    <span>15 bookings</span>
+                    <strong>$3200</strong>
+                  </div>
+                </td>
+                <td><span class="status-pill active">active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view"><i data-lucide="eye"></i></button>
+                    <button class="action-btn edit"><i data-lucide="pencil"></i></button>
+                    <button class="action-btn assign"><i data-lucide="user-round-x"></i></button>
+                    <button class="action-btn danger"><i data-lucide="ban"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr data-status="active">
+                <td>
+                  <div class="customer-cell">
+                    <img
+                      src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80"
+                      alt="James Garcia" />
+                    <div>
+                      <h4>James Garcia</h4>
+                      <span>Joined 2023-06-12</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="contact-cell">
+                    <span>james.g@email.com</span>
+                    <small>+1 345-678-9005</small>
+                  </div>
+                </td>
+                <td>654 Cedar Lane, Bronx, NY 10451</td>
+                <td>
+                  <div class="activity-cell">
+                    <span>6 bookings</span>
+                    <strong>$980</strong>
+                  </div>
+                </td>
+                <td><span class="status-pill active">active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view"><i data-lucide="eye"></i></button>
+                    <button class="action-btn edit"><i data-lucide="pencil"></i></button>
+                    <button class="action-btn assign"><i data-lucide="user-round-x"></i></button>
+                    <button class="action-btn danger"><i data-lucide="ban"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="customer-modal" id="customerModal" aria-hidden="true">
+    <div class="customer-modal__overlay" data-modal-close></div>
+    <div class="customer-modal__card" role="dialog" aria-modal="true" aria-labelledby="customerModalTitle">
+      <div class="customer-modal__header">
+        <h3 id="customerModalTitle">Customer Details</h3>
+        <button class="customer-modal__close" type="button" data-modal-close aria-label="Close customer details">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="customer-modal__profile">
+        <div class="customer-modal__avatar">
+          <img id="modalAvatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80" alt="Customer" />
+        </div>
+        <h4 id="modalName">Robert Anderson</h4>
+        <span id="modalStatus" class="status-pill active">active</span>
+      </div>
+
+      <div class="customer-modal__info-grid">
+        <div class="info-card">
+          <span class="info-icon"><i data-lucide="mail"></i></span>
+          <div>
+            <small>Email</small>
+            <p id="modalEmail">robert.a@email.com</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon"><i data-lucide="phone"></i></span>
+          <div>
+            <small>Phone</small>
+            <p id="modalPhone">+1 345-678-9001</p>
+          </div>
+        </div>
+        <div class="info-card full">
+          <span class="info-icon"><i data-lucide="map-pin"></i></span>
+          <div>
+            <small>Address</small>
+            <p id="modalAddress">123 Oak Street, New York, NY 10001</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-modal__stats">
+        <div class="stat-card">
+          <h5 id="modalBookings">12</h5>
+          <span>Bookings</span>
+        </div>
+        <div class="stat-card">
+          <h5 id="modalTotal">$2450</h5>
+          <span>Total Spent</span>
+        </div>
+        <div class="stat-card">
+          <h5 id="modalSince">2023</h5>
+          <span>Member Since</span>
+        </div>
+      </div>
+
+      <div class="customer-modal__bookings">
+        <h5>Recent Bookings</h5>
+        <div class="booking-item">
+          <span class="booking-icon"><i data-lucide="x"></i></span>
+          <div>
+            <strong>Plumbing Repair</strong>
+            <span>2024-01-25 · 10:00 AM</span>
+          </div>
+          <span class="booking-status scheduled">scheduled</span>
+        </div>
+        <div class="booking-item">
+          <span class="booking-icon"><i data-lucide="x"></i></span>
+          <div>
+            <strong>Carpentry Work</strong>
+            <span>2024-01-27 · 01:00 PM</span>
+          </div>
+          <span class="booking-status completed">completed</span>
+        </div>
+        <div class="last-booking"><i data-lucide="clock"></i>Last booking: 2024-01-15</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-customer-modal" id="editCustomerModal" aria-hidden="true">
+    <div class="edit-customer-modal__overlay" data-edit-close></div>
+    <div class="edit-customer-modal__card" role="dialog" aria-modal="true" aria-labelledby="editCustomerModalTitle">
+      <div class="edit-customer-modal__header">
+        <h3 id="editCustomerModalTitle">Edit <span>Customer</span></h3>
+        <button class="edit-customer-modal__close" type="button" data-edit-close aria-label="Close edit customer modal">
+          &times;
+        </button>
+      </div>
+
+      <form id="editCustomerForm" class="edit-customer-form">
+        <div class="edit-customer-form__group">
+          <label for="editCustomerName">Full Name</label>
+          <input id="editCustomerName" name="fullName" type="text" placeholder="John Smith" required />
+        </div>
+
+        <div class="edit-customer-form__group">
+          <label for="editCustomerEmail">Email</label>
+          <input id="editCustomerEmail" name="email" type="email" placeholder="john.smith@homeservice.com" required />
+        </div>
+
+        <div class="edit-customer-form__group">
+          <label for="editCustomerPhone">Phone</label>
+          <input id="editCustomerPhone" name="phone" type="tel" placeholder="+1 234-567-8901" required />
+        </div>
+
+        <div class="edit-customer-form__group">
+          <label for="editCustomerAddress">Address</label>
+          <input id="editCustomerAddress" name="address" type="text" placeholder="123 Oak Street, New York, NY 10001" required />
+        </div>
+
+        <div class="edit-customer-form__actions">
+          <button class="edit-customer-form__btn cancel" type="button" data-edit-close>Cancel</button>
+          <button class="edit-customer-form__btn save" type="submit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/AdminCustomer.js"></script>
+</body>
+
+</html>

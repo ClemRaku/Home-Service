@@ -1,0 +1,194 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/AdminProfile.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
+      </div>
+
+      <nav class="nav">
+        <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a href="#"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="#"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a class="active" href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="dot">3</span></button>
+          <div class="admin-info">
+            <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+              alt="Admin" />
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="profile">
+        <div class="section-heading">
+          <h2>Admin Profile</h2>
+          <p>Manage your account settings and preferences</p>
+        </div>
+
+        <div class="profile-grid">
+          <article class="profile-card">
+            <img class="avatar"
+              src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=200&q=80"
+              alt="Admin User" />
+            <h3 id="displayName">Admin User</h3>
+            <p class="role" id="displayRole">Super Admin</p>
+            <span class="status">Active</span>
+
+            <div class="contact-list">
+              <div class="contact-item">
+                <i data-lucide="mail"></i>
+                <span id="displayEmail">admin@homeservice.com</span>
+              </div>
+              <div class="contact-item">
+                <i data-lucide="phone"></i>
+                <span id="displayPhone">+1 234-567-8900</span>
+              </div>
+              <div class="contact-item">
+                <i data-lucide="calendar"></i>
+                <span>Joined 2022-01-01</span>
+              </div>
+            </div>
+
+            <button class="primary-btn" id="editProfileBtn">
+              <i data-lucide="pencil"></i> Edit Profile
+            </button>
+          </article>
+
+          <div class="settings-column">
+            <article class="panel">
+              <h3>Personal Information</h3>
+              <div class="form-grid">
+                <label>
+                  <span>Full Name</span>
+                  <input type="text" id="profileName" value="Admin User" />
+                </label>
+                <label>
+                  <span>Email Address</span>
+                  <input type="email" id="profileEmail" value="admin@homeservice.com" />
+                </label>
+                <label>
+                  <span>Phone Number</span>
+                  <input type="text" id="profilePhone" value="+1 234-567-8900" />
+                </label>
+                <label>
+                  <span>Role</span>
+                  <input type="text" id="profileRole" value="Super Admin" />
+                </label>
+              </div>
+              <button class="secondary-btn" id="saveProfileChanges">Save Changes</button>
+            </article>
+
+            <article class="panel">
+              <h3>Security Settings</h3>
+              <div class="form-stack">
+                <label>
+                  <span>Current Password</span>
+                  <input type="password" id="currentPassword" placeholder="Enter current password" />
+                </label>
+                <label>
+                  <span>New Password</span>
+                  <input type="password" id="newPassword" placeholder="Enter new password" />
+                </label>
+                <label>
+                  <span>Confirm New Password</span>
+                  <input type="password" id="confirmPassword" placeholder="Confirm new password" />
+                </label>
+              </div>
+              <button class="secondary-btn" id="updatePassword">Update Password</button>
+            </article>
+
+            <article class="panel">
+              <h3>Permissions</h3>
+              <div class="permission-list">
+                <label class="permission-item"><input type="checkbox" checked /><span>Employee Management</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Customer Management</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Service Management</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Package Management</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Offer Management</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Scheduling</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Analytics</span></label>
+                <label class="permission-item"><input type="checkbox" checked /><span>Settings</span></label>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="editProfileModal" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Profile</h3>
+        <button class="modal-close" type="button" id="closeEditProfile"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <label>
+          <span>Full Name</span>
+          <input type="text" id="modalName" value="John Smith" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" id="modalEmail" value="john.smith@homeservice.com" />
+        </label>
+        <label>
+          <span>Phone</span>
+          <input type="text" id="modalPhone" value="+1 234-567-8901" />
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="ghost-btn" type="button" id="cancelEdit">Cancel</button>
+        <button class="secondary-btn" type="button" id="saveModalChanges">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="profileToast" role="status" aria-live="polite">
+    <i data-lucide="check-circle"></i>
+    <span id="toastMessage">Changes saved successfully.</span>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/admin.js"></script>
+  <script src="../JS/AdminProfile.js"></script>
+</body>
+
+</html>

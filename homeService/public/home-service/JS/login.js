@@ -82,9 +82,9 @@ if (loginForm) {
     setLoginMessage('Checking your account...', false);
 
     try {
-      const [employeeRows, signupRows] = await Promise.all([
+      const [employeeRows, customerRows] = await Promise.all([
         fetchTableRows('Employee'),
-        fetchTableRows('Sign%20up'),
+        fetchTableRows('Customer'),
       ]);
 
       const matchedEmployee = findUser(employeeRows, email, password);
@@ -101,9 +101,9 @@ if (loginForm) {
         return;
       }
 
-      const matchedSignupUser = findUser(signupRows, email, password);
+      const matchedCustomer = findUser(customerRows, email, password);
 
-      if (matchedSignupUser) {
+      if (matchedCustomer) {
         setLoginMessage('Login successful. Redirecting...', false);
         window.location.href = 'Home.html';
         return;
