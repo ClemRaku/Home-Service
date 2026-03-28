@@ -29,6 +29,111 @@ const editPackageField = document.getElementById("editPackageField");
 
 let activeCard = null;
 
+const serviceOptions = [
+  "Home Cleaning",
+  "Carpet & Upholstery Cleaning",
+  "Window Cleaning",
+  "Deep Cleaning",
+  "Sofa Cleaning",
+  "Mattress Cleaning",
+  "Kitchen & Bathroom Cleaning",
+  "Leak Repair",
+  "Pipe Installation & Maintenance",
+  "Drain Cleaning",
+  "Water Heater Repair",
+  "Faucet & Shower Repair",
+  "Bathroom & Toilet Installation",
+  "Electrical Repair",
+  "Wiring & Rewiring",
+  "Lighting Installation",
+  "Appliance installation",
+  "Generator Installation",
+  "Solar Panel Installation",
+  "Interior Painting",
+  "Exterior Painting",
+  "Wall Repair & Finishing",
+  "Home Remodelling",
+  "Tile Installation & Repair",
+  "False Celling Installation",
+  "AC Repair & Maintenance",
+  "Refrigerator Repair",
+  "Washing Machine Repair",
+  "Microwave & Oven Repair",
+  "Tv & Entertainment System Repair",
+  "Gysers/Water Heater Repairs",
+  "Termite Control",
+  "Mosquito & Insect Control",
+  "Rodent Control",
+  "Spider & Ant Treatment",
+  "Bee & Wasp Removal",
+  "Carpentry",
+  "Flooring Installation",
+  "Furniture Assembly",
+  "Handyman Service",
+  "Door & window Repair",
+  "Lock & Key Service",
+  "Lawn Mowing",
+  "Tree Trimming",
+  "Garden Design & Maintenance",
+  "Irrigation System Installation",
+  "Indoor Plant Care",
+  "Packing & Moving Service",
+  "Furniture Relocation",
+  "Office Shifting",
+  "Heavy Item Transportation",
+  "CCTV Installation",
+  "Smart Lock Installation",
+  "Home Automation & Sensors Setup",
+  "Elderly Care/Home Nursing",
+  "Physiotherapy at Home",
+  "Medical Equipment Setup",
+  "Sanitation & Hygiene Service"
+];
+
+const categoryOptions = [
+  "Cleaning Services",
+  "Plumbing Services",
+  "Electrical Services",
+  "Painting & Renovation Services",
+  "Applience Repair Services",
+  "Pest Control Services",
+  "Home Improvement & Maintenance Services",
+  "Gardening & Landscaping Services",
+  "Moving & Logistics Services",
+  "Home Security Services",
+  "Alarm System Setup",
+  "Healthcare Services"
+];
+
+const packageOptions = [
+  "Basic Home Care",
+  "Premium Home Care",
+  "Elite Home Care",
+  "Basic Helping Hand",
+  "Premium Helping Hand",
+  "Elite Helping Hand",
+  "New Home Setup",
+  "Renovation Package",
+  "Seasonal Maintenance",
+  "Emergency Care Package"
+];
+
+const populateSelectOptions = (select, options) => {
+  if (!select) return;
+  const placeholder = select.querySelector("option[value='']") || select.firstElementChild;
+  const defaultOptions = placeholder ? [placeholder] : [];
+  select.innerHTML = "";
+  defaultOptions.forEach((option) => select.appendChild(option));
+
+  options.forEach((option) => {
+    const newOption = document.createElement("option");
+    newOption.value = option;
+    newOption.textContent = option;
+    select.appendChild(newOption);
+  });
+};
+
+
 const toggleModal = (modal, show) => {
   if (!modal) return;
   modal.classList.toggle("show", show);
@@ -38,9 +143,17 @@ const toggleModal = (modal, show) => {
 const getCardValue = (card, selector) => card?.querySelector(selector)?.textContent?.trim() || "";
 
 const setInputValue = (input, value) => {
-  if (input) {
-    input.value = value;
+  if (!input) return;
+  if (input.tagName === "SELECT" && value) {
+    const hasOption = Array.from(input.options).some((option) => option.value === value);
+    if (!hasOption) {
+      const customOption = document.createElement("option");
+      customOption.value = value;
+      customOption.textContent = value;
+      input.appendChild(customOption);
+    }
   }
+  input.value = value;
 };
 
 const formatDiscountValue = (value) => {
@@ -276,3 +389,10 @@ if (typeof lucide !== "undefined") {
 
 attachDiscountFormatter(addDiscountInput);
 attachDiscountFormatter(discountInput);
+
+populateSelectOptions(serviceNameInput, serviceOptions);
+populateSelectOptions(addServiceNameInput, serviceOptions);
+populateSelectOptions(categoryNameInput, categoryOptions);
+populateSelectOptions(addCategoryNameInput, categoryOptions);
+populateSelectOptions(packageNameInput, packageOptions);
+populateSelectOptions(addPackageNameInput, packageOptions);
