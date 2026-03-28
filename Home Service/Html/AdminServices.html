@@ -20,10 +20,9 @@
         </div>
         <div class="logo-text">
           <h2>Admin Panel</h2>
+          <span>Home Service</span>
         </div>
-        <button class="menu-btn" id="menuToggle" aria-label="Toggle sidebar">
-          <i data-lucide="table-of-contents"></i>
-        </button>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
       </div>
 
       <nav class="nav">
@@ -41,16 +40,14 @@
 
     <main class="main">
       <header class="topbar">
-        <h1>Home Service Admin</h1>
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
         <div class="topbar-right">
-          <button class="icon-btn" aria-label="Notifications">
-            <i data-lucide="bell"></i>
-            <span class="notification-badge">3</span>
-          </button>
-
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="dot">3</span></button>
           <div class="admin-info">
             <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
-              alt="Admin User" />
+              alt="Admin" />
             <div>
               <h4>Admin User</h4>
               <span>Super Admin</span>
@@ -74,15 +71,15 @@
         <div class="service-grid" id="serviceGrid">
           <article class="service-card" data-status="active">
             <div class="card-head">
-              <h3>Plumbing Repair</h3>
+              <h3>Home Cleaning</h3>
               <span class="status-pill active">active</span>
             </div>
-            <span class="category-tag">Plumbing</span>
+            <span class="category-tag">Cleaning Services</span>
 
             <div class="service-meta">
-              <div><span>Price</span><strong>$120</strong></div>
-              <div><span>Duration</span><strong>60 min</strong></div>
-              <div><span>Total Bookings</span><strong>245</strong></div>
+              <div><span>Price</span><strong>500-1000tk</strong></div>
+              <div><span>Duration</span><strong>2-3 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
             </div>
 
             <div class="card-actions">
@@ -94,15 +91,15 @@
 
           <article class="service-card" data-status="active">
             <div class="card-head">
-              <h3>Electrical Installation</h3>
+              <h3>Carpet & Upholstery Cleaning</h3>
               <span class="status-pill active">active</span>
             </div>
-            <span class="category-tag">Electrical</span>
+            <span class="category-tag">Cleaning Services</span>
 
             <div class="service-meta">
-              <div><span>Price</span><strong>$150</strong></div>
-              <div><span>Duration</span><strong>90 min</strong></div>
-              <div><span>Total Bookings</span><strong>189</strong></div>
+              <div><span>Price</span><strong>700-1200tk</strong></div>
+              <div><span>Duration</span><strong>2-4 hours</strong></div>
+              <div><span>Points</span><strong>15</strong></div>
             </div>
 
             <div class="card-actions">
@@ -114,15 +111,15 @@
 
           <article class="service-card" data-status="active">
             <div class="card-head">
-              <h3>HVAC Maintenance</h3>
+              <h3>Window Cleaning</h3>
               <span class="status-pill active">active</span>
             </div>
-            <span class="category-tag">HVAC</span>
+            <span class="category-tag">Cleaning Services</span>
 
             <div class="service-meta">
-              <div><span>Price</span><strong>$180</strong></div>
-              <div><span>Duration</span><strong>120 min</strong></div>
-              <div><span>Total Bookings</span><strong>156</strong></div>
+              <div><span>Price</span><strong>500-1000tk</strong></div>
+              <div><span>Duration</span><strong>1-2 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
             </div>
 
             <div class="card-actions">
@@ -137,12 +134,12 @@
               <h3>Deep Cleaning</h3>
               <span class="status-pill active">active</span>
             </div>
-            <span class="category-tag">Cleaning</span>
+            <span class="category-tag">Cleaning Services</span>
 
             <div class="service-meta">
-              <div><span>Price</span><strong>$200</strong></div>
-              <div><span>Duration</span><strong>180 min</strong></div>
-              <div><span>Total Bookings</span><strong>312</strong></div>
+              <div><span>Price</span><strong>1500-3000tk</strong></div>
+              <div><span>Duration</span><strong>2-4 hours</strong></div>
+              <div><span>Points</span><strong>20</strong></div>
             </div>
 
             <div class="card-actions">
@@ -154,15 +151,15 @@
 
           <article class="service-card" data-status="active">
             <div class="card-head">
-              <h3>Carpentry Work</h3>
+              <h3>Sofa Cleaning</h3>
               <span class="status-pill active">active</span>
             </div>
-            <span class="category-tag">Carpentry</span>
+            <span class="category-tag">Cleaning Services</span>
 
             <div class="service-meta">
-              <div><span>Price</span><strong>$140</strong></div>
-              <div><span>Duration</span><strong>120 min</strong></div>
-              <div><span>Total Bookings</span><strong>98</strong></div>
+              <div><span>Price</span><strong>800-1500tk</strong></div>
+              <div><span>Duration</span><strong>1-2 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
             </div>
 
             <div class="card-actions">
@@ -174,15 +171,15 @@
 
           <article class="service-card" data-status="inactive">
             <div class="card-head">
-              <h3>Painting Service</h3>
+              <h3>Mattress Cleaning</h3>
               <span class="status-pill inactive">inactive</span>
             </div>
-            <span class="category-tag">Painting</span>
+            <span class="category-tag">Cleaning Services</span>
 
             <div class="service-meta">
-              <div><span>Price</span><strong>$160</strong></div>
-              <div><span>Duration</span><strong>240 min</strong></div>
-              <div><span>Total Bookings</span><strong>67</strong></div>
+              <div><span>Price</span><strong>500-1000tk</strong></div>
+              <div><span>Duration</span><strong>1-2 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
             </div>
 
             <div class="card-actions">
@@ -196,7 +193,96 @@
     </main>
   </div>
 
+  <div class="modal-overlay" id="addServiceModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="addServiceTitle">
+      <div class="modal-header">
+        <h3 id="addServiceTitle">Add New Service</h3>
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form class="modal-form">
+        <label class="form-field">
+          <span>Service Name</span>
+          <input type="text"  >
+        </label>
+
+        <label class="form-field">
+          <span>Category</span>
+          <input type="text" >
+        </label>
+
+        <label class="form-field">
+          <span>Points</span>
+          <input type="text" placeholder="10" />
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Price</span>
+            <input type="text" placeholder="Tk" />
+          </label>
+          <label class="form-field">
+            <span>Duration</span>
+            <input type="text" placeholder="1-2 hours" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn ghost">Cancel</button>
+          <button type="submit" class="modal-btn primary">Add Service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editServiceModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editServiceTitle">
+      <div class="modal-header">
+        <h3 id="editServiceTitle">Edit Service</h3>
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form class="modal-form">
+        <label class="form-field">
+          <span>Service Name</span>
+          <input type="text" placeholder="John Smith" />
+        </label>
+
+        <label class="form-field">
+          <span>Category</span>
+          <input type="text" placeholder="john.smith@homeservice.com" />
+        </label>
+
+        <label class="form-field">
+          <span>Points</span>
+          <input type="text" placeholder="15" />
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Price</span>
+            <input type="text" placeholder="+1 234-567-8901" />
+          </label>
+          <label class="form-field">
+            <span>Duration (min)</span>
+            <input type="text" placeholder="+1 234-567-8901" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn ghost">Cancel</button>
+          <button type="submit" class="modal-btn primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/admin.js"></script>
   <script src="../JS/AdminServices.js"></script>
 </body>
 
