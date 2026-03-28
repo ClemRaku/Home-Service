@@ -493,6 +493,33 @@ button {
   flex: 1;
 }
 
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 60;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast i {
+  color: #10b981;
+}
+
 @media (max-width: 1100px) {
   .dashboard {
     grid-template-columns: 1fr;
