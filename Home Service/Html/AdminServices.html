@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Service Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/AdminServices.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
+      </div>
+
+      <nav class="nav">
+        <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a class="active" href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackages.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a href="#"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="#"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="dot">3</span></button>
+          <div class="admin-info">
+            <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+              alt="Admin" />
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="services">
+        <div class="section-head">
+          <div>
+            <h2>Service Management</h2>
+            <p>Manage available services and pricing</p>
+          </div>
+          <button class="add-btn" id="addServiceBtn">
+            <i data-lucide="plus"></i>
+            <span>Add Service</span>
+          </button>
+        </div>
+
+        <div class="service-grid" id="serviceGrid">
+          <article class="service-card" data-status="active">
+            <div class="card-head">
+              <h3>Home Cleaning</h3>
+              <span class="status-pill active">active</span>
+            </div>
+            <span class="category-tag">Cleaning Services</span>
+
+            <div class="service-meta">
+              <div><span>Price</span><strong>500-1000tk</strong></div>
+              <div><span>Duration</span><strong>2-3 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn edit"><i data-lucide="pencil"></i><span>Edit</span></button>
+              <button class="action-btn toggle"><i data-lucide="pause"></i><span>Disable</span></button>
+              <button class="action-btn delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </article>
+
+          <article class="service-card" data-status="active">
+            <div class="card-head">
+              <h3>Carpet & Upholstery Cleaning</h3>
+              <span class="status-pill active">active</span>
+            </div>
+            <span class="category-tag">Cleaning Services</span>
+
+            <div class="service-meta">
+              <div><span>Price</span><strong>700-1200tk</strong></div>
+              <div><span>Duration</span><strong>2-4 hours</strong></div>
+              <div><span>Points</span><strong>15</strong></div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn edit"><i data-lucide="pencil"></i><span>Edit</span></button>
+              <button class="action-btn toggle"><i data-lucide="pause"></i><span>Disable</span></button>
+              <button class="action-btn delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </article>
+
+          <article class="service-card" data-status="active">
+            <div class="card-head">
+              <h3>Window Cleaning</h3>
+              <span class="status-pill active">active</span>
+            </div>
+            <span class="category-tag">Cleaning Services</span>
+
+            <div class="service-meta">
+              <div><span>Price</span><strong>500-1000tk</strong></div>
+              <div><span>Duration</span><strong>1-2 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn edit"><i data-lucide="pencil"></i><span>Edit</span></button>
+              <button class="action-btn toggle"><i data-lucide="pause"></i><span>Disable</span></button>
+              <button class="action-btn delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </article>
+
+          <article class="service-card" data-status="active">
+            <div class="card-head">
+              <h3>Deep Cleaning</h3>
+              <span class="status-pill active">active</span>
+            </div>
+            <span class="category-tag">Cleaning Services</span>
+
+            <div class="service-meta">
+              <div><span>Price</span><strong>1500-3000tk</strong></div>
+              <div><span>Duration</span><strong>2-4 hours</strong></div>
+              <div><span>Points</span><strong>20</strong></div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn edit"><i data-lucide="pencil"></i><span>Edit</span></button>
+              <button class="action-btn toggle"><i data-lucide="pause"></i><span>Disable</span></button>
+              <button class="action-btn delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </article>
+
+          <article class="service-card" data-status="active">
+            <div class="card-head">
+              <h3>Sofa Cleaning</h3>
+              <span class="status-pill active">active</span>
+            </div>
+            <span class="category-tag">Cleaning Services</span>
+
+            <div class="service-meta">
+              <div><span>Price</span><strong>800-1500tk</strong></div>
+              <div><span>Duration</span><strong>1-2 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn edit"><i data-lucide="pencil"></i><span>Edit</span></button>
+              <button class="action-btn toggle"><i data-lucide="pause"></i><span>Disable</span></button>
+              <button class="action-btn delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </article>
+
+          <article class="service-card" data-status="inactive">
+            <div class="card-head">
+              <h3>Mattress Cleaning</h3>
+              <span class="status-pill inactive">inactive</span>
+            </div>
+            <span class="category-tag">Cleaning Services</span>
+
+            <div class="service-meta">
+              <div><span>Price</span><strong>500-1000tk</strong></div>
+              <div><span>Duration</span><strong>1-2 hours</strong></div>
+              <div><span>Points</span><strong>10</strong></div>
+            </div>
+
+            <div class="card-actions">
+              <button class="action-btn edit"><i data-lucide="pencil"></i><span>Edit</span></button>
+              <button class="action-btn toggle enable"><i data-lucide="play"></i><span>Enable</span></button>
+              <button class="action-btn delete"><i data-lucide="trash-2"></i></button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="addServiceModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="addServiceTitle">
+      <div class="modal-header">
+        <h3 id="addServiceTitle">Add New Service</h3>
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form class="modal-form">
+        <label class="form-field">
+          <span>Service Name</span>
+          <input type="text"  >
+        </label>
+
+        <label class="form-field">
+          <span>Category</span>
+          <input type="text" >
+        </label>
+
+        <label class="form-field">
+          <span>Points</span>
+          <input type="text" placeholder="10" />
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Price</span>
+            <input type="text" placeholder="Tk" />
+          </label>
+          <label class="form-field">
+            <span>Duration</span>
+            <input type="text" placeholder="1-2 hours" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn ghost">Cancel</button>
+          <button type="submit" class="modal-btn primary">Add Service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editServiceModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editServiceTitle">
+      <div class="modal-header">
+        <h3 id="editServiceTitle">Edit Service</h3>
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form class="modal-form">
+        <label class="form-field">
+          <span>Service Name</span>
+          <input type="text" placeholder="John Smith" />
+        </label>
+
+        <label class="form-field">
+          <span>Category</span>
+          <input type="text" placeholder="john.smith@homeservice.com" />
+        </label>
+
+        <label class="form-field">
+          <span>Points</span>
+          <input type="text" placeholder="15" />
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Price</span>
+            <input type="text" placeholder="+1 234-567-8901" />
+          </label>
+          <label class="form-field">
+            <span>Duration (min)</span>
+            <input type="text" placeholder="+1 234-567-8901" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn ghost">Cancel</button>
+          <button type="submit" class="modal-btn primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/admin.js"></script>
+  <script src="../JS/AdminServices.js"></script>
+</body>
+
+</html>
