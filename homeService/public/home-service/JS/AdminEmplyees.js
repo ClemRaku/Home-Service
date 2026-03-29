@@ -1,86 +1,119 @@
-const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.getElementById("sidebar");
-const dashboard = document.querySelector(".dashboard");
-const searchInput = document.getElementById("employeeSearch");
-const statusFilter = document.getElementById("statusFilter");
-const getEmployeeRows = () => Array.from(document.querySelectorAll(".employee-table tbody tr"));
-const addEmployeeBtn = document.getElementById("addEmployeeBtn");
-const addEmployeeModal = document.getElementById("addEmployeeModal");
-const addModalCloseBtn = document.getElementById("addModalCloseBtn");
-const addCancelBtn = document.getElementById("addCancelBtn");
-const addEmployeeForm = document.getElementById("addEmployeeForm");
-const addFullNameInput = document.getElementById("addFullName");
-const addEmailInput = document.getElementById("addEmail");
-const addPhoneInput = document.getElementById("addPhone");
-const addRoleInput = document.getElementById("addRole");
-const employeeTableBody = document.querySelector(".employee-table tbody");
-const editEmployeeModal = document.getElementById("editEmployeeModal");
-const editModalCloseBtn = document.getElementById("editModalCloseBtn");
-const editCancelBtn = document.getElementById("editCancelBtn");
-const editEmployeeForm = document.getElementById("editEmployeeForm");
-const editFullNameInput = document.getElementById("editFullName");
-const editEmailInput = document.getElementById("editEmail");
-const editPhoneInput = document.getElementById("editPhone");
-const editRoleInput = document.getElementById("editRole");
-const editStatusInput = document.getElementById("editStatus");
-const locationModal = document.getElementById("locationModal");
-const locationModalCloseBtn = document.getElementById("locationModalCloseBtn");
-const locationEmployeeAvatar = document.getElementById("locationEmployeeAvatar");
-const locationEmployeeName = document.getElementById("locationEmployeeName");
-const locationEmployeeRole = document.getElementById("locationEmployeeRole");
-const locationAddress = document.getElementById("locationAddress");
-const locationLat = document.getElementById("locationLat");
-const locationLng = document.getElementById("locationLng");
-const locationMapFrame = document.getElementById("locationMapFrame");
-const locationMapCoords = document.getElementById("locationMapCoords");
-const locationLargeMapLink = document.getElementById("locationLargeMapLink");
+const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+
+const DEFAULT_LOCATION = {
+  address: 'Location not available',
+  lat: '40.7128',
+  lng: '-74.0060',
+};
+
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const dashboard = document.querySelector('.dashboard');
+const searchInput = document.getElementById('employeeSearch');
+const statusFilter = document.getElementById('statusFilter');
+const getEmployeeRows = () => Array.from(document.querySelectorAll('.employee-table tbody tr[data-employee-row="true"]'));
+const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+const addEmployeeModal = document.getElementById('addEmployeeModal');
+const addModalCloseBtn = document.getElementById('addModalCloseBtn');
+const addCancelBtn = document.getElementById('addCancelBtn');
+const addEmployeeForm = document.getElementById('addEmployeeForm');
+const addFullNameInput = document.getElementById('addFullName');
+const addEmailInput = document.getElementById('addEmail');
+const addPhoneInput = document.getElementById('addPhone');
+const addRoleInput = document.getElementById('addRole');
+const employeeTableBody = document.getElementById('employeeTableBody');
+const editEmployeeModal = document.getElementById('editEmployeeModal');
+const editModalCloseBtn = document.getElementById('editModalCloseBtn');
+const editCancelBtn = document.getElementById('editCancelBtn');
+const editEmployeeForm = document.getElementById('editEmployeeForm');
+const editFullNameInput = document.getElementById('editFullName');
+const editEmailInput = document.getElementById('editEmail');
+const editPhoneInput = document.getElementById('editPhone');
+const editRoleInput = document.getElementById('editRole');
+const editStatusInput = document.getElementById('editStatus');
+const locationModal = document.getElementById('locationModal');
+const locationModalCloseBtn = document.getElementById('locationModalCloseBtn');
+const locationEmployeeAvatar = document.getElementById('locationEmployeeAvatar');
+const locationEmployeeName = document.getElementById('locationEmployeeName');
+const locationEmployeeRole = document.getElementById('locationEmployeeRole');
+const locationAddress = document.getElementById('locationAddress');
+const locationLat = document.getElementById('locationLat');
+const locationLng = document.getElementById('locationLng');
+const locationMapFrame = document.getElementById('locationMapFrame');
+const locationMapCoords = document.getElementById('locationMapCoords');
+const locationLargeMapLink = document.getElementById('locationLargeMapLink');
 
 let selectedRowForEdit = null;
 
-if (menuToggle && sidebar && dashboard) {
-  menuToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-    dashboard.classList.toggle("collapsed");
+const getEmployeeIdentifier = (row) => row?.dataset.employeeEmail || row?.dataset.employeeId || '';
+
+const supabaseRequest = async (path, options = {}) => {
+  const response = await fetch(`${SUPABASE_URL}${path}`, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+      ...(options.headers || {}),
+    },
   });
-}
 
-const applyFilters = () => {
-  const query = (searchInput?.value || "").trim().toLowerCase();
-  const status = statusFilter?.value || "all";
-  const employeeRows = getEmployeeRows();
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `Supabase request failed with status ${response.status}`);
+  }
 
-  employeeRows.forEach((row) => {
-    const rowText = row.textContent?.toLowerCase() || "";
-    const rowStatus = row.dataset.status || "";
+  if (response.status === 204) {
+    return null;
+  }
 
-    const matchesSearch = rowText.includes(query);
-    const matchesStatus = status === "all" || status === rowStatus;
-
-    row.style.display = matchesSearch && matchesStatus ? "table-row" : "none";
-  });
+  return response.json();
 };
-
-if (searchInput) {
-  searchInput.addEventListener("input", applyFilters);
-}
-
-if (statusFilter) {
-  statusFilter.addEventListener("change", applyFilters);
-}
-
-document.querySelectorAll(".action-btn").forEach((button) => {
-  button.addEventListener("click", () => {
-    // Placeholder only to mimic dashboard interactions from design.
-  });
-});
 
 const syncBodyModalState = () => {
   const hasOpenModal =
-    addEmployeeModal?.classList.contains("open") ||
-    editEmployeeModal?.classList.contains("open") ||
-    locationModal?.classList.contains("open");
+    addEmployeeModal?.classList.contains('open') ||
+    editEmployeeModal?.classList.contains('open') ||
+    locationModal?.classList.contains('open');
 
-  document.body.classList.toggle("modal-open", Boolean(hasOpenModal));
+  document.body.classList.toggle('modal-open', Boolean(hasOpenModal));
+};
+
+const escapeHtml = (value) =>
+  String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
+const formatPhone = (phoneValue) => {
+  const digits = String(phoneValue ?? '').replace(/\D/g, '');
+
+  if (digits.length === 11 && digits.startsWith('1')) {
+    return `+${digits[0]} ${digits.slice(1, 4)}-${digits.slice(4, 7)}-${digits.slice(7)}`;
+  }
+
+  if (digits.length === 10) {
+    return `+1 ${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+
+  return String(phoneValue ?? 'N/A');
+};
+
+const normalizeStatus = (statusValue) => {
+  if (typeof statusValue === 'string') {
+    return statusValue.toLowerCase() === 'inactive' ? 'inactive' : 'active';
+  }
+
+  if (typeof statusValue === 'boolean') {
+    return statusValue ? 'active' : 'inactive';
+  }
+
+  return 'active';
 };
 
 const toDms = (decimal, isLat = true) => {
@@ -89,13 +122,182 @@ const toDms = (decimal, isLat = true) => {
   const minutesFloat = (absolute - degrees) * 60;
   const minutes = Math.floor(minutesFloat);
   const seconds = (minutesFloat - minutes) * 60;
-  const direction = isLat
-    ? (Number(decimal) >= 0 ? "N" : "S")
-    : Number(decimal) >= 0
-      ? "E"
-      : "W";
+  const direction = isLat ? (Number(decimal) >= 0 ? 'N' : 'S') : Number(decimal) >= 0 ? 'E' : 'W';
 
-  return `${degrees}°${String(minutes).padStart(2, "0")}'${seconds.toFixed(1)}\"${direction}`;
+  return `${degrees}°${String(minutes).padStart(2, '0')}'${seconds.toFixed(1)}"${direction}`;
+};
+
+const buildEmployeeActionButtons = (status) => {
+  if (status === 'inactive') {
+    return `
+      <button class="action-btn location" title="Track employee"><i data-lucide="map-pin"></i></button>
+      <button class="action-btn edit" title="Edit employee"><i data-lucide="pencil"></i></button>
+      <button class="action-btn success" title="Assign employee"><i data-lucide="check"></i></button>
+      <button class="action-btn delete" title="Delete employee"><i data-lucide="trash-2"></i></button>
+    `;
+  }
+
+  return `
+    <button class="action-btn location" title="Track employee"><i data-lucide="map-pin"></i></button>
+    <button class="action-btn edit" title="Edit employee"><i data-lucide="pencil"></i></button>
+    <button class="action-btn assign" title="Unassign employee"><i data-lucide="user-round-x"></i></button>
+    <button class="action-btn delete" title="Delete employee"><i data-lucide="trash-2"></i></button>
+  `;
+};
+
+const renderEmptyState = (message) => {
+  if (!employeeTableBody) {
+    return;
+  }
+
+  employeeTableBody.innerHTML = `
+    <tr>
+      <td colspan="6">${escapeHtml(message)}</td>
+    </tr>
+  `;
+};
+
+const buildEmployeeRowMarkup = (employee) => {
+  const fullName = employee['Full Name'] || 'Unnamed Employee';
+  const email = employee.Email || 'No email';
+  const phone = formatPhone(employee.phone);
+  const role = employee.Role || 'Not Assigned';
+  const performance = Number.isFinite(Number(employee.performance)) ? Number(employee.performance).toFixed(1) : '0.0';
+  const jobsDone = Number.isFinite(Number(employee.jobs_done)) ? Number(employee.jobs_done) : 0;
+  const status = normalizeStatus(employee.status);
+  const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=eff3ff&color=1e3a8a`;
+
+  return `
+    <tr
+      data-employee-row="true"
+      data-employee-id="${escapeHtml(employee.Email || fullName)}"
+      data-employee-email="${escapeHtml(employee.Email || '')}"
+      data-status="${status}"
+      data-location-address="${DEFAULT_LOCATION.address}"
+      data-location-lat="${DEFAULT_LOCATION.lat}"
+      data-location-lng="${DEFAULT_LOCATION.lng}"
+      data-map-query="${DEFAULT_LOCATION.lat},${DEFAULT_LOCATION.lng}"
+    >
+      <td>
+        <div class="employee-cell">
+          <img src="${avatar}" alt="${escapeHtml(fullName)}" />
+          <div>
+            <h4>${escapeHtml(fullName)}</h4>
+            <span>${escapeHtml(email)}</span>
+          </div>
+        </div>
+      </td>
+      <td>${escapeHtml(role)}</td>
+      <td>${escapeHtml(phone)}</td>
+      <td>
+        <div class="rating-cell">
+          <i data-lucide="star"></i>
+          <span>${performance}</span>
+          <small>(${jobsDone} jobs)</small>
+        </div>
+      </td>
+      <td><span class="status-pill ${status === 'inactive' ? 'inactive' : 'active'}">${status}</span></td>
+      <td>
+        <div class="actions">
+          ${buildEmployeeActionButtons(status)}
+        </div>
+      </td>
+    </tr>
+  `;
+};
+
+const renderEmployees = (employees) => {
+  if (!employeeTableBody) {
+    return;
+  }
+
+  if (!employees.length) {
+    renderEmptyState('No employees found.');
+    return;
+  }
+
+  employeeTableBody.innerHTML = employees.map(buildEmployeeRowMarkup).join('');
+
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+
+  applyFilters();
+};
+
+const fetchEmployees = async () => {
+  if (!employeeTableBody) {
+    return;
+  }
+
+  try {
+    const employees = await supabaseRequest('/rest/v1/Employee?select=*&order=created_at.desc', {
+      method: 'GET',
+      headers: {
+        Prefer: 'return=representation',
+      },
+    });
+    const nonAdminEmployees = employees.filter(
+      (employee) => String(employee?.Role ?? '').trim().toLowerCase() !== 'admin'
+    );
+    renderEmployees(nonAdminEmployees);
+  } catch (error) {
+    console.error(error);
+    renderEmptyState('Unable to load employees right now.');
+  }
+};
+
+const persistEmployeeUpdate = async (identifierEmail, payload) => {
+  const encodedEmail = encodeURIComponent(identifierEmail);
+  const updatedRows = await supabaseRequest(`/rest/v1/Employee?Email=eq.${encodedEmail}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+
+  if (!updatedRows?.length) {
+    throw new Error('Employee record was not updated.');
+  }
+
+  return updatedRows[0];
+};
+
+const persistEmployeeDelete = async (identifierEmail) => {
+  const encodedEmail = encodeURIComponent(identifierEmail);
+  await supabaseRequest(`/rest/v1/Employee?Email=eq.${encodedEmail}`, {
+    method: 'DELETE',
+    headers: {
+      Prefer: 'return=minimal',
+    },
+  });
+};
+
+const persistEmployeeInsert = async (payload) => {
+  const insertedRows = await supabaseRequest('/rest/v1/Employee', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+
+  if (!insertedRows?.length) {
+    throw new Error('Employee record was not created.');
+  }
+
+  return insertedRows[0];
+};
+
+const applyFilters = () => {
+  const query = (searchInput?.value || '').trim().toLowerCase();
+  const status = statusFilter?.value || 'all';
+  const employeeRows = getEmployeeRows();
+
+  employeeRows.forEach((row) => {
+    const rowText = row.textContent?.toLowerCase() || '';
+    const rowStatus = row.dataset.status || '';
+
+    const matchesSearch = rowText.includes(query);
+    const matchesStatus = status === 'all' || status === rowStatus;
+
+    row.style.display = matchesSearch && matchesStatus ? 'table-row' : 'none';
+  });
 };
 
 const openAddModal = () => {
@@ -103,8 +305,8 @@ const openAddModal = () => {
     return;
   }
 
-  addEmployeeModal.classList.add("open");
-  addEmployeeModal.setAttribute("aria-hidden", "false");
+  addEmployeeModal.classList.add('open');
+  addEmployeeModal.setAttribute('aria-hidden', 'false');
   syncBodyModalState();
 };
 
@@ -113,15 +315,15 @@ const closeAddModal = () => {
     return;
   }
 
-  addEmployeeModal.classList.remove("open");
-  addEmployeeModal.setAttribute("aria-hidden", "true");
+  addEmployeeModal.classList.remove('open');
+  addEmployeeModal.setAttribute('aria-hidden', 'true');
   syncBodyModalState();
 };
 
 const closeEditModal = () => {
   if (!editEmployeeModal) return;
-  editEmployeeModal.classList.remove("open");
-  editEmployeeModal.setAttribute("aria-hidden", "true");
+  editEmployeeModal.classList.remove('open');
+  editEmployeeModal.setAttribute('aria-hidden', 'true');
   syncBodyModalState();
   selectedRowForEdit = null;
 };
@@ -131,26 +333,9 @@ const closeLocationModal = () => {
     return;
   }
 
-  locationModal.classList.remove("open");
-  locationModal.setAttribute("aria-hidden", "true");
+  locationModal.classList.remove('open');
+  locationModal.setAttribute('aria-hidden', 'true');
   syncBodyModalState();
-};
-
-const buildEmployeeActionButtons = (status) => {
-  if (status === "inactive") {
-    return `
-      <button class="action-btn location" title="Track employee"><i data-lucide="map-pin"></i></button>
-      <button class="action-btn edit" title="Edit employee"><i data-lucide="pencil"></i></button>
-      <button class="action-btn success" title="Enable employee"><i data-lucide="check"></i></button>
-    `;
-  }
-
-  return `
-    <button class="action-btn location" title="Track employee"><i data-lucide="map-pin"></i></button>
-    <button class="action-btn edit" title="Edit employee"><i data-lucide="pencil"></i></button>
-    <button class="action-btn assign" title="Unassign"><i data-lucide="user-round-x"></i></button>
-    <button class="action-btn danger" title="Disable"><i data-lucide="ban"></i></button>
-  `;
 };
 
 const openLocationModal = (row) => {
@@ -158,14 +343,14 @@ const openLocationModal = (row) => {
     return;
   }
 
-  const name = row.querySelector(".employee-cell h4")?.textContent?.trim() || "Employee";
-  const role = row.querySelector("td:nth-child(2)")?.textContent?.trim() || "Not Assigned";
-  const avatarSrc = row.querySelector(".employee-cell img")?.getAttribute("src") || "";
-  const address = row.dataset.locationAddress || "Location not available";
-  const latValue = Number.parseFloat(row.dataset.locationLat ?? "40.7128");
-  const lngValue = Number.parseFloat(row.dataset.locationLng ?? "-74.0060");
-  const safeLat = Number.isFinite(latValue) ? latValue : 40.7128;
-  const safeLng = Number.isFinite(lngValue) ? lngValue : -74.006;
+  const name = row.querySelector('.employee-cell h4')?.textContent?.trim() || 'Employee';
+  const role = row.querySelector('td:nth-child(2)')?.textContent?.trim() || 'Not Assigned';
+  const avatarSrc = row.querySelector('.employee-cell img')?.getAttribute('src') || '';
+  const address = row.dataset.locationAddress || DEFAULT_LOCATION.address;
+  const latValue = Number.parseFloat(row.dataset.locationLat ?? DEFAULT_LOCATION.lat);
+  const lngValue = Number.parseFloat(row.dataset.locationLng ?? DEFAULT_LOCATION.lng);
+  const safeLat = Number.isFinite(latValue) ? latValue : Number(DEFAULT_LOCATION.lat);
+  const safeLng = Number.isFinite(lngValue) ? lngValue : Number(DEFAULT_LOCATION.lng);
   const mapQuery = row.dataset.mapQuery || `${safeLat},${safeLng}`;
 
   if (locationEmployeeName) {
@@ -207,20 +392,20 @@ const openLocationModal = (row) => {
     locationLargeMapLink.href = `https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`;
   }
 
-  locationModal.classList.add("open");
-  locationModal.setAttribute("aria-hidden", "false");
+  locationModal.classList.add('open');
+  locationModal.setAttribute('aria-hidden', 'false');
   syncBodyModalState();
 };
 
 const updateRowStatusPill = (row, status) => {
-  const statusPill = row?.querySelector(".status-pill");
+  const statusPill = row?.querySelector('.status-pill');
 
   if (!statusPill) {
     return;
   }
 
-  statusPill.className = "status-pill";
-  statusPill.classList.add(status === "inactive" ? "inactive" : "active");
+  statusPill.className = 'status-pill';
+  statusPill.classList.add(status === 'inactive' ? 'inactive' : 'active');
   statusPill.textContent = status;
 };
 
@@ -232,12 +417,12 @@ const updateEmployeeRowStatus = (row, status) => {
   row.dataset.status = status;
   updateRowStatusPill(row, status);
 
-  const actions = row.querySelector(".actions");
+  const actions = row.querySelector('.actions');
   if (actions) {
     actions.innerHTML = buildEmployeeActionButtons(status);
   }
 
-  if (typeof lucide !== "undefined") {
+  if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 };
@@ -249,11 +434,11 @@ const openEditModal = (row) => {
 
   selectedRowForEdit = row;
 
-  const name = row.querySelector(".employee-cell h4")?.textContent?.trim() ?? "";
-  const email = row.querySelector(".employee-cell span")?.textContent?.trim() ?? "";
-  const phone = row.querySelector("td:nth-child(3)")?.textContent?.trim() ?? "";
-  const role = row.querySelector("td:nth-child(2)")?.textContent?.trim() ?? "";
-  const status = row.dataset.status ?? "active";
+  const name = row.querySelector('.employee-cell h4')?.textContent?.trim() ?? '';
+  const email = row.querySelector('.employee-cell span')?.textContent?.trim() ?? '';
+  const phone = row.querySelector('td:nth-child(3)')?.textContent?.trim() ?? '';
+  const role = row.querySelector('td:nth-child(2)')?.textContent?.trim() ?? '';
+  const status = row.dataset.status ?? 'active';
 
   if (editFullNameInput) {
     editFullNameInput.value = name;
@@ -272,23 +457,38 @@ const openEditModal = (row) => {
   }
 
   if (editStatusInput) {
-    editStatusInput.value = status === "inactive" ? "inactive" : "active";
+    editStatusInput.value = status === 'inactive' ? 'inactive' : 'active';
   }
 
   if (!editEmployeeModal) {
     return;
   }
 
-  editEmployeeModal.classList.add("open");
-  editEmployeeModal.setAttribute("aria-hidden", "false");
+  editEmployeeModal.classList.add('open');
+  editEmployeeModal.setAttribute('aria-hidden', 'false');
   syncBodyModalState();
 };
 
+if (menuToggle && sidebar && dashboard) {
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    dashboard.classList.toggle('collapsed');
+  });
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', applyFilters);
+}
+
+if (statusFilter) {
+  statusFilter.addEventListener('change', applyFilters);
+}
+
 if (employeeTableBody) {
-  employeeTableBody.addEventListener("click", (event) => {
-    const locationButton = event.target.closest(".action-btn.location");
+  employeeTableBody.addEventListener('click', async (event) => {
+    const locationButton = event.target.closest('.action-btn.location');
     if (locationButton) {
-      const row = locationButton.closest("tr");
+      const row = locationButton.closest('tr');
       if (!row) {
         return;
       }
@@ -298,68 +498,125 @@ if (employeeTableBody) {
       return;
     }
 
-    const assignButton = event.target.closest(".action-btn.assign");
+    const assignButton = event.target.closest('.action-btn.assign');
     if (assignButton) {
-      const row = assignButton.closest("tr");
+      const row = assignButton.closest('tr');
       if (!row) {
         return;
       }
 
-      const employeeName = row.querySelector(".employee-cell h4")?.textContent?.trim() ?? "this employee";
-      const shouldRemove = window.confirm(`Remove ${employeeName} from employee list?`);
+      const employeeName = row.querySelector('.employee-cell h4')?.textContent?.trim() ?? 'this employee';
+      const employeeEmail = getEmployeeIdentifier(row);
 
-      if (!shouldRemove) {
+      if (!employeeEmail) {
+        window.alert('Unable to update this employee. Missing email identifier.');
         return;
       }
 
-      if (selectedRowForEdit === row) {
-        closeEditModal();
+      const shouldUnassign = window.confirm(`Unassign ${employeeName}? This will set the employee status to inactive.`);
+
+      if (!shouldUnassign) {
+        return;
       }
 
-      row.remove();
-      applyFilters();
+      assignButton.disabled = true;
+
+      try {
+        await persistEmployeeUpdate(employeeEmail, { status: false });
+        row.dataset.previousStatus = row.dataset.status ?? 'active';
+        updateEmployeeRowStatus(row, 'inactive');
+        applyFilters();
+      } catch (error) {
+        console.error(error);
+        window.alert('Failed to update employee status.');
+      } finally {
+        assignButton.disabled = false;
+      }
       return;
     }
 
-    const dangerButton = event.target.closest(".action-btn.danger");
-    if (dangerButton) {
-      const row = dangerButton.closest("tr");
+    const deleteButton = event.target.closest('.action-btn.delete');
+    if (deleteButton) {
+      const row = deleteButton.closest('tr');
       if (!row) {
         return;
       }
 
-      const currentStatus = row.dataset.status ?? "active";
-      if (currentStatus !== "inactive") {
-        row.dataset.previousStatus = currentStatus;
+      const employeeName = row.querySelector('.employee-cell h4')?.textContent?.trim() ?? 'this employee';
+      const employeeEmail = getEmployeeIdentifier(row);
+
+      if (!employeeEmail) {
+        window.alert('Unable to delete this employee. Missing email identifier.');
+        return;
       }
 
-      updateEmployeeRowStatus(row, "inactive");
-      applyFilters();
+      const shouldDelete = window.confirm(`Delete ${employeeName} permanently from the Employee table?`);
+
+      if (!shouldDelete) {
+        return;
+      }
+
+      deleteButton.disabled = true;
+
+      try {
+        await persistEmployeeDelete(employeeEmail);
+        if (selectedRowForEdit === row) {
+          closeEditModal();
+        }
+        row.remove();
+        if (!getEmployeeRows().length) {
+          renderEmptyState('No employees found.');
+        } else {
+          applyFilters();
+        }
+      } catch (error) {
+        console.error(error);
+        window.alert('Failed to delete employee.');
+      } finally {
+        deleteButton.disabled = false;
+      }
       return;
     }
 
-    const successButton = event.target.closest(".action-btn.success");
+    const successButton = event.target.closest('.action-btn.success');
     if (successButton) {
-      const row = successButton.closest("tr");
+      const row = successButton.closest('tr');
       if (!row) {
         return;
       }
+
+      const employeeEmail = getEmployeeIdentifier(row);
+      if (!employeeEmail) {
+        window.alert('Unable to update this employee. Missing email identifier.');
+        return;
+      }
+
+      successButton.disabled = true;
 
       const previousStatus = row.dataset.previousStatus;
-      const restoredStatus = previousStatus && previousStatus !== "inactive" ? previousStatus : "active";
-      updateEmployeeRowStatus(row, restoredStatus);
-      delete row.dataset.previousStatus;
-      applyFilters();
+      const restoredStatus = previousStatus && previousStatus !== 'inactive' ? previousStatus : 'active';
+
+      try {
+        await persistEmployeeUpdate(employeeEmail, { status: true });
+        updateEmployeeRowStatus(row, restoredStatus);
+        delete row.dataset.previousStatus;
+        applyFilters();
+      } catch (error) {
+        console.error(error);
+        window.alert('Failed to update employee status.');
+      } finally {
+        successButton.disabled = false;
+      }
       return;
     }
 
-    const editButton = event.target.closest(".action-btn.edit");
+    const editButton = event.target.closest('.action-btn.edit');
 
     if (!editButton) {
       return;
     }
 
-    const row = editButton.closest("tr");
+    const row = editButton.closest('tr');
     if (!row) {
       return;
     }
@@ -370,15 +627,15 @@ if (employeeTableBody) {
 }
 
 if (editModalCloseBtn) {
-  editModalCloseBtn.addEventListener("click", closeEditModal);
+  editModalCloseBtn.addEventListener('click', closeEditModal);
 }
 
 if (editCancelBtn) {
-  editCancelBtn.addEventListener("click", closeEditModal);
+  editCancelBtn.addEventListener('click', closeEditModal);
 }
 
 if (editEmployeeForm) {
-  editEmployeeForm.addEventListener("submit", (event) => {
+  editEmployeeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     if (!selectedRowForEdit) {
@@ -386,47 +643,92 @@ if (editEmployeeForm) {
       return;
     }
 
-    const updatedName = editFullNameInput?.value.trim() ?? "";
-    const updatedEmail = editEmailInput?.value.trim() ?? "";
-    const updatedPhone = editPhoneInput?.value.trim() ?? "";
-    const updatedRole = editRoleInput?.value.trim() ?? "";
-    const updatedStatus = editStatusInput?.value === "inactive" ? "inactive" : "active";
+    const updatedName = editFullNameInput?.value.trim() ?? '';
+    const updatedEmail = editEmailInput?.value.trim() ?? '';
+    const updatedPhone = editPhoneInput?.value.trim() ?? '';
+    const updatedRole = editRoleInput?.value.trim() ?? '';
+    const updatedStatus = editStatusInput?.value === 'inactive' ? 'inactive' : 'active';
+    const identifierEmail = getEmployeeIdentifier(selectedRowForEdit);
 
-    const rowName = selectedRowForEdit.querySelector(".employee-cell h4");
-    const rowAvatar = selectedRowForEdit.querySelector(".employee-cell img");
-    const rowEmail = selectedRowForEdit.querySelector(".employee-cell span");
-    const rowRole = selectedRowForEdit.querySelector("td:nth-child(2)");
-    const rowPhone = selectedRowForEdit.querySelector("td:nth-child(3)");
-
-    if (rowName && updatedName) {
-      rowName.textContent = updatedName;
+    if (!identifierEmail || !updatedName || !updatedEmail || !updatedPhone) {
+      window.alert('Full name, email, and phone are required.');
+      return;
     }
 
-    if (rowAvatar && updatedName) {
-      rowAvatar.alt = updatedName;
+    const submitButton = editEmployeeForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
     }
 
-    if (rowEmail && updatedEmail) {
-      rowEmail.textContent = updatedEmail;
+    try {
+      const updatedEmployee = await persistEmployeeUpdate(identifierEmail, {
+        'Full Name': updatedName,
+        Email: updatedEmail,
+        phone: Number(updatedPhone.replace(/\D/g, '')) || updatedPhone,
+        Role: updatedRole || 'Not Assigned',
+        status: updatedStatus === 'active',
+      });
+
+      const rowName = selectedRowForEdit.querySelector('.employee-cell h4');
+      const rowAvatar = selectedRowForEdit.querySelector('.employee-cell img');
+      const rowEmail = selectedRowForEdit.querySelector('.employee-cell span');
+      const rowRole = selectedRowForEdit.querySelector('td:nth-child(2)');
+      const rowPhone = selectedRowForEdit.querySelector('td:nth-child(3)');
+      const ratingValue = selectedRowForEdit.querySelector('.rating-cell span');
+      const jobsDoneValue = selectedRowForEdit.querySelector('.rating-cell small');
+
+      if (rowName) {
+        rowName.textContent = updatedEmployee['Full Name'] || updatedName;
+      }
+
+      if (rowAvatar) {
+        const avatarName = updatedEmployee['Full Name'] || updatedName;
+        rowAvatar.alt = avatarName;
+        rowAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(avatarName)}&background=eff3ff&color=1e3a8a`;
+      }
+
+      if (rowEmail) {
+        rowEmail.textContent = updatedEmployee.Email || updatedEmail;
+      }
+
+      if (rowRole) {
+        rowRole.textContent = updatedEmployee.Role || updatedRole || 'Not Assigned';
+      }
+
+      if (rowPhone) {
+        rowPhone.textContent = formatPhone(updatedEmployee.phone ?? updatedPhone);
+      }
+
+      if (ratingValue) {
+        ratingValue.textContent = Number.isFinite(Number(updatedEmployee.performance))
+          ? Number(updatedEmployee.performance).toFixed(1)
+          : '0.0';
+      }
+
+      if (jobsDoneValue) {
+        jobsDoneValue.textContent = `(${Number.isFinite(Number(updatedEmployee.jobs_done)) ? Number(updatedEmployee.jobs_done) : 0} jobs)`;
+      }
+
+      selectedRowForEdit.dataset.employeeId = updatedEmployee.Email || updatedEmail;
+      selectedRowForEdit.dataset.employeeEmail = updatedEmployee.Email || updatedEmail;
+
+      updateEmployeeRowStatus(selectedRowForEdit, normalizeStatus(updatedEmployee.status));
+      applyFilters();
+
+      closeEditModal();
+    } catch (error) {
+      console.error(error);
+      window.alert('Failed to save employee changes.');
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
     }
-
-    if (rowRole && updatedRole) {
-      rowRole.textContent = updatedRole;
-    }
-
-    if (rowPhone && updatedPhone) {
-      rowPhone.textContent = updatedPhone;
-    }
-
-    updateEmployeeRowStatus(selectedRowForEdit, updatedStatus);
-    applyFilters();
-
-    closeEditModal();
   });
 }
 
 if (editEmployeeModal) {
-  editEmployeeModal.addEventListener("click", (event) => {
+  editEmployeeModal.addEventListener('click', (event) => {
     if (event.target === editEmployeeModal) {
       closeEditModal();
     }
@@ -434,11 +736,11 @@ if (editEmployeeModal) {
 }
 
 if (locationModalCloseBtn) {
-  locationModalCloseBtn.addEventListener("click", closeLocationModal);
+  locationModalCloseBtn.addEventListener('click', closeLocationModal);
 }
 
 if (locationModal) {
-  locationModal.addEventListener("click", (event) => {
+  locationModal.addEventListener('click', (event) => {
     if (event.target === locationModal) {
       closeLocationModal();
     }
@@ -446,19 +748,19 @@ if (locationModal) {
 }
 
 if (addEmployeeBtn) {
-  addEmployeeBtn.addEventListener("click", openAddModal);
+  addEmployeeBtn.addEventListener('click', openAddModal);
 }
 
 if (addModalCloseBtn) {
-  addModalCloseBtn.addEventListener("click", closeAddModal);
+  addModalCloseBtn.addEventListener('click', closeAddModal);
 }
 
 if (addCancelBtn) {
-  addCancelBtn.addEventListener("click", closeAddModal);
+  addCancelBtn.addEventListener('click', closeAddModal);
 }
 
 if (addEmployeeModal) {
-  addEmployeeModal.addEventListener("click", (event) => {
+  addEmployeeModal.addEventListener('click', (event) => {
     if (event.target === addEmployeeModal) {
       closeAddModal();
     }
@@ -466,87 +768,77 @@ if (addEmployeeModal) {
 }
 
 if (addEmployeeForm) {
-  addEmployeeForm.addEventListener("submit", (event) => {
+  addEmployeeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const fullName = addFullNameInput?.value.trim() ?? "";
-    const email = addEmailInput?.value.trim() ?? "";
-    const phone = addPhoneInput?.value.trim() ?? "";
-    const role = addRoleInput?.value.trim() || "Not Assigned";
+    const fullName = addFullNameInput?.value.trim() ?? '';
+    const email = addEmailInput?.value.trim() ?? '';
+    const phone = addPhoneInput?.value.trim() ?? '';
+    const role = addRoleInput?.value.trim() || 'Not Assigned';
 
     if (!employeeTableBody || !fullName || !email || !phone) {
-      closeAddModal();
       return;
     }
 
-    const row = document.createElement("tr");
-    row.dataset.status = "active";
-    row.dataset.locationAddress = "New York, NY";
-    row.dataset.locationLat = "40.7128";
-    row.dataset.locationLng = "-74.0060";
-    row.dataset.mapQuery = "40.7128,-74.0060";
-    row.innerHTML = `
-      <td>
-        <div class="employee-cell">
-          <img src="https://randomuser.me/api/portraits/lego/1.jpg" alt="${fullName}" />
-          <div>
-            <h4>${fullName}</h4>
-            <span>${email}</span>
-          </div>
-        </div>
-      </td>
-      <td>${role}</td>
-      <td>${phone}</td>
-      <td>
-        <div class="rating-cell">
-          <i data-lucide="star"></i>
-          <span>0.0</span>
-          <small>(0 jobs)</small>
-        </div>
-      </td>
-      <td><span class="status-pill active">active</span></td>
-      <td>
-        <div class="actions">
-          <button class="action-btn location" title="Track employee"><i data-lucide="map-pin"></i></button>
-          <button class="action-btn edit" title="Edit employee"><i data-lucide="pencil"></i></button>
-          <button class="action-btn assign" title="Unassign"><i data-lucide="user-round-x"></i></button>
-          <button class="action-btn danger" title="Disable"><i data-lucide="ban"></i></button>
-        </div>
-      </td>
-    `;
+    const submitButton = addEmployeeForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
 
-    employeeTableBody.prepend(row);
-    addEmployeeForm.reset();
-    closeAddModal();
-    applyFilters();
+    try {
+      const insertedEmployee = await persistEmployeeInsert({
+        'Full Name': fullName,
+        Email: email,
+        phone: Number(phone.replace(/\D/g, '')) || phone,
+        Role: role,
+        password: 'temp123',
+        performance: 0,
+        jobs_done: 0,
+        status: true,
+      });
 
-    if (typeof lucide !== "undefined") {
-      lucide.createIcons();
+      const hasOnlyPlaceholder = !getEmployeeRows().length;
+      if (hasOnlyPlaceholder) {
+        employeeTableBody.innerHTML = '';
+      }
+
+      employeeTableBody.insertAdjacentHTML('afterbegin', buildEmployeeRowMarkup(insertedEmployee));
+      addEmployeeForm.reset();
+      closeAddModal();
+      applyFilters();
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    } catch (error) {
+      console.error(error);
+      window.alert('Failed to add employee.');
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
     }
   });
 }
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    if (locationModal?.classList.contains("open")) {
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    if (locationModal?.classList.contains('open')) {
       closeLocationModal();
     }
 
-    if (editEmployeeModal?.classList.contains("open")) {
+    if (editEmployeeModal?.classList.contains('open')) {
       closeEditModal();
     }
 
-    if (addEmployeeModal?.classList.contains("open")) {
+    if (addEmployeeModal?.classList.contains('open')) {
       closeAddModal();
     }
   }
 });
 
-if (typeof lucide !== "undefined") {
+if (typeof lucide !== 'undefined') {
   lucide.createIcons();
 }
 
-getEmployeeRows().forEach((row) => {
-  const rowStatus = row.dataset.status === "inactive" ? "inactive" : "active";
-  updateEmployeeRowStatus(row, rowStatus);
-});
+fetchEmployees();
