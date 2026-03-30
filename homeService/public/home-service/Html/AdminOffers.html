@@ -1,0 +1,203 @@
+ <!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Offer Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/AdminOffers.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
+      </div>
+
+      <nav class="nav">
+        <a href="Home.html"><i data-lucide="House"></i><span>Home</span></a>
+        <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a class="active" href="AdminOffers.html"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="#"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="dot">3</span></button>
+          <div class="admin-info">
+            <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+              alt="Admin" />
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="offers">
+        <div class="section-head">
+          <div>
+            <h2>Offer Management</h2>
+            <p>Create and manage promotional offers</p>
+          </div>
+          <button class="add-btn" id="addOfferButton">
+            <i data-lucide="plus"></i>
+            <span>Add Offer</span>
+          </button>
+        </div>
+
+        <div class="offers-grid" id="offersGrid">
+          <p class="offers-status">Loading offers...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="editOfferModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editOfferTitle">
+      <div class="modal-header">
+        <h3 id="editOfferTitle">Edit Offer</h3>
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="editOfferForm">
+        <label class="form-field">
+          <span>Offer Title</span>
+          <input type="text" id="offerTitleInput" placeholder="John Smith" />
+        </label>
+
+        <div class="form-row" id="editServiceCategoryRow">
+          <label class="form-field">
+            <span>Service Name</span>
+            <select id="serviceNameInput" class="form-select">
+              <option value="">Select service</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Category Name</span>
+            <select id="categoryNameInput" class="form-select">
+              <option value="">Select category</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="form-field" id="editPackageField">
+          <span>Package Name</span>
+          <select id="packageNameInput" class="form-select package-select">
+            <option value="">Select package</option>
+          </select>
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Discount (%)</span>
+            <input type="text" id="discountInput" placeholder="+1 234-567-8901" />
+          </label>
+        </div>
+
+        <label class="form-field">
+          <span>Valid Until</span>
+          <input type="date" id="validUntilInput" />
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn ghost">Cancel</button>
+          <button type="submit" class="modal-btn primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addOfferModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="addOfferTitle">
+      <div class="modal-header">
+        <h3 id="addOfferTitle">Add New Offer</h3>
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form class="modal-form" id="addOfferForm">
+        <label class="form-field">
+          <span>Offer Title</span>
+          <input type="text" id="addOfferTitleInput" placeholder="John Smith" />
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Service Name</span>
+            <select id="addServiceNameInput" class="form-select">
+              <option value="">Select service</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Category Name</span>
+            <select id="addCategoryNameInput" class="form-select">
+              <option value="">Select category</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="form-field">
+          <span>Package Name</span>
+          <select id="addPackageNameInput" class="form-select package-select">
+            <option value="">Select package</option>
+          </select>
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>Discount (%)</span>
+            <input type="text" id="addDiscountInput" placeholder="+1 234-567-8901" />
+          </label>
+          <label class="form-field">
+            <span>Promo Code</span>
+            <input type="text" id="addPromoCodeInput" placeholder="+1 234-567-8901" />
+          </label>
+        </div>
+
+        <label class="form-field">
+          <span>Valid Until</span>
+          <input type="date" id="addValidUntilInput" />
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn ghost">Cancel</button>
+          <button type="submit" class="modal-btn primary">Add Offer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/admin.js"></script>
+  <script src="../JS/AdminOffers.js"></script>
+</body>
+
+</html>
