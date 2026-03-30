@@ -34,6 +34,16 @@ const mapServiceToFilter = (service) => {
   return 'all';
 };
 
+const isOfferActive = (offer = {}) => {
+  const statusValue = offer.status ?? offer.Status ?? true;
+
+  if (typeof statusValue === 'string') {
+    return statusValue.trim().toLowerCase() === 'true';
+  }
+
+  return statusValue !== false;
+};
+
 // Format date to readable format
 const formatDate = (dateString) => {
   try {
@@ -47,9 +57,15 @@ const formatDate = (dateString) => {
 // Create offer card HTML
 const createOfferCard = (offer) => {
   const filterCategory = mapServiceToFilter(offer.Service || '');
+  const isActive = isOfferActive(offer);
 
   return `
-    <article class="offer-card" data-category="${filterCategory}">
+    <article
+      class="offer-card"
+      data-category="${filterCategory}"
+      data-active="${isActive}"
+      ${isActive ? '' : 'hidden aria-hidden="true" style="display: none;"'}
+    >
       <div class="offer-image">
         <span class="discount-badge">Active</span>
       </div>
@@ -92,7 +108,7 @@ const loadOffers = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Offer?select=Offer%20Title,Service,Discount,"Promo Code","Valid Until",Used&order=Offer%20Title.asc`,
+      `${SUPABASE_URL}/rest/v1/Offer?select=Offer%20Title,Service,Discount,"Promo Code","Valid Until",Used,status&order=Offer%20Title.asc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -126,8 +142,14 @@ const setActiveFilter = (targetButton) => {
 const filterOffers = (category) => {
   const offerCards = document.querySelectorAll('.offer-card');
   offerCards.forEach((card) => {
+    const isActive = card.dataset.active !== 'false';
     const matches = category === 'all' || card.dataset.category === category;
-    card.classList.toggle('hidden', !matches);
+    const shouldShow = isActive && matches;
+
+    card.classList.toggle('hidden', !shouldShow);
+    card.style.display = shouldShow ? '' : 'none';
+    card.hidden = !shouldShow;
+    card.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
   });
 };
 

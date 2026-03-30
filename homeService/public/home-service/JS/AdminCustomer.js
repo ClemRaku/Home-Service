@@ -3,14 +3,6 @@ const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
 
-const FALLBACK_AVATARS = [
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=120&q=80',
-  'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=120&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80',
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80',
-];
-
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("sidebar");
 const dashboard = document.querySelector(".dashboard");
@@ -26,7 +18,6 @@ const searchInput = document.getElementById("customerSearch");
 const statusFilter = document.getElementById("statusFilter");
 const tableBody = document.getElementById("customerTableBody");
 const modal = document.getElementById("customerModal");
-const modalAvatar = document.getElementById("modalAvatar");
 const modalName = document.getElementById("modalName");
 const modalStatus = document.getElementById("modalStatus");
 const modalEmail = document.getElementById("modalEmail");
@@ -119,12 +110,6 @@ const normalizeStatus = (statusValue) => {
 const formatCurrency = (value) => {
   const amount = Number(value);
   return Number.isFinite(amount) ? `$${amount}` : '$0';
-};
-
-const getAvatarForCustomer = (customer, index) => {
-  const name = customer['Full Name'] || 'Customer';
-  return FALLBACK_AVATARS[index % FALLBACK_AVATARS.length]
-    || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e0f2fe&color=0f172a`;
 };
 
 const renderEmptyState = (message) => {
@@ -244,13 +229,11 @@ const buildCustomerRowMarkup = (customer, index) => {
   const totalSpent = formatCurrency(customer.wallet);
   const joinedAt = customer.joined_at || 'Unknown';
   const status = normalizeStatus(customer.status);
-  const avatar = getAvatarForCustomer(customer, index);
 
   return `
     <tr data-customer-row="true" data-status="${status}" data-customer-email="${escapeHtml(email)}">
       <td>
         <div class="customer-cell">
-          <img src="${avatar}" alt="${escapeHtml(fullName)}" />
           <div>
             <h4>${escapeHtml(fullName)}</h4>
             <span>Joined ${escapeHtml(joinedAt)}</span>
@@ -346,17 +329,12 @@ const openModal = (row) => {
 
   const name = row.querySelector(".customer-cell h4")?.textContent ?? "Customer";
   const joined = row.querySelector(".customer-cell span")?.textContent ?? "";
-  const avatar = row.querySelector(".customer-cell img")?.getAttribute("src") ?? "";
   const email = row.querySelector(".contact-cell span")?.textContent ?? "";
   const phone = row.querySelector(".contact-cell small")?.textContent ?? "";
   const address = row.querySelector("td:nth-child(3)")?.textContent ?? "";
   const bookings = row.querySelector(".activity-cell span")?.textContent ?? "";
   const total = row.querySelector(".activity-cell strong")?.textContent ?? "";
   const status = row.dataset.status ?? "active";
-
-  if (modalAvatar && avatar) {
-    modalAvatar.src = avatar;
-  }
 
   if (modalName) {
     modalName.textContent = name;
@@ -618,7 +596,6 @@ if (editForm) {
 
       const rowName = selectedRowForEdit.querySelector(".customer-cell h4");
       const rowJoined = selectedRowForEdit.querySelector(".customer-cell span");
-      const rowAvatar = selectedRowForEdit.querySelector(".customer-cell img");
       const rowEmail = selectedRowForEdit.querySelector(".contact-cell span");
       const rowPhone = selectedRowForEdit.querySelector(".contact-cell small");
       const rowAddress = selectedRowForEdit.querySelector("td:nth-child(3)");
@@ -629,10 +606,6 @@ if (editForm) {
 
       if (rowJoined) {
         rowJoined.textContent = `Joined ${updatedCustomer.joined_at || selectedRowForEdit.querySelector('.customer-cell span')?.textContent?.replace('Joined ', '') || 'Unknown'}`;
-      }
-
-      if (rowAvatar) {
-        rowAvatar.alt = updatedCustomer['Full Name'] || updatedName;
       }
 
       if (rowEmail) {

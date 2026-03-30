@@ -65,6 +65,16 @@ const titleCase = (value = '') =>
 
 const formatCategory = (value = '') => titleCase(normalizeCategory(value));
 
+const isServiceActive = (service = {}) => {
+  const activeValue = service.active ?? service.Active ?? true;
+
+  if (typeof activeValue === 'string') {
+    return activeValue.trim().toLowerCase() === 'true';
+  }
+
+  return activeValue !== false;
+};
+
 const inferServiceType = (title, category) => {
   const titleText = normalizeText(title);
   const categoryText = normalizeCategory(category);
@@ -168,9 +178,15 @@ const renderCards = (services) => {
       const price = Number(service.Price);
       const duration = Number(service.Duration);
       const point = Number(service.Point);
+      const isActive = isServiceActive(service);
 
       return `
-        <article class="card" data-service-type="${inferServiceType(service['Service Name'], category)}">
+        <article
+          class="card"
+          data-service-type="${inferServiceType(service['Service Name'], category)}"
+          data-active="${isActive}"
+          ${isActive ? '' : 'hidden aria-hidden="true" style="display: none;"'}
+        >
           <div class="icon-chip"><i data-lucide="${icon}"></i></div>
           <h3>${service['Service Name']}</h3>
           <p>${category}</p>
@@ -214,6 +230,7 @@ const applyFilters = () => {
   const selectedPoints = normalizeText(selects[3]?.value || 'all points');
 
   serviceGrid.querySelectorAll('.card').forEach((card) => {
+    const isActive = card.dataset.active !== 'false';
     const title = card.querySelector('h3')?.textContent || '';
     const category = card.querySelector('p')?.textContent || '';
     const pointsText = card.querySelector('.point-info .stars')?.textContent || '';
@@ -229,7 +246,11 @@ const applyFilters = () => {
     const pricePass = matchesPrice(cardPriceRange, selectedPrice);
     const pointsPass = matchesPoints(cardPoints, selectedPoints);
 
-    card.style.display = typePass && categoryPass && pricePass && pointsPass ? '' : 'none';
+    const shouldShow = isActive && typePass && categoryPass && pricePass && pointsPass;
+
+    card.style.display = shouldShow ? '' : 'none';
+    card.hidden = !shouldShow;
+    card.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
   });
 };
 
@@ -242,7 +263,7 @@ const loadServices = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Service?select=Service%20Name,Category,Price,Duration,Point&order=Service%20Name.asc`,
+      `${SUPABASE_URL}/rest/v1/Service?select=Service%20Name,Category,Price,Duration,Point,active&order=Service%20Name.asc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
