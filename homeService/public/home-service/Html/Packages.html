@@ -41,11 +41,16 @@
   </header>
 
   <main>
-    <section class="package-section">
-      <div class="section-heading">
-        <h2>Home Care Packages</h2>
-        <p>Subscribe to our monthly packages and enjoy hassle-free home maintenance.</p>
-      </div>
+    <div id="packagesRoot">
+      <section class="package-section">
+        <div class="section-heading">
+          <h2>Loading Packages...</h2>
+          <p>Please wait while we fetch our latest package plans.</p>
+        </div>
+      </section>
+    </div>
+    <!-- Static package cards replaced by dynamic Supabase rendering -->
+    <!--
       <div class="package-grid">
         <article class="package-card package-card--teal">
           <div class="package-header">
@@ -69,7 +74,6 @@
           </div>
         </article>
         <article class="package-card package-card--teal package-card--featured">
-          <span class="feature-badge">Most Popular</span>
           <div class="package-header">
             <h3>Premium Home Care</h3>
             <p class="package-subtitle">Comprehensive home services for medium to large homes</p>
@@ -119,7 +123,9 @@
         </article>
       </div>
     </section>
+    -->
 
+    <!--
     <section class="package-section">
       <div class="section-heading">
         <h2>Helping Hand Packages</h2>
@@ -156,7 +162,6 @@
           </div>
         </article>
         <article class="package-card package-card--orange package-card--featured">
-          <span class="feature-badge">Most Popular</span>
           <div class="package-header">
             <h3>Premium Helping Hand</h3>
             <p class="package-subtitle">Full-time helping hand for comprehensive home support</p>
@@ -221,6 +226,7 @@
         </article>
       </div>
     </section>
+    -->
 
     <section class="custom-section">
       <div class="section-heading">
@@ -322,7 +328,7 @@
       }
     });
   </script>
-  <script src="../JS/service.js"></script>
+  <script src="../JS/packages.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     lucide.createIcons();
