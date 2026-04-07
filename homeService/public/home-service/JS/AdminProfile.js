@@ -197,18 +197,47 @@ const showToast = (message) => {
   profileToast.dataset.timer = timer;
 };
 
-saveModalChanges?.addEventListener("click", () => {
-  applyProfileToUi({
-    name: modalName?.value.trim() || savedProfile.name,
-    email: modalEmail?.value.trim() || savedProfile.email,
-    phone: modalPhone?.value.trim() || savedProfile.phone,
-    role: savedProfile.role,
-    status: displayStatus?.textContent,
-    joined: displayJoined?.textContent.replace(/^Joined\s+/, ""),
-  });
-  showToast("Profile changes saved.");
-  editProfileModal?.classList.remove("active");
-  editProfileModal?.setAttribute("aria-hidden", "true");
+saveModalChanges?.addEventListener("click", async () => {
+  const updatedName = modalName?.value.trim() || savedProfile.name;
+  const updatedEmail = modalEmail?.value.trim() || savedProfile.email;
+  const updatedPhone = modalPhone?.value.trim() || savedProfile.phone;
+
+  if (saveModalChanges) {
+    saveModalChanges.disabled = true;
+  }
+
+  try {
+    const updatedAdmin = await persistAdminUpdate({
+      full_name: updatedName,
+      email: updatedEmail,
+      phone_number: updatedPhone,
+    });
+
+    // Update sessionStorage with the new email so page refresh can find the profile
+    if (updatedAdmin.email) {
+      sessionStorage.setItem('adminEmail', updatedAdmin.email);
+    }
+
+    applyProfileToUi({
+      name: String(updatedAdmin.full_name || updatedName).trim(),
+      email: String(updatedAdmin.email || updatedEmail).trim(),
+      phone: String(updatedAdmin.phone_number || updatedPhone).trim(),
+      role: savedProfile.role,
+      status: displayStatus?.textContent,
+      joined: displayJoined?.textContent.replace(/^Joined\s+/, ""),
+    });
+
+    showToast("Profile changes saved.");
+    editProfileModal?.classList.remove("active");
+    editProfileModal?.setAttribute("aria-hidden", "true");
+  } catch (error) {
+    console.error(error);
+    showToast("Failed to update admin profile.");
+  } finally {
+    if (saveModalChanges) {
+      saveModalChanges.disabled = false;
+    }
+  }
 });
 
 const clearPasswordFields = () => {
@@ -239,6 +268,11 @@ saveProfileChanges?.addEventListener("click", async () => {
       phone_number: updatedPhone,
       role: updatedRole,
     });
+
+    // Update sessionStorage with the new email so page refresh can find the profile
+    if (updatedAdmin.email) {
+      sessionStorage.setItem('adminEmail', updatedAdmin.email);
+    }
 
     applyProfileToUi({
       name: String(updatedAdmin.full_name || updatedName).trim(),
