@@ -59,7 +59,7 @@ const normalizeStatusLabel = (value) => {
   return statusText === "inactive" || statusText === "false" ? "Inactive" : "Active";
 };
 
-const ADMIN_ROLE_FILTER = 'Role=ilike.admin';
+const ADMIN_ROLE_FILTER = 'Role=ilike.%admin%';
 
 const supabaseRequest = async (path, options = {}) => {
   const response = await fetch(`${SUPABASE_URL}${path}`, {
@@ -106,7 +106,7 @@ const applyProfileToUi = ({ name, email, phone, role, status, joined }) => {
 };
 
 const getAdminEmployee = async () => {
-  const adminRows = await supabaseRequest(`/rest/v1/Employee?${ADMIN_ROLE_FILTER}&select=*&limit=1`, {
+  const adminRows = await supabaseRequest(`/rest/v1/Employee?select=*&${ADMIN_ROLE_FILTER}&limit=1`, {
     method: 'GET',
   });
 

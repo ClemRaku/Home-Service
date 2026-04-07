@@ -1,6 +1,4 @@
- const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+// SUPABASE_URL, SUPABASE_ANON_KEY, and supabaseRequest are defined in admin.js
 
 const offersGrid = document.getElementById('offersGrid');
 const editOfferModal = document.getElementById('editOfferModal');
@@ -165,25 +163,6 @@ const attachModalHandlers = (modal, closeHandler) => {
   });
 };
 
-const supabaseRequest = async (path, options = {}) => {
-  const response = await fetch(`${SUPABASE_URL}${path}`, {
-    ...options,
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation',
-      ...(options.headers || {}),
-    },
-  });
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || `Supabase request failed with status ${response.status}`);
-  }
-  if (response.status === 204) return null;
-  return response.json();
-};
-
 const buildOfferFilter = (card) => {
   const promoCode = card?.dataset.offerCode || '';
   const createdAt = card?.dataset.createdAt || '';
@@ -278,7 +257,7 @@ const loadOffers = async () => {
   if (!offersGrid) return;
   offersGrid.innerHTML = '<p class="offers-status">Loading offers...</p>';
   try {
-    const offers = await supabaseRequest('/rest/v1/Offer?select=Offer%20Title,Service,Discount,"Promo%20Code","Valid%20Until",Used,Package,status,created_at&order=created_at.desc', { method: 'GET' });
+  const offers = await supabaseRequest('/rest/v1/Offer?select=*&order=created_at.desc', { method: 'GET' });
     renderOffers(Array.isArray(offers) ? offers : []);
   } catch (error) {
     console.error('Error loading offers:', error);
