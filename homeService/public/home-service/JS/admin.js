@@ -7,23 +7,53 @@ if (typeof window.SUPABASE_URL === 'undefined') {
 const revenueChart = document.getElementById("revenueChart");
 const bookingChart = document.getElementById("bookingChart");
 
-const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTH_ORDER = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-/**
- * Converts a month number (1-12) to its abbreviated label (Jan-Dec)
- */
-const getMonthLabel = (monthNumber) => {
-  if (typeof monthNumber !== 'number' || monthNumber < 1 || monthNumber > 12) {
-    return 'Unknown';
-  }
-  return MONTH_LABELS[monthNumber - 1];
+const normalizeMonthLabel = (value) => {
+  const rawMonth = String(value || "").trim();
+  if (!rawMonth) return "";
+
+  const shortMonthMap = {
+    january: "Jan",
+    jan: "Jan",
+    february: "Feb",
+    feb: "Feb",
+    march: "Mar",
+    mar: "Mar",
+    april: "Apr",
+    apr: "Apr",
+    may: "May",
+    june: "Jun",
+    jun: "Jun",
+    july: "Jul",
+    jul: "Jul",
+    august: "Aug",
+    aug: "Aug",
+    september: "Sep",
+    sep: "Sep",
+    sept: "Sep",
+    october: "Oct",
+    oct: "Oct",
+    november: "Nov",
+    nov: "Nov",
+    december: "Dec",
+    dec: "Dec",
+  };
+
+  return shortMonthMap[rawMonth.toLowerCase()] || rawMonth;
 };
 
-/**
- * Creates a sortable year-month key for ordering data chronologically
- */
-const getYearMonthSortKey = (year, month) => {
-  return `${year}-${String(month).padStart(2, '0')}`;
+const parseTakaValue = (value) => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const sanitizedValue = String(value || "")
+    .replace(/[^\d.-]/g, "")
+    .trim();
+
+  const parsedValue = Number(sanitizedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : 0;
 };
 
 if (typeof window.supabaseRequest === 'undefined') {
@@ -52,108 +82,68 @@ if (typeof window.supabaseRequest === 'undefined') {
   };
 }
 
-/**
- * Fetches monthly revenue data from the new monthly_revenue table.
- * Returns data for the last 12 months, ready for chart rendering.
- */
-const ADMIN_getMonthlyRevenueData = async (limitMonths = 12) => {
-  // Fetch all revenue data from the new table
-  const rows = await window.supabaseRequest(
-    `/rest/v1/monthly_revenue?select=year,month,revenue&order=year.desc,month.desc&limit=${limitMonths}`,
-    { method: 'GET' }
-  );
+const ADMIN_getMonthlyRevenueData = async () => {
+  const rows = await window.supabaseRequest('/rest/v1/Monthly%20Revenue?select=Month,Taka', {
+    method: 'GET',
+  });
 
   if (!Array.isArray(rows) || !rows.length) {
     return null;
   }
 
-  // Sort chronologically (oldest first for chart display)
-  const sortedRows = [...rows].sort((a, b) => {
-    const aKey = getYearMonthSortKey(a.year, a.month);
-    const bKey = getYearMonthSortKey(b.year, b.month);
-    return aKey.localeCompare(bKey);
+  const sortedRows = [...rows].sort((firstRow, secondRow) => {
+    const firstMonth = normalizeMonthLabel(firstRow?.Month);
+    const secondMonth = normalizeMonthLabel(secondRow?.Month);
+    return MONTH_ORDER.indexOf(firstMonth) - MONTH_ORDER.indexOf(secondMonth);
   });
 
   return {
-    // Labels: "Month Year" format (e.g., "Jan 2026")
-    labels: sortedRows.map((row) => `${getMonthLabel(row.month)} ${row.year}`),
-    values: sortedRows.map((row) => Number(row.revenue) || 0),
+    labels: sortedRows.map((row) => normalizeMonthLabel(row?.Month)),
+    values: sortedRows.map((row) => parseTakaValue(row?.Taka)),
   };
 };
 
-let revenueChartInstance = null;
-let isBuildingChart = false;
-
-/**
- * Builds or updates the revenue chart with dynamic data from Supabase.
- * Can be called multiple times to refresh chart data.
- */
 const buildRevenueChart = async () => {
-  if (!revenueChart || isBuildingChart) {
+  if (!revenueChart) {
     return;
   }
 
-  isBuildingChart = true;
-
   try {
-    const revenueData = await ADMIN_getMonthlyRevenueData(12);
+    const revenueData = await ADMIN_getMonthlyRevenueData();
 
     if (!revenueData) {
       const chartCard = revenueChart.closest('.chart-card');
       if (chartCard && !chartCard.querySelector('.chart-empty-state')) {
         const emptyState = document.createElement('p');
         emptyState.className = 'chart-empty-state';
-        emptyState.textContent = 'No Monthly Revenue data available.';
+        emptyState.textContent = 'No Monthly Revenue rows are being returned from Supabase.';
         revenueChart.insertAdjacentElement('afterend', emptyState);
       }
-      console.warn('Monthly Revenue query returned no rows.');
-      isBuildingChart = false;
+      console.warn('Monthly Revenue query returned no rows. Check Supabase table data or RLS policies.');
       return;
     }
 
     const { labels, values } = revenueData;
 
-    const chartConfig = {
+    new Chart(revenueChart, {
       type: "line",
       data: {
         labels,
         datasets: [
           {
-            label: "Revenue (Taka)",
             data: values,
             borderColor: "#0d9488",
             backgroundColor: "rgba(13, 148, 136, 0.15)",
             tension: 0.4,
             fill: true,
             pointRadius: 4,
-            pointHoverRadius: 6,
             pointBackgroundColor: "#0d9488",
-            pointBorderColor: "#fff",
-            pointBorderWidth: 2,
           },
         ],
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-          duration: 750
-        },
         plugins: {
           legend: { display: false },
-          tooltip: {
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            titleColor: "#fff",
-            bodyColor: "#fff",
-            padding: 12,
-            cornerRadius: 8,
-            callbacks: {
-              label: (context) => {
-                const value = context.parsed.y || 0;
-                return `${value.toLocaleString()} Taka`;
-              },
-            },
-          },
         },
         scales: {
           x: {
@@ -161,262 +151,51 @@ const buildRevenueChart = async () => {
           },
           y: {
             grid: { color: "#eef2f7" },
-            beginAtZero: true,
-            ticks: {
-              callback: (value) => `${value.toLocaleString()}`,
-            },
           },
         },
       },
-    };
-
-    // Update existing chart or create new one
-    if (revenueChartInstance) {
-      revenueChartInstance.data.labels = labels;
-      revenueChartInstance.data.datasets[0].data = values;
-      revenueChartInstance.update();
-    } else {
-      revenueChartInstance = new Chart(revenueChart, chartConfig);
-    }
+    });
   } catch (error) {
     console.error('Unable to load monthly revenue chart data:', error);
-  } finally {
-    isBuildingChart = false;
   }
 };
 
-/**
- * Refreshes the revenue chart by fetching fresh data from Supabase.
- * Call this function after adding/updating revenue data.
- * Available globally as window.refreshRevenueChart()
- */
-const refreshRevenueChart = async () => {
-  await buildRevenueChart();
-};
-
-// Make refresh function available globally for external calls
-if (typeof window !== 'undefined') {
-  window.refreshRevenueChart = refreshRevenueChart;
-}
-
-let bookingChartInstance = null;
-let isBuildingBookingChart = false;
-
-/**
- * Fetches monthly booking data from the monthly_booking table.
- * Returns data for the last 12 months, ready for chart rendering.
- */
-const ADMIN_getMonthlyBookingData = async (limitMonths = 12) => {
-  const rows = await window.supabaseRequest(
-    `/rest/v1/monthly_booking?select=year,month,bookings&order=year.desc,month.desc&limit=${limitMonths}`,
-    { method: 'GET' }
-  );
-
-  if (!Array.isArray(rows) || !rows.length) {
-    return null;
-  }
-
-  // Sort chronologically (oldest first for chart display)
-  const sortedRows = [...rows].sort((a, b) => {
-    const aKey = getYearMonthSortKey(a.year, a.month);
-    const bKey = getYearMonthSortKey(b.year, b.month);
-    return aKey.localeCompare(bKey);
-  });
-
-  return {
-    labels: sortedRows.map((row) => `${getMonthLabel(row.month)} ${row.year}`),
-    values: sortedRows.map((row) => Number(row.bookings) || 0),
-  };
-};
-
-/**
- * Builds or updates the booking chart with dynamic data from Supabase.
- */
-const buildBookingChart = async () => {
-  if (!bookingChart || isBuildingBookingChart) {
+const buildBookingChart = () => {
+  if (!bookingChart) {
     return;
   }
 
-  isBuildingBookingChart = true;
-
-  try {
-    const bookingData = await ADMIN_getMonthlyBookingData(12);
-
-    if (!bookingData) {
-      const chartCard = bookingChart.closest('.chart-card');
-      if (chartCard && !chartCard.querySelector('.chart-empty-state')) {
-        const emptyState = document.createElement('p');
-        emptyState.className = 'chart-empty-state';
-        emptyState.textContent = 'No Monthly Booking data available. Run the SQL migration to populate the table.';
-        bookingChart.insertAdjacentElement('afterend', emptyState);
-      }
-      console.warn('Monthly Booking query returned no rows. Please run the SQL migration in sql/monthly_booking.sql');
-      isBuildingBookingChart = false;
-      return;
-    }
-
-    const { labels, values } = bookingData;
-
-    const chartConfig = {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Bookings",
-            data: values,
-            backgroundColor: "#3b82f6",
-            borderRadius: 10,
-            maxBarThickness: 26,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 750 },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            titleColor: "#fff",
-            bodyColor: "#fff",
-            padding: 12,
-            cornerRadius: 8,
-            callbacks: {
-              label: (context) => `${context.parsed.y} bookings`,
-            },
-          },
+  new Chart(bookingChart, {
+    type: "bar",
+    data: {
+      labels: MONTH_ORDER,
+      datasets: [
+        {
+          data: [90, 102, 118, 97, 126, 142, 136, 150, 138, 160, 148, 170],
+          backgroundColor: "#3b82f6",
+          borderRadius: 10,
+          maxBarThickness: 26,
         },
-        scales: {
-          x: { grid: { display: false } },
-          y: {
-            grid: { color: "#eef2f7" },
-            beginAtZero: true,
-          },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+        },
+        y: {
+          grid: { color: "#eef2f7" },
         },
       },
-    };
-
-    // Update existing chart or create new one
-    if (bookingChartInstance) {
-      bookingChartInstance.data.labels = labels;
-      bookingChartInstance.data.datasets[0].data = values;
-      bookingChartInstance.update();
-    } else {
-      bookingChartInstance = new Chart(bookingChart, chartConfig);
-    }
-  } catch (error) {
-    console.error('Unable to load monthly booking chart data:', error);
-  } finally {
-    isBuildingBookingChart = false;
-  }
+    },
+  });
 };
-
-/**
- * Refreshes the booking chart by fetching fresh data from Supabase.
- */
-const refreshBookingChart = async () => {
-  await buildBookingChart();
-};
-
-// Make refresh function available globally
-if (typeof window !== 'undefined') {
-  window.refreshBookingChart = refreshBookingChart;
-}
-
-/**
- * Fetches top performing services from the service_performance table.
- */
-const ADMIN_getTopServices = async (limit = 5) => {
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1; // JS months are 0-indexed
-  const currentYear = now.getFullYear();
-
-  const rows = await window.supabaseRequest(
-    `/rest/v1/service_performance?select=service_name,bookings,revenue&month=eq.${currentMonth}&year=eq.${currentYear}&order=bookings.desc&limit=${limit}`,
-    { method: 'GET' }
-  );
-
-  if (!Array.isArray(rows) || !rows.length) {
-    return null;
-  }
-
-  // Find max bookings for progress bar calculation
-  const maxBookings = Math.max(...rows.map((r) => Number(r.bookings) || 0));
-
-  return rows.map((row, index) => ({
-    rank: index + 1,
-    name: row.service_name,
-    bookings: Number(row.bookings) || 0,
-    revenue: Number(row.revenue) || 0,
-    progressPct: maxBookings > 0 ? Math.round(((Number(row.bookings) || 0) / maxBookings) * 100) : 0,
-  }));
-};
-
-/**
- * Renders the top performing services section dynamically.
- */
-const buildTopServices = async () => {
-  const servicesCard = document.querySelector('.services-card');
-  if (!servicesCard) return;
-
-  try {
-    const services = await ADMIN_getTopServices(5);
-
-    if (!services || !services.length) {
-      console.warn('No service performance data found. Run sql/service_performance.sql');
-      return;
-    }
-
-    // Find the existing rows container (skip chart-head)
-    const existingRows = servicesCard.querySelectorAll('.service-row');
-    existingRows.forEach((row) => row.remove());
-
-    // Build new rows
-    const fragment = document.createDocumentFragment();
-
-    services.forEach((svc) => {
-      const row = document.createElement('div');
-      row.className = 'service-row';
-
-      const revenueFormatted = svc.revenue.toLocaleString();
-      const bookingsFormatted = svc.bookings.toLocaleString();
-
-      row.innerHTML = `
-        <div class="service-info">
-          <span class="badge">#${svc.rank}</span>
-          <div>
-            <h5>${svc.name}</h5>
-            <p>${bookingsFormatted} bookings <strong>$${revenueFormatted}</strong></p>
-          </div>
-        </div>
-        <div class="progress"><span style="width: ${svc.progressPct}%"></span></div>
-      `;
-
-      fragment.appendChild(row);
-    });
-
-    servicesCard.appendChild(fragment);
-  } catch (error) {
-    console.error('Unable to load top performing services:', error);
-  }
-};
-
-/**
- * Refreshes the services section by fetching fresh data.
- */
-const refreshTopServices = async () => {
-  await buildTopServices();
-};
-
-if (typeof window !== 'undefined') {
-  window.refreshTopServices = refreshTopServices;
-}
 
 buildRevenueChart();
 buildBookingChart();
-buildTopServices();
 
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("sidebar");
