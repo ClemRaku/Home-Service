@@ -59,8 +59,6 @@ const normalizeStatusLabel = (value) => {
   return statusText === "inactive" || statusText === "false" ? "Inactive" : "Active";
 };
 
-const ADMIN_ROLE_FILTER = 'Role=ilike.%admin%';
-
 const supabaseRequest = async (path, options = {}) => {
   const response = await fetch(`${SUPABASE_URL}${path}`, {
     ...options,
@@ -105,13 +103,18 @@ const applyProfileToUi = ({ name, email, phone, role, status, joined }) => {
   if (displayJoined) displayJoined.textContent = formatJoinedDate(joined);
 };
 
-const getAdminEmployee = async () => {
-  const adminRows = await supabaseRequest(`/rest/v1/Employee?select=*&${ADMIN_ROLE_FILTER}&limit=1`, {
+const getAdminProfile = async () => {
+  const storedEmail = sessionStorage.getItem('adminEmail');
+  if (!storedEmail) {
+    throw new Error('No admin session found. Please log in again.');
+  }
+
+  const adminRows = await supabaseRequest(`/rest/v1/admin_profiles?select=*&email=eq.${encodeURIComponent(storedEmail)}&limit=1`, {
     method: 'GET',
   });
 
   if (!Array.isArray(adminRows) || !adminRows.length) {
-    throw new Error('Admin employee record not found.');
+    throw new Error('Admin profile not found.');
   }
 
   return adminRows[0];
@@ -119,34 +122,34 @@ const getAdminEmployee = async () => {
 
 const persistAdminUpdate = async (payload) => {
   const filter = adminIdentifierEmail
-    ? `Email=eq.${encodeURIComponent(adminIdentifierEmail)}`
-    : ADMIN_ROLE_FILTER;
+    ? `email=eq.${encodeURIComponent(adminIdentifierEmail)}`
+    : `email=eq.${encodeURIComponent(sessionStorage.getItem('adminEmail') || '')}`;
 
-  const updatedRows = await supabaseRequest(`/rest/v1/Employee?${filter}`, {
+  const updatedRows = await supabaseRequest(`/rest/v1/admin_profiles?${filter}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
 
   if (!updatedRows?.length) {
-    throw new Error('Admin employee record was not updated.');
+    throw new Error('Admin profile was not updated.');
   }
 
   const updatedAdmin = updatedRows[0];
-  adminIdentifierEmail = String(updatedAdmin.Email || payload.Email || adminIdentifierEmail).trim();
+  adminIdentifierEmail = String(updatedAdmin.email || payload.email || adminIdentifierEmail).trim();
   return updatedAdmin;
 };
 
 const loadAdminProfile = async () => {
   try {
-    const adminEmployee = await getAdminEmployee();
-    adminIdentifierEmail = String(adminEmployee.Email || '').trim();
+    const adminProfile = await getAdminProfile();
+    adminIdentifierEmail = String(adminProfile.email || '').trim();
     applyProfileToUi({
-      name: String(adminEmployee['Full Name'] || 'Admin User').trim(),
-      email: String(adminEmployee.Email || '').trim(),
-      phone: String(adminEmployee.phone || '').trim(),
-      role: String(adminEmployee.Role || 'admin').trim(),
-      status: adminEmployee.status,
-      joined: adminEmployee.created_at || adminEmployee.joined_at || adminEmployee['Joined Date'],
+      name: String(adminProfile.full_name || 'Admin User').trim(),
+      email: String(adminProfile.email || '').trim(),
+      phone: String(adminProfile.phone_number || '').trim(),
+      role: String(adminProfile.role || 'Admin').trim(),
+      status: adminProfile.status,
+      joined: adminProfile.created_at || adminProfile.joined_at,
     });
   } catch (error) {
     console.error(error);
@@ -231,19 +234,19 @@ saveProfileChanges?.addEventListener("click", async () => {
 
   try {
     const updatedAdmin = await persistAdminUpdate({
-      "Full Name": updatedName,
-      Email: updatedEmail,
-      phone: Number(updatedPhone.replace(/\D/g, "")) || updatedPhone,
-      Role: updatedRole,
+      full_name: updatedName,
+      email: updatedEmail,
+      phone_number: updatedPhone,
+      role: updatedRole,
     });
 
     applyProfileToUi({
-      name: String(updatedAdmin["Full Name"] || updatedName).trim(),
-      email: String(updatedAdmin.Email || updatedEmail).trim(),
-      phone: String(updatedAdmin.phone || updatedPhone).trim(),
-      role: String(updatedAdmin.Role || updatedRole).trim(),
+      name: String(updatedAdmin.full_name || updatedName).trim(),
+      email: String(updatedAdmin.email || updatedEmail).trim(),
+      phone: String(updatedAdmin.phone_number || updatedPhone).trim(),
+      role: String(updatedAdmin.role || updatedRole).trim(),
       status: updatedAdmin.status,
-      joined: updatedAdmin.created_at || updatedAdmin.joined_at || updatedAdmin["Joined Date"],
+      joined: updatedAdmin.created_at || updatedAdmin.joined_at,
     });
 
     showToast("Profile updated successfully.");
@@ -277,8 +280,8 @@ updatePassword?.addEventListener("click", async () => {
   }
 
   try {
-    const adminEmployee = await getAdminEmployee();
-    const existingPassword = String(adminEmployee.Password || adminEmployee.password || '').trim();
+    const adminProfile = await getAdminProfile();
+    const existingPassword = String(adminProfile.password || '').trim();
 
     if (existingPassword !== currentPasswordValue) {
       showToast("Current password is incorrect.");

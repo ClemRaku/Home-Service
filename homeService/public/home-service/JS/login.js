@@ -36,10 +36,10 @@ async function fetchTableRows(tableName) {
   return Array.isArray(data) ? data : [];
 }
 
-function findUser(rows, email, password) {
+function findAdmin(rows, email, password) {
   for (const row of rows) {
-    const rowEmail = getText(row.Email || row.email).toLowerCase();
-    const rowPassword = getText(row.Password || row.password);
+    const rowEmail = getText(row.email).toLowerCase();
+    const rowPassword = getText(row.password);
 
     if (rowEmail === email.toLowerCase() && rowPassword === password) {
       return row;
@@ -82,30 +82,14 @@ if (loginForm) {
     setLoginMessage('Checking your account...', false);
 
     try {
-      const [employeeRows, customerRows] = await Promise.all([
-        fetchTableRows('Employee'),
-        fetchTableRows('Customer'),
-      ]);
+      const adminRows = await fetchTableRows('admin_profiles');
 
-      const matchedEmployee = findUser(employeeRows, email, password);
+      const matchedAdmin = findAdmin(adminRows, email, password);
 
-      if (matchedEmployee) {
+      if (matchedAdmin) {
+        sessionStorage.setItem('adminEmail', matchedAdmin.email);
         setLoginMessage('Login successful. Redirecting...', false);
-
-        if (getText(matchedEmployee.Role || matchedEmployee.role).toLowerCase() === 'admin') {
-          window.location.href = 'Admin.html';
-          return;
-        }
-
-        window.location.href = 'Home.html';
-        return;
-      }
-
-      const matchedCustomer = findUser(customerRows, email, password);
-
-      if (matchedCustomer) {
-        setLoginMessage('Login successful. Redirecting...', false);
-        window.location.href = 'Home.html';
+        window.location.href = 'Admin.html';
         return;
       }
 

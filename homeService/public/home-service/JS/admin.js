@@ -208,6 +208,38 @@ if (menuToggle && sidebar && dashboard) {
   });
 }
 
+// Load logged-in admin info into topbar
+const loadAdminTopbarInfo = async () => {
+  const storedEmail = sessionStorage.getItem('adminEmail');
+  if (!storedEmail) return;
+
+  try {
+    const response = await fetch(`${window.SUPABASE_URL}/rest/v1/admin_profiles?select=full_name,role&email=eq.${encodeURIComponent(storedEmail)}&limit=1`, {
+      method: 'GET',
+      headers: {
+        apikey: window.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
+      },
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+    if (!Array.isArray(data) || !data.length) return;
+
+    const admin = data[0];
+    const topbarAdminName = document.querySelector('.topbar-right .admin-info h4');
+    const topbarAdminRole = document.querySelector('.topbar-right .admin-info span');
+
+    if (topbarAdminName) topbarAdminName.textContent = admin.full_name || 'Admin User';
+    if (topbarAdminRole) topbarAdminRole.textContent = admin.role || 'Admin';
+  } catch (error) {
+    console.error('Failed to load admin topbar info:', error);
+  }
+};
+
+loadAdminTopbarInfo();
+
 if (typeof lucide !== "undefined") {
   lucide.createIcons();
 }
