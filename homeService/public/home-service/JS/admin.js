@@ -1,6 +1,8 @@
-const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+if (typeof window.SUPABASE_URL === 'undefined') {
+  window.SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
+  window.SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+}
 
 const revenueChart = document.getElementById("revenueChart");
 const bookingChart = document.getElementById("bookingChart");
@@ -54,32 +56,34 @@ const parseTakaValue = (value) => {
   return Number.isFinite(parsedValue) ? parsedValue : 0;
 };
 
-const supabaseRequest = async (path, options = {}) => {
-  const response = await fetch(`${SUPABASE_URL}${path}`, {
-    ...options,
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-      ...(options.headers || {}),
-    },
-  });
+if (typeof window.supabaseRequest === 'undefined') {
+  window.supabaseRequest = async (path, options = {}) => {
+    const response = await fetch(`${window.SUPABASE_URL}${path}`, {
+      ...options,
+      headers: {
+        apikey: window.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+        ...(options.headers || {}),
+      },
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || `Supabase request failed with status ${response.status}`);
-  }
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `Supabase request failed with status ${response.status}`);
+    }
 
-  if (response.status === 204) {
-    return null;
-  }
+    if (response.status === 204) {
+      return null;
+    }
 
-  return response.json();
-};
+    return response.json();
+  };
+}
 
-const getMonthlyRevenueData = async () => {
-  const rows = await supabaseRequest('/rest/v1/Monthly%20Revenue?select=Month,Taka', {
+const ADMIN_getMonthlyRevenueData = async () => {
+  const rows = await window.supabaseRequest('/rest/v1/Monthly%20Revenue?select=Month,Taka', {
     method: 'GET',
   });
 
@@ -105,7 +109,7 @@ const buildRevenueChart = async () => {
   }
 
   try {
-    const revenueData = await getMonthlyRevenueData();
+    const revenueData = await ADMIN_getMonthlyRevenueData();
 
     if (!revenueData) {
       const chartCard = revenueChart.closest('.chart-card');
