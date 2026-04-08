@@ -1,0 +1,313 @@
+pm <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Scheduling</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/home-service/CSS/AdminScheduling.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Content from original AdminScheduling.html -->
+      <aside class="sidebar" id="sidebar">
+        <div class="logo-block">
+          <div class="logo">
+            <img src="/home-service/Image/logo.png" alt="Home Service" />
+          </div>
+          <div class="logo-text">
+            <h2>Admin Panel</h2>
+            <span>Home Service</span>
+          </div>
+          <button class="menu-btn sidebar-toggle" id="menuToggle">
+            <i data-lucide="table-of-contents"></i>
+          </button>
+        </div>
+        <nav class="nav">
+          <a href="/home-service/Html/Admin.html"
+            ><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a
+          >
+          <a href="/home-service/Html/AdminEmployees.html"
+            ><i data-lucide="users"></i><span>Employees</span></a
+          >
+          <a href="/home-service/Html/AdminCustomer.html"
+            ><i data-lucide="user"></i><span>Customers</span></a
+          >
+          <a href="/home-service/Html/AdminServices.html"
+            ><i data-lucide="wrench"></i><span>Services</span></a
+          >
+          <a href="/home-service/Html/AdminPackage.html"
+            ><i data-lucide="package"></i><span>Packages</span></a
+          >
+          <a href="/home-service/Html/AdminOffers.html"
+            ><i data-lucide="gift"></i><span>Offers</span></a
+          >
+          <a class="active" href="/home-service/Html/AdminScheduling.html"
+            ><i data-lucide="calendar"></i><span>Scheduling</span></a
+          >
+          <a href="/home-service/Html/AdminContact.html"
+            ><i data-lucide="mail"></i><span>Contact Requests</span></a
+          >
+          <a href="/home-service/Html/AdminProfile.html"
+            ><i data-lucide="user-cog"></i><span>Profile</span></a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left"><h1>Home Service Admin</h1></div>
+          <div class="topbar-right">
+            <button class="icon-btn">
+              <i data-lucide="bell"></i
+              ><span class="notification-badge">3</span>
+            </button>
+            <div class="admin-info">
+              <img
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+                alt="Admin"
+              />
+              <div>
+                <h4>Admin User</h4>
+                <span>Super Admin</span>
+              </div>
+            </div>
+          </div>
+        </header>
+        <section class="customers">
+          <div class="section-heading">
+            <h2>Service Scheduling</h2>
+            <p>Manage and track service appointments</p>
+          </div>
+          <div class="content-header">
+            <div class="filters">
+              <button class="filter-btn">All Status</button>
+              <div class="date-input">
+                <input type="text" placeholder="mm/dd/yyyy" /><i
+                  data-lucide="calendar"
+                ></i>
+              </div>
+            </div>
+            <button class="primary-btn" type="button">
+              <i data-lucide="plus"></i>
+              <span>New Schedule</span>
+            </button>
+          </div>
+          <div class="table-card">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer</th>
+                  <th>Service</th>
+                  <th>Employee</th>
+                  <th>Date &amp; Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#BK-1001</td>
+                  <td>
+                    Sarah Johnson
+                    <div class="muted">sarah.johnson@email.com</div>
+                  </td>
+                  <td>Deep Cleaning</td>
+                  <td>Michael Lee</td>
+                  <td>04/12/2026 • 10:00 AM</td>
+                  <td><span class="status scheduled">scheduled</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn view" type="button" aria-label="View booking details">
+                        <i data-lucide="eye"></i>
+                      </button>
+                      <button class="action-btn edit" type="button" aria-label="Edit booking">
+                        <i data-lucide="pencil"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#BK-1002</td>
+                  <td>
+                    Daniel Carter
+                    <div class="muted">daniel.carter@email.com</div>
+                  </td>
+                  <td>AC Maintenance</td>
+                  <td>Emily Stone</td>
+                  <td>04/12/2026 • 01:30 PM</td>
+                  <td><span class="status in-progress">in-progress</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn view" type="button" aria-label="View booking details">
+                        <i data-lucide="eye"></i>
+                      </button>
+                      <button class="action-btn edit" type="button" aria-label="Edit booking">
+                        <i data-lucide="pencil"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#BK-1003</td>
+                  <td>
+                    Olivia Brown
+                    <div class="muted">olivia.brown@email.com</div>
+                  </td>
+                  <td>Plumbing Repair</td>
+                  <td>James Walker</td>
+                  <td>04/13/2026 • 09:00 AM</td>
+                  <td><span class="status completed">completed</span></td>
+                  <td>
+                    <div class="actions">
+                      <button class="action-btn view" type="button" aria-label="View booking details">
+                        <i data-lucide="eye"></i>
+                      </button>
+                      <button class="action-btn edit" type="button" aria-label="Edit booking">
+                        <i data-lucide="pencil"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="schedule-modal" id="scheduleModal" aria-hidden="true">
+      <div class="schedule-modal__overlay" data-modal-close></div>
+      <div
+        class="schedule-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="scheduleModalTitle"
+      >
+        <div class="schedule-modal__header">
+          <h3 id="scheduleModalTitle">Edit Schedule</h3>
+          <button
+            class="schedule-modal__close"
+            type="button"
+            data-modal-close
+            aria-label="Close schedule modal"
+          >
+            ×
+          </button>
+        </div>
+        <form class="schedule-modal__form">
+          <div class="schedule-modal__group">
+            <label for="scheduleCustomer">Customer</label>
+            <input id="scheduleCustomer" type="text" value="Sarah Johnson" />
+          </div>
+          <div class="schedule-modal__grid">
+            <div class="schedule-modal__group">
+              <label for="scheduleService">Service</label>
+              <select id="scheduleService">
+                <option>Deep Cleaning</option>
+                <option>AC Maintenance</option>
+                <option>Plumbing Repair</option>
+              </select>
+            </div>
+            <div class="schedule-modal__group">
+              <label for="scheduleEmployee">Employee</label>
+              <select id="scheduleEmployee">
+                <option>Michael Lee</option>
+                <option>Emily Stone</option>
+                <option>James Walker</option>
+              </select>
+            </div>
+            <div class="schedule-modal__group">
+              <label for="scheduleDate">Date</label>
+              <input id="scheduleDate" type="date" value="2026-04-12" />
+            </div>
+            <div class="schedule-modal__group">
+              <label for="scheduleTime">Time</label>
+              <input id="scheduleTime" type="time" value="10:00" />
+            </div>
+          </div>
+          <div class="schedule-modal__actions">
+            <button class="modal-btn cancel" type="button" data-modal-close>
+              Cancel
+            </button>
+            <button class="modal-btn save" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="booking-modal" id="bookingModal" aria-hidden="true">
+      <div class="booking-modal__overlay" data-booking-close></div>
+      <div
+        class="booking-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bookingModalTitle"
+      >
+        <div class="booking-modal__header">
+          <h3 id="bookingModalTitle">Booking Details</h3>
+          <button
+            class="booking-modal__close"
+            type="button"
+            data-booking-close
+            aria-label="Close booking details"
+          >
+            ×
+          </button>
+        </div>
+        <div class="booking-modal__meta">
+          <span>Booking reference</span>
+          <strong>#BK-1001</strong>
+        </div>
+        <div class="booking-modal__body">
+          <div class="booking-modal__grid">
+            <div class="booking-modal__item">
+              <span class="booking-modal__label">Customer</span>
+              <strong>Sarah Johnson</strong>
+            </div>
+            <div class="booking-modal__item">
+              <span class="booking-modal__label">Employee</span>
+              <strong>Michael Lee</strong>
+            </div>
+            <div class="booking-modal__item">
+              <span class="booking-modal__label">Service</span>
+              <strong>Deep Cleaning</strong>
+            </div>
+            <div class="booking-modal__item">
+              <span class="booking-modal__label">Date & Time</span>
+              <strong>04/12/2026 • 10:00 AM</strong>
+            </div>
+            <div class="booking-modal__item booking-modal__item--full">
+              <span class="booking-modal__label">Address</span>
+              <strong>221B Baker Street, Downtown</strong>
+            </div>
+          </div>
+          <div class="booking-modal__status">
+            Current status:
+            <span class="booking-status scheduled" data-booking-status>scheduled</span>
+          </div>
+        </div>
+        <div class="booking-modal__actions">
+          <button class="booking-modal__btn ghost" type="button" data-booking-close>
+            Close
+          </button>
+          <button
+            class="booking-modal__btn primary"
+            type="button"
+            data-booking-action="progress"
+          >
+            <span data-booking-action-label>Mark In Progress</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/home-service/JS/AdminScheduling.js"></script>
+  </body>
+</html>
