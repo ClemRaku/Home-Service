@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Scheduling</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/CSS/AdminScheduling.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Content from original AdminScheduling.html -->
+      <aside class="sidebar" id="sidebar">
+        <div class="logo-block">
+          <div class="logo">
+            <img src="/Image/logo.png" alt="Home Service" />
+          </div>
+          <div class="logo-text">
+            <h2>Admin Panel</h2>
+            <span>Home Service</span>
+          </div>
+          <button class="menu-btn sidebar-toggle" id="menuToggle">
+            <i data-lucide="table-of-contents"></i>
+          </button>
+        </div>
+        <nav class="nav">
+          <a href="Admin.html"
+            ><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a
+          >
+          <a href="AdminEmployees.html"
+            ><i data-lucide="users"></i><span>Employees</span></a
+          >
+          <a href="AdminCustomer.html"
+            ><i data-lucide="user"></i><span>Customers</span></a
+          >
+          <a href="AdminServices.html"
+            ><i data-lucide="wrench"></i><span>Services</span></a
+          >
+          <a href="AdminPackage.html"
+            ><i data-lucide="package"></i><span>Packages</span></a
+          >
+          <a href="AdminOffers.html"
+            ><i data-lucide="gift"></i><span>Offers</span></a
+          >
+          <a class="active" href="#"
+            ><i data-lucide="calendar"></i><span>Scheduling</span></a
+          >
+          <a href="Contact.html"
+            ><i data-lucide="mail"></i><span>Contact Requests</span></a
+          >
+          <a href="AdminProfile.html"
+            ><i data-lucide="user-cog"></i><span>Profile</span></a
+          >
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left"><h1>Home Service Admin</h1></div>
+          <div class="topbar-right">
+            <button class="icon-btn">
+              <i data-lucide="bell"></i
+              ><span class="notification-badge">3</span>
+            </button>
+            <div class="admin-info">
+              <img
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+                alt="Admin"
+              />
+              <div>
+                <h4>Admin User</h4>
+                <span>Super Admin</span>
+              </div>
+            </div>
+          </div>
+        </header>
+        <section class="customers">
+          <div class="section-heading">
+            <h2>Service Scheduling</h2>
+            <p>Manage and track service appointments</p>
+          </div>
+          <div class="content-header">
+            <div class="filters">
+              <button class="filter-btn">All Status</button>
+              <div class="date-input">
+                <input type="text" placeholder="mm/dd/yyyy" /><i
+                  data-lucide="calendar"
+                ></i>
+              </div>
+            </div>
+          </div>
+          <div class="table-card">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer</th>
+                  <th>Service</th>
+                  <th>Employee</th>
+                  <th>Date &amp; Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- rows omitted for brevity -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/JS/AdminScheduling.js"></script>
+  </body>
+</html>
