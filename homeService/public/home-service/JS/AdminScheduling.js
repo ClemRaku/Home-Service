@@ -192,6 +192,16 @@ const persistScheduleUpdate = async (bookingId, payload) => {
   return updatedRows[0];
 };
 
+const persistScheduleStatusUpdate = async (bookingId, status) => {
+  const normalizedStatus = getSafeStatusClass(status);
+
+  return persistScheduleUpdate(bookingId, {
+    is_scheduled: normalizedStatus === "scheduled",
+    is_in_progress: normalizedStatus === "in-progress",
+    is_completed: normalizedStatus === "completed",
+  });
+};
+
 const renderScheduleRows = (rows) => {
   if (!scheduleTableBody) {
     return;
@@ -432,7 +442,7 @@ const setActionState = (state) => {
     return;
   }
 
-  bookingActionLabel.textContent = "Cancel";
+  bookingActionLabel.textContent = "Continue";
   bookingProgressButton.classList.remove("primary");
   bookingProgressButton.classList.add("ghost");
   bookingProgressButton.classList.remove("in-progress", "completed");
@@ -491,20 +501,67 @@ bookingCloseTriggers.forEach((trigger) => {
 });
 
 if (bookingProgressButton) {
-  bookingProgressButton.addEventListener("click", () => {
-    if (bookingActionStep === "scheduled") {
-      setBookingStatus("in-progress");
-      setActionState("in-progress");
+  bookingProgressButton.addEventListener("click", async () => {
+    if (!activeScheduleRecord?.booking_id) {
+      closeBookingModal();
       return;
     }
 
-    if (bookingActionStep === "in-progress") {
-      setBookingStatus("completed");
-      setActionState("completed");
-      return;
-    }
+    const originalLabel = bookingActionLabel?.textContent || "Continue";
 
-    closeBookingModal();
+    try {
+      bookingProgressButton.disabled = true;
+      if (bookingActionLabel) {
+        bookingActionLabel.textContent = "Updating...";
+      }
+
+      if (bookingActionStep === "scheduled") {
+        const updatedRecord = await persistScheduleStatusUpdate(
+          activeScheduleRecord.booking_id,
+          "in-progress"
+        );
+        syncScheduleRowInState(updatedRecord);
+        activeScheduleRecord = getScheduleByBookingId(updatedRecord.booking_id);
+        setBookingStatus("in-progress");
+        renderScheduleRows(scheduleRows);
+        activeBookingRow = scheduleTableBody?.querySelector(
+          `tr[data-booking-id="${CSS.escape(updatedRecord.booking_id)}"]`
+        ) || null;
+        setActionState("in-progress");
+        return;
+      }
+
+      if (bookingActionStep === "in-progress") {
+        const updatedRecord = await persistScheduleStatusUpdate(
+          activeScheduleRecord.booking_id,
+          "completed"
+        );
+        syncScheduleRowInState(updatedRecord);
+        activeScheduleRecord = getScheduleByBookingId(updatedRecord.booking_id);
+        setBookingStatus("completed");
+        renderScheduleRows(scheduleRows);
+        activeBookingRow = scheduleTableBody?.querySelector(
+          `tr[data-booking-id="${CSS.escape(updatedRecord.booking_id)}"]`
+        ) || null;
+        setActionState("completed");
+        return;
+      }
+
+      closeBookingModal();
+    } catch (error) {
+      console.error("Failed to update booking status:", error);
+      window.alert(
+        error?.message || "Unable to update booking status. Please try again."
+      );
+      setActionState(bookingActionStep);
+    } finally {
+      bookingProgressButton.disabled = false;
+      if (bookingActionLabel && bookingActionStep === "completed") {
+        bookingActionLabel.textContent = "Continue";
+      } else if (bookingActionLabel?.textContent === "Updating...") {
+        bookingActionLabel.textContent = originalLabel;
+      }
+    }
   });
 }
 
