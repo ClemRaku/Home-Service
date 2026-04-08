@@ -1,4 +1,4 @@
-pm <!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -110,69 +110,9 @@ pm <!doctype html>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="scheduleTableBody">
                 <tr>
-                  <td>#BK-1001</td>
-                  <td>
-                    Sarah Johnson
-                    <div class="muted">sarah.johnson@email.com</div>
-                  </td>
-                  <td>Deep Cleaning</td>
-                  <td>Michael Lee</td>
-                  <td>04/12/2026 • 10:00 AM</td>
-                  <td><span class="status scheduled">scheduled</span></td>
-                  <td>
-                    <div class="actions">
-                      <button class="action-btn view" type="button" aria-label="View booking details">
-                        <i data-lucide="eye"></i>
-                      </button>
-                      <button class="action-btn edit" type="button" aria-label="Edit booking">
-                        <i data-lucide="pencil"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#BK-1002</td>
-                  <td>
-                    Daniel Carter
-                    <div class="muted">daniel.carter@email.com</div>
-                  </td>
-                  <td>AC Maintenance</td>
-                  <td>Emily Stone</td>
-                  <td>04/12/2026 • 01:30 PM</td>
-                  <td><span class="status in-progress">in-progress</span></td>
-                  <td>
-                    <div class="actions">
-                      <button class="action-btn view" type="button" aria-label="View booking details">
-                        <i data-lucide="eye"></i>
-                      </button>
-                      <button class="action-btn edit" type="button" aria-label="Edit booking">
-                        <i data-lucide="pencil"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#BK-1003</td>
-                  <td>
-                    Olivia Brown
-                    <div class="muted">olivia.brown@email.com</div>
-                  </td>
-                  <td>Plumbing Repair</td>
-                  <td>James Walker</td>
-                  <td>04/13/2026 • 09:00 AM</td>
-                  <td><span class="status completed">completed</span></td>
-                  <td>
-                    <div class="actions">
-                      <button class="action-btn view" type="button" aria-label="View booking details">
-                        <i data-lucide="eye"></i>
-                      </button>
-                      <button class="action-btn edit" type="button" aria-label="Edit booking">
-                        <i data-lucide="pencil"></i>
-                      </button>
-                    </div>
-                  </td>
+                  <td colspan="7">Loading schedule data...</td>
                 </tr>
               </tbody>
             </table>
@@ -307,6 +247,7 @@ pm <!doctype html>
       </div>
     </div>
 
+    <script src="/home-service/JS/admin.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="/home-service/JS/AdminScheduling.js"></script>
   </body>
