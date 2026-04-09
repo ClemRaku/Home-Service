@@ -42,7 +42,7 @@ if (contactForm) {
     submitBtn.disabled = true;
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/Contact`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,8 +53,8 @@ if (contactForm) {
         body: JSON.stringify([{
           full_name: fullName,
           email: email,
-          "phone-number": phone,
-          service_interested: serviceInterested,
+          phone_number: phone,
+          service_interest: serviceInterested,
           message: message,
         }]),
       });

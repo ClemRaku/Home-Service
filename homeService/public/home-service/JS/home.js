@@ -101,7 +101,7 @@ const loadHomeServices = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Service?select=Category`,
+      `${SUPABASE_URL}/rest/v1/services?select=category`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -117,7 +117,7 @@ const loadHomeServices = async () => {
     const services = await response.json();
 
     // Extract unique categories
-    const uniqueCategories = [...new Set(services.map((s) => normalizeCategory(s.Category)))];
+    const uniqueCategories = [...new Set(services.map((s) => normalizeCategory(s.category)))];
 
     renderCategoryCards(uniqueCategories);
   } catch (error) {

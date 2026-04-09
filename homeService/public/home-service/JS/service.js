@@ -66,7 +66,7 @@ const titleCase = (value = '') =>
 const formatCategory = (value = '') => titleCase(normalizeCategory(value));
 
 const isServiceActive = (service = {}) => {
-  const activeValue = service.active ?? service.Active ?? true;
+  const activeValue = service.is_active ?? service.active ?? service.Active ?? true;
 
   if (typeof activeValue === 'string') {
     return activeValue.trim().toLowerCase() === 'true';
@@ -167,28 +167,28 @@ const renderCards = (services) => {
   if (!serviceGrid) return;
 
   if (!services.length) {
-    serviceGrid.innerHTML = '<p class="services-status">No services found in the Service table.</p>';
+    serviceGrid.innerHTML = '<p class="services-status">No services found in the services table.</p>';
     return;
   }
 
   serviceGrid.innerHTML = services
     .map((service) => {
-      const category = formatCategory(service.Category);
-      const icon = iconByCategory[normalizeCategory(service.Category)] || 'briefcase';
-      const price = Number(service.Price);
-      const duration = Number(service.Duration);
-      const point = Number(service.Point);
+      const category = formatCategory(service.category);
+      const icon = iconByCategory[normalizeCategory(service.category)] || 'briefcase';
+      const price = Number(service.price);
+      const duration = Number(service.duration);
+      const point = Number(service.points);
       const isActive = isServiceActive(service);
 
       return `
         <article
           class="card"
-          data-service-type="${inferServiceType(service['Service Name'], category)}"
+          data-service-type="${inferServiceType(service.service_name, category)}"
           data-active="${isActive}"
           ${isActive ? '' : 'hidden aria-hidden="true" style="display: none;"'}
         >
           <div class="icon-chip"><i data-lucide="${icon}"></i></div>
-          <h3>${service['Service Name']}</h3>
+          <h3>${service.service_name}</h3>
           <p>${category}</p>
           <div class="point-info">
             <span class="stars">★ ${point}</span>
@@ -263,7 +263,7 @@ const loadServices = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Service?select=Service%20Name,Category,Price,Duration,Point,active&order=Service%20Name.asc`,
+      `${SUPABASE_URL}/rest/v1/services?select=service_name,category,price,duration,points,is_active&order=service_name.asc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -282,7 +282,7 @@ const loadServices = async () => {
   } catch (error) {
     console.error('Error loading services:', error);
     serviceGrid.innerHTML =
-      '<p class="services-status">Could not load services. Please check Supabase access for the Service table.</p>';
+      '<p class="services-status">Could not load services. Please check Supabase access for the services table.</p>';
   }
 };
 

@@ -186,7 +186,7 @@ const populateServiceOptions = (services = []) => {
 
   const uniqueServices = [...new Set(
     services
-      .map((service) => service?.["Service Name"] ?? service?.service_name ?? "")
+      .map((service) => service?.service_name ?? "")
       .map((name) => String(name).trim())
       .filter(Boolean)
   )];
@@ -215,7 +215,7 @@ const populateEmployeeOptions = (employees = []) => {
 
   const uniqueEmployees = [...new Set(
     employees
-      .map((employee) => employee?.["Full Name"] ?? employee?.full_name ?? "")
+      .map((employee) => employee?.full_name ?? "")
       .map((name) => String(name).trim())
       .filter(Boolean)
   )];
@@ -244,7 +244,7 @@ const loadServiceOptions = async () => {
 
   try {
     const services = await supabaseRequest(
-      "/rest/v1/Service?select=Service%20Name&order=Service%20Name.asc",
+      "/rest/v1/services?select=service_name&order=service_name.asc",
       {
         method: "GET",
       }
@@ -265,7 +265,7 @@ const loadEmployeeOptions = async () => {
 
   try {
     const employees = await supabaseRequest(
-      "/rest/v1/Employee?select=Full%20Name&order=Full%20Name.asc",
+      "/rest/v1/employees?select=full_name&order=full_name.asc",
       {
         method: "GET",
       }
@@ -282,7 +282,7 @@ const loadEmployeeOptions = async () => {
 const persistScheduleUpdate = async (bookingId, payload) => {
   const encodedBookingId = encodeURIComponent(bookingId);
   const updatedRows = await supabaseRequest(
-    `/rest/v1/schedule?booking_id=eq.${encodedBookingId}`,
+    `/rest/v1/schedules?booking_id=eq.${encodedBookingId}`,
     {
       method: "PATCH",
       body: JSON.stringify(payload),
@@ -299,7 +299,7 @@ const persistScheduleUpdate = async (bookingId, payload) => {
 };
 
 const persistScheduleInsert = async (payload) => {
-  const insertedRows = await supabaseRequest("/rest/v1/schedule", {
+  const insertedRows = await supabaseRequest("/rest/v1/schedules", {
     method: "POST",
     body: JSON.stringify([payload]),
   });
@@ -338,7 +338,7 @@ const renderScheduleRows = (rows) => {
       const bookingId = escapeHtml(row.booking_id || "N/A");
       const customerName = escapeHtml(row.customer_name || "N/A");
       const customerEmail = escapeHtml(row.customer_email || "N/A");
-      const serviceType = escapeHtml(row.service_type || "N/A");
+      const serviceType = escapeHtml(row.service_name || "N/A");
       const employeeName = escapeHtml(row.employee_name || "N/A");
       const status = getSafeStatusClass(getStatusFromRow(row));
       const formattedDateTime = escapeHtml(
@@ -379,7 +379,7 @@ const renderScheduleRows = (rows) => {
 const loadSchedules = async () => {
   try {
     const rows = await supabaseRequest(
-      "/rest/v1/schedule?select=*&order=scheduled_at.asc",
+      "/rest/v1/schedules?select=*&order=scheduled_at.asc",
       {
         method: "GET",
       }
@@ -429,9 +429,9 @@ const resetScheduleForm = () => {
   setFormValue(scheduleBookingIdInput, "");
   setFormValue(scheduleCustomerInput, "");
   setFormValue(scheduleCustomerEmailInput, "");
-  populateServiceOptions(serviceOptions.map((name) => ({ "Service Name": name })));
+  populateServiceOptions(serviceOptions.map((name) => ({ service_name: name })));
   setFormValue(scheduleServiceSelect, "");
-  populateEmployeeOptions(employeeOptions.map((name) => ({ "Full Name": name })));
+  populateEmployeeOptions(employeeOptions.map((name) => ({ full_name: name })));
   setFormValue(scheduleEmployeeSelect, "");
   setFormValue(scheduleDateInput, "");
   setFormValue(scheduleTimeInput, "");
@@ -512,7 +512,7 @@ const populateScheduleModal = (record) => {
   setFormValue(scheduleBookingIdInput, record.booking_id || "");
   setFormValue(scheduleCustomerInput, record.customer_name || "");
   setFormValue(scheduleCustomerEmailInput, record.customer_email || "");
-  setFormValue(scheduleServiceSelect, record.service_type || "");
+  setFormValue(scheduleServiceSelect, record.service_name || "");
   setFormValue(scheduleEmployeeSelect, record.employee_name || "");
 
   if (scheduleDate && !Number.isNaN(scheduleDate.getTime())) {
@@ -557,7 +557,7 @@ const populateBookingModal = (record) => {
   }
 
   if (bookingService) {
-    bookingService.textContent = record.service_type || "N/A";
+    bookingService.textContent = record.service_name || "N/A";
   }
 
   if (bookingDateTime) {
@@ -774,7 +774,7 @@ if (scheduleForm) {
       booking_id: bookingId,
       customer_name: scheduleCustomerInput?.value.trim() || null,
       customer_email: scheduleCustomerEmailInput?.value.trim() || null,
-      service_type: scheduleServiceSelect?.value.trim() || null,
+      service_name: scheduleServiceSelect?.value.trim() || null,
       employee_name: scheduleEmployeeSelect?.value.trim() || null,
       scheduled_at: buildScheduledAtValue(
         scheduleDateInput?.value,
@@ -812,7 +812,7 @@ if (scheduleForm) {
         const updatedRecord = await persistScheduleUpdate(bookingId, {
           customer_name: payload.customer_name,
           customer_email: payload.customer_email,
-          service_type: payload.service_type,
+          service_name: payload.service_name,
           employee_name: payload.employee_name,
           scheduled_at: payload.scheduled_at,
         });

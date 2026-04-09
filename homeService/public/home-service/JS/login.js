@@ -39,7 +39,7 @@ async function fetchTableRows(tableName) {
 function findAdmin(rows, email, password) {
   for (const row of rows) {
     const rowEmail = getText(row.email).toLowerCase();
-    const rowPassword = getText(row.password);
+    const rowPassword = getText(row.password_hash);
 
     if (rowEmail === email.toLowerCase() && rowPassword === password) {
       return row;

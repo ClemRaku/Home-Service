@@ -31,11 +31,11 @@ const rows = cards
     if (!name || !category || !point || values.length < 2) return null;
 
     return {
-      'Service Name': clean(name),
-      Category: clean(category).replace(/\.+$/, ''),
-      Price: averageNumber(values[0]),
-      Duration: averageNumber(values[1]),
-      Point: Number(point),
+      service_name: clean(name),
+      category: clean(category).replace(/\.+$/, ''),
+      price: averageNumber(values[0]),
+      duration: averageNumber(values[1]),
+      points: Number(point),
     };
   })
   .filter(Boolean);
@@ -44,7 +44,7 @@ const uniqueRows = [];
 const seenServiceNames = new Set();
 
 for (const row of rows) {
-  const serviceName = row['Service Name'];
+  const serviceName = row.service_name;
   if (seenServiceNames.has(serviceName)) continue;
   seenServiceNames.add(serviceName);
   uniqueRows.push(row);
@@ -78,14 +78,14 @@ const request = async (path, options = {}) => {
 
 const keyOf = (row) =>
   JSON.stringify([
-    row['Service Name'],
-    row.Category,
-    Number(row.Price),
-    Number(row.Duration),
-    Number(row.Point),
+    row.service_name,
+    row.category,
+    Number(row.price),
+    Number(row.duration),
+    Number(row.points),
   ]);
 
-const existing = await request('/rest/v1/Service?select=Service%20Name,Category,Price,Duration,Point');
+const existing = await request('/rest/v1/services?select=service_name,category,price,duration,points');
 const existingKeys = new Set(existing.map(keyOf));
 const missing = uniqueRows.filter((row) => !existingKeys.has(keyOf(row)));
 
@@ -95,7 +95,7 @@ console.log(`Existing rows: ${existing.length}`);
 console.log(`Missing rows: ${missing.length}`);
 
 if (missing.length) {
-  const inserted = await request('/rest/v1/Service', {
+  const inserted = await request('/rest/v1/services', {
     method: 'POST',
     headers: {
       Prefer: 'return=representation',
@@ -106,7 +106,7 @@ if (missing.length) {
   console.log(`Inserted rows: ${inserted.length}`);
 }
 
-const finalRows = await request('/rest/v1/Service?select=Service%20Name,Category,Price,Duration,Point');
+const finalRows = await request('/rest/v1/services?select=service_name,category,price,duration,points');
 console.log(`Final row count: ${finalRows.length}`);
 console.log(`First row: ${JSON.stringify(finalRows[0])}`);
 console.log(`Last row: ${JSON.stringify(finalRows[finalRows.length - 1])}`);

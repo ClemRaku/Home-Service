@@ -126,7 +126,7 @@ const renderEmptyState = (message) => {
 
 const persistCustomerUpdate = async (identifierEmail, payload) => {
   const encodedEmail = encodeURIComponent(identifierEmail);
-  const updatedRows = await supabaseRequest(`/rest/v1/Customer?Email=eq.${encodedEmail}`, {
+  const updatedRows = await supabaseRequest(`/rest/v1/customers?email=eq.${encodedEmail}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -140,7 +140,7 @@ const persistCustomerUpdate = async (identifierEmail, payload) => {
 
 const persistCustomerDelete = async (identifierEmail) => {
   const encodedEmail = encodeURIComponent(identifierEmail);
-  await supabaseRequest(`/rest/v1/Customer?Email=eq.${encodedEmail}`, {
+  await supabaseRequest(`/rest/v1/customers?email=eq.${encodedEmail}`, {
     method: 'DELETE',
     headers: {
       Prefer: 'return=minimal',
@@ -221,12 +221,12 @@ const buildActionButtons = (status) => {
 };
 
 const buildCustomerRowMarkup = (customer, index) => {
-  const fullName = customer['Full Name'] || 'Unnamed Customer';
-  const email = customer.Email || 'No email';
-  const phone = formatPhone(customer.Phone);
+  const fullName = customer.full_name || 'Unnamed Customer';
+  const email = customer.email || 'No email';
+  const phone = formatPhone(customer.phone_number);
   const address = customer.address || 'No address provided';
   const bookings = Number.isFinite(Number(customer.bookings)) ? Number(customer.bookings) : 0;
-  const totalSpent = formatCurrency(customer.wallet);
+  const totalSpent = formatCurrency(customer.wallet_balance);
   const joinedAt = customer.joined_at || 'Unknown';
   const status = normalizeStatus(customer.status);
 
@@ -288,7 +288,7 @@ const fetchCustomers = async () => {
   }
 
   try {
-    const customers = await supabaseRequest('/rest/v1/Customer?select=*&order=created_at.desc', {
+    const customers = await supabaseRequest('/rest/v1/customers?select=*&order=created_at.desc', {
       method: 'GET',
     });
     renderCustomers(customers);
@@ -588,9 +588,9 @@ if (editForm) {
 
     try {
       const updatedCustomer = await persistCustomerUpdate(identifierEmail, {
-        'Full Name': updatedName,
-        Email: updatedEmail,
-        Phone: updatedPhone,
+        full_name: updatedName,
+        email: updatedEmail,
+        phone_number: updatedPhone,
         address: updatedAddress,
       });
 
@@ -601,7 +601,7 @@ if (editForm) {
       const rowAddress = selectedRowForEdit.querySelector("td:nth-child(3)");
 
       if (rowName) {
-        rowName.textContent = updatedCustomer['Full Name'] || updatedName;
+        rowName.textContent = updatedCustomer.full_name || updatedName;
       }
 
       if (rowJoined) {
@@ -609,18 +609,18 @@ if (editForm) {
       }
 
       if (rowEmail) {
-        rowEmail.textContent = updatedCustomer.Email || updatedEmail;
+        rowEmail.textContent = updatedCustomer.email || updatedEmail;
       }
 
       if (rowPhone) {
-        rowPhone.textContent = formatPhone(updatedCustomer.Phone || updatedPhone);
+        rowPhone.textContent = formatPhone(updatedCustomer.phone_number || updatedPhone);
       }
 
       if (rowAddress) {
         rowAddress.textContent = updatedCustomer.address || updatedAddress;
       }
 
-      selectedRowForEdit.dataset.customerEmail = updatedCustomer.Email || updatedEmail;
+      selectedRowForEdit.dataset.customerEmail = updatedCustomer.email || updatedEmail;
 
       if (selectedRowForView === selectedRowForEdit) {
         openModal(selectedRowForEdit);

@@ -168,21 +168,21 @@ const buildOfferFilter = (card) => {
   const createdAt = card?.dataset.createdAt || '';
 
   if (promoCode) {
-    return `Promo%20Code=eq.${encodeURIComponent(promoCode)}`;
+    return `promo_code=eq.${encodeURIComponent(promoCode)}`;
   }
 
   return `created_at=eq.${encodeURIComponent(createdAt)}`;
 };
 
 const createOfferCardMarkup = (offer) => {
-  const title = offer['Offer Title'] || 'Untitled Offer';
-  const service = offer.Service || '';
-  const packageName = offer.Package || '';
+  const title = offer.offer_title || 'Untitled Offer';
+  const service = offer.service_name || '';
+  const packageName = offer.package_name || '';
   const category = inferCategory(service, packageName);
-  const discount = formatDiscountValue(offer.Discount || 0) || '0% OFF';
-  const promoCode = offer['Promo Code'] || 'N/A';
-  const validUntil = offer['Valid Until'] || '';
-  const usedCount = offer.Used ?? 0;
+  const discount = formatDiscountValue(offer.discount || 0) || '0% OFF';
+  const promoCode = offer.promo_code || 'N/A';
+  const validUntil = offer.valid_until || '';
+  const usedCount = offer.times_used ?? 0;
   const createdAt = offer.created_at || '';
   const status = normalizeOfferStatus(offer);
 
@@ -194,7 +194,7 @@ const createOfferCardMarkup = (offer) => {
       `;
 
   return `
-    <article class="offer-card ${status}" data-created-at="${escapeHtml(createdAt)}" data-offer-title="${escapeHtml(title)}" data-offer-service="${escapeHtml(service)}" data-offer-category="${escapeHtml(category)}" data-offer-package="${escapeHtml(packageName)}" data-offer-discount="${escapeHtml(String(offer.Discount ?? ''))}" data-offer-code="${escapeHtml(promoCode)}" data-offer-valid="${escapeHtml(validUntil)}" data-offer-used="${escapeHtml(String(usedCount))}" data-offer-status="${escapeHtml(String(offer.status ?? true))}">
+    <article class="offer-card ${status}" data-created-at="${escapeHtml(createdAt)}" data-offer-title="${escapeHtml(title)}" data-offer-service="${escapeHtml(service)}" data-offer-category="${escapeHtml(category)}" data-offer-package="${escapeHtml(packageName)}" data-offer-discount="${escapeHtml(String(offer.discount ?? ''))}" data-offer-code="${escapeHtml(promoCode)}" data-offer-valid="${escapeHtml(validUntil)}" data-offer-used="${escapeHtml(String(usedCount))}" data-offer-status="${escapeHtml(String(offer.status ?? true))}">
       <div class="card-head">
         <div>
           <h3 data-offer-title>${escapeHtml(title)}</h3>
@@ -220,7 +220,7 @@ const createOfferCardMarkup = (offer) => {
 const renderOffers = (offers) => {
   if (!offersGrid) return;
   if (!Array.isArray(offers) || !offers.length) {
-    offersGrid.innerHTML = '<p class="offers-status">No offers found in the Offer table.</p>';
+    offersGrid.innerHTML = '<p class="offers-status">No offers found in the offers table.</p>';
     return;
   }
   offersGrid.innerHTML = offers.map(createOfferCardMarkup).join('');
@@ -229,15 +229,15 @@ const renderOffers = (offers) => {
 
 const loadServiceDropdownOptions = async () => {
   try {
-    const services = await supabaseRequest('/rest/v1/Service?select=Service%20Name,Category&order=Service%20Name.asc', {
+    const services = await supabaseRequest('/rest/v1/services?select=service_name,category&order=service_name.asc', {
       method: 'GET',
     });
 
     const serviceOptions = getUniqueSortedValues(
-      (Array.isArray(services) ? services : []).map((service) => service['Service Name']),
+      (Array.isArray(services) ? services : []).map((service) => service.service_name),
     );
     const categoryOptions = getUniqueSortedValues(
-      (Array.isArray(services) ? services : []).map((service) => service.Category),
+      (Array.isArray(services) ? services : []).map((service) => service.category),
     );
 
     populateSelectOptions(serviceNameInput, serviceOptions.length ? serviceOptions : fallbackServiceOptions);
@@ -257,11 +257,11 @@ const loadOffers = async () => {
   if (!offersGrid) return;
   offersGrid.innerHTML = '<p class="offers-status">Loading offers...</p>';
   try {
-  const offers = await supabaseRequest('/rest/v1/Offer?select=*&order=created_at.desc', { method: 'GET' });
+  const offers = await supabaseRequest('/rest/v1/offers?select=*&order=created_at.desc', { method: 'GET' });
     renderOffers(Array.isArray(offers) ? offers : []);
   } catch (error) {
     console.error('Error loading offers:', error);
-    offersGrid.innerHTML = '<p class="offers-status">Could not load offers. Please check Supabase access for the Offer table.</p>';
+    offersGrid.innerHTML = '<p class="offers-status">Could not load offers. Please check Supabase access for the offers table.</p>';
   }
 };
 
@@ -294,19 +294,19 @@ const openEditModal = (card) => {
 };
 
 const persistOfferInsert = async (payload) => {
-  const insertedRows = await supabaseRequest('/rest/v1/Offer', { method: 'POST', body: JSON.stringify([payload]) });
+  const insertedRows = await supabaseRequest('/rest/v1/offers', { method: 'POST', body: JSON.stringify([payload]) });
   if (!insertedRows?.length) throw new Error('Offer record was not created.');
   return insertedRows[0];
 };
 
 const persistOfferUpdate = async (card, payload) => {
-  const updatedRows = await supabaseRequest(`/rest/v1/Offer?${buildOfferFilter(card)}`, { method: 'PATCH', body: JSON.stringify(payload) });
+  const updatedRows = await supabaseRequest(`/rest/v1/offers?${buildOfferFilter(card)}`, { method: 'PATCH', body: JSON.stringify(payload) });
   if (!updatedRows?.length) throw new Error('Offer record was not updated.');
   return updatedRows[0];
 };
 
 const persistOfferDelete = async (card) => {
-  await supabaseRequest(`/rest/v1/Offer?${buildOfferFilter(card)}`, {
+  await supabaseRequest(`/rest/v1/offers?${buildOfferFilter(card)}`, {
     method: 'DELETE',
     headers: { Prefer: 'return=minimal' },
   });
@@ -316,7 +316,7 @@ const ensureUniquePromoCode = async (promoCode) => {
   const encodedPromoCode = encodeURIComponent(promoCode);
 
   const existingOffers = await supabaseRequest(
-    `/rest/v1/Offer?select=created_at&Promo%20Code=eq.${encodedPromoCode}`,
+    `/rest/v1/offers?select=created_at&promo_code=eq.${encodedPromoCode}`,
     { method: 'GET' },
   );
 
@@ -336,18 +336,18 @@ const collectOfferFormPayload = ({ titleInput, serviceInput, packageInput, disco
     throw new Error('Offer title, discount, promo code, valid until, and either service or package are required.');
   }
   return {
-    'Offer Title': title,
-    Service: packageName ? null : service,
-    Discount: Number(discountRaw),
-    'Promo Code': promoCode,
-    'Valid Until': validUntil,
-    Package: packageName || null,
+    offer_title: title,
+    service_name: packageName ? null : service,
+    discount: Number(discountRaw),
+    promo_code: promoCode,
+    valid_until: validUntil,
+    package_name: packageName || null,
   };
 };
 
 const buildFullOfferUpdatePayload = (card, formPayload) => ({
   ...formPayload,
-  Used: Number(card?.dataset.offerUsed ?? 0),
+  times_used: Number(card?.dataset.offerUsed ?? 0),
   status: card?.dataset.offerStatus === 'false' ? false : true,
 });
 
@@ -363,7 +363,7 @@ offersGrid?.addEventListener('click', async (event) => {
   }
 
   if (button.classList.contains('delete')) {
-    if (!window.confirm(`Delete ${card.dataset.offerTitle || 'this offer'} from the Offer table?`)) return;
+    if (!window.confirm(`Delete ${card.dataset.offerTitle || 'this offer'} from the offers table?`)) return;
     button.disabled = true;
     try {
       await persistOfferDelete(card);
@@ -419,7 +419,7 @@ editOfferForm?.addEventListener('submit', async (event) => {
     closeEditModal();
   } catch (error) {
     console.error(error);
-    if (String(error?.message || '').includes('Offer_Promo Code_key')) {
+    if (String(error?.message || '').includes('promo_code')) {
       window.alert('Promo code already exists. Please use a unique promo code.');
       return;
     }
@@ -442,8 +442,8 @@ addOfferForm?.addEventListener('submit', async (event) => {
       codeInput: addPromoCodeInput,
       validInput: addValidUntilInput,
     });
-    await ensureUniquePromoCode(payload['Promo Code']);
-    const insertedOffer = await persistOfferInsert({ ...payload, Used: 0, status: true });
+    await ensureUniquePromoCode(payload.promo_code);
+    const insertedOffer = await persistOfferInsert({ ...payload, times_used: 0, status: true });
     const emptyState = offersGrid?.querySelector('.offers-status');
     if (emptyState) emptyState.remove();
     offersGrid?.insertAdjacentHTML('afterbegin', createOfferCardMarkup(insertedOffer));
@@ -451,7 +451,7 @@ addOfferForm?.addEventListener('submit', async (event) => {
     closeAddModal();
   } catch (error) {
     console.error(error);
-    if (String(error?.message || '').includes('Offer_Promo Code_key')) {
+    if (String(error?.message || '').includes('promo_code')) {
       window.alert('Promo code already exists. Please use a unique promo code.');
       return;
     }

@@ -40,11 +40,11 @@ const featurePrefix = (value = '') => {
 const formatPrice = (value) => `$${Number(value || 0).toLocaleString()}`;
 
 const renderPackageCard = (pkg, cardClass) => {
-  const services = splitServices(pkg.Services);
+  const services = splitServices(pkg.services_included);
   const features = [];
 
-  if (pkg.Point !== null && pkg.Point !== undefined && pkg.Point !== '') {
-    features.push({ prefix: String(pkg.Point), text: 'Points' });
+  if (pkg.points !== null && pkg.points !== undefined && pkg.points !== '') {
+    features.push({ prefix: String(pkg.points), text: 'Points' });
   }
 
   services.forEach((service) => {
@@ -54,10 +54,10 @@ const renderPackageCard = (pkg, cardClass) => {
   return `
     <article class="package-card ${cardClass}">
       <div class="package-header">
-        <h3>${escapeHtml(pkg['Package Name'])}</h3>
-        <p class="package-subtitle">${escapeHtml(pkg.package_description || '')}</p>
+        <h3>${escapeHtml(pkg.package_name)}</h3>
+        <p class="package-subtitle">${escapeHtml(pkg.description || '')}</p>
         <div class="package-price">
-          <span class="amount">${formatPrice(pkg.Price)}</span>
+          <span class="amount">${formatPrice(pkg.price)}</span>
           <span class="duration">/month</span>
         </div>
       </div>
@@ -87,10 +87,10 @@ const renderPackages = (packages) => {
   }
 
   const groupedPackages = packages.reduce((groups, pkg) => {
-    const category = normalizeText(pkg.package_catagory || 'Packages');
+    const category = normalizeText(pkg.package_category || 'Packages');
     if (!groups[category]) {
       groups[category] = {
-        description: normalizeText(pkg.catagory_description || ''),
+        description: normalizeText(pkg.category_description || ''),
         packages: [],
       };
     }
@@ -121,7 +121,7 @@ const loadPackages = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Package?select=Package%20Name,Price,Discount,Services,Point,package_catagory,catagory_description,package_description&order=package_catagory.asc&order=Price.asc`,
+      `${SUPABASE_URL}/rest/v1/packages?select=package_name,price,discount,services_included,points,package_category,category_description,description&order=package_category.asc&order=price.asc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -143,7 +143,7 @@ const loadPackages = async () => {
       <section class="package-section">
         <div class="section-heading">
           <h2>Could Not Load Packages</h2>
-          <p>Please check Supabase access for the Package table and try again.</p>
+          <p>Please check Supabase access for the packages table and try again.</p>
         </div>
       </section>
     `;

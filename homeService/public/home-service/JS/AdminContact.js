@@ -52,7 +52,7 @@ if (menuToggle && sidebar && dashboard) {
 
 async function fetchContactData() {
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/Contact?select=*&order=created_at.desc`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/contacts?select=*&order=created_at.desc`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -116,9 +116,9 @@ function renderCards() {
     const status = getStatusLabel(item.status);
     const fullName = item.full_name || 'Unknown';
     const email = item.email || 'N/A';
-    const phone = item['phone-number'] || 'N/A';
+    const phone = item.phone_number || 'N/A';
     const date = formatDate(item.created_at);
-    const subject = item.service_interested || 'General Inquiry';
+    const subject = item.service_interest || 'General Inquiry';
     const message = item.message || '';
 
     return `
@@ -205,7 +205,7 @@ function attachCardEventListeners() {
       }
 
       try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/Contact?id=eq.${contactId}`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${contactId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -238,9 +238,9 @@ function getCardData(card) {
       name: item.full_name || 'Unknown',
       email: item.email || 'N/A',
       status: getStatusLabel(item.status),
-      phone: item['phone-number'] || 'N/A',
+      phone: item.phone_number || 'N/A',
       date: formatDate(item.created_at),
-      subject: item.service_interested || 'General Inquiry',
+      subject: item.service_interest || 'General Inquiry',
       message: item.message || '',
       avatarIconName: 'help-circle',
     };
@@ -434,7 +434,7 @@ replyForm?.addEventListener("submit", async (event) => {
   }
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/Contact?id=eq.${contactId}`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/contacts?id=eq.${contactId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

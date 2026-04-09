@@ -158,20 +158,20 @@ const renderEmptyState = (message) => {
 };
 
 const buildEmployeeRowMarkup = (employee) => {
-  const fullName = employee['Full Name'] || 'Unnamed Employee';
-  const email = employee.Email || 'No email';
-  const phone = formatPhone(employee.phone);
-  const role = employee.Role || 'Not Assigned';
-  const performance = Number.isFinite(Number(employee.performance)) ? Number(employee.performance).toFixed(1) : '0.0';
-  const jobsDone = Number.isFinite(Number(employee.jobs_done)) ? Number(employee.jobs_done) : 0;
+  const fullName = employee.full_name || 'Unnamed Employee';
+  const email = employee.email || 'No email';
+  const phone = formatPhone(employee.phone_number);
+  const role = employee.role || 'Not Assigned';
+  const performance = Number.isFinite(Number(employee.performance_score)) ? Number(employee.performance_score).toFixed(1) : '0.0';
+  const jobsDone = Number.isFinite(Number(employee.jobs_completed)) ? Number(employee.jobs_completed) : 0;
   const status = normalizeStatus(employee.status);
   const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=eff3ff&color=1e3a8a`;
 
   return `
     <tr
       data-employee-row="true"
-      data-employee-id="${escapeHtml(employee.Email || fullName)}"
-      data-employee-email="${escapeHtml(employee.Email || '')}"
+      data-employee-id="${escapeHtml(employee.email || fullName)}"
+      data-employee-email="${escapeHtml(employee.email || '')}"
       data-status="${status}"
       data-location-address="${DEFAULT_LOCATION.address}"
       data-location-lat="${DEFAULT_LOCATION.lat}"
@@ -231,14 +231,14 @@ const fetchEmployees = async () => {
   }
 
   try {
-    const employees = await supabaseRequest('/rest/v1/Employee?select=*&order=created_at.desc', {
+    const employees = await supabaseRequest('/rest/v1/employees?select=*&order=created_at.desc', {
       method: 'GET',
       headers: {
         Prefer: 'return=representation',
       },
     });
     const nonAdminEmployees = employees.filter(
-      (employee) => String(employee?.Role ?? '').trim().toLowerCase() !== 'admin'
+      (employee) => String(employee?.role ?? '').trim().toLowerCase() !== 'admin'
     );
     renderEmployees(nonAdminEmployees);
   } catch (error) {
@@ -249,7 +249,7 @@ const fetchEmployees = async () => {
 
 const persistEmployeeUpdate = async (identifierEmail, payload) => {
   const encodedEmail = encodeURIComponent(identifierEmail);
-  const updatedRows = await supabaseRequest(`/rest/v1/Employee?Email=eq.${encodedEmail}`, {
+  const updatedRows = await supabaseRequest(`/rest/v1/employees?email=eq.${encodedEmail}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -263,7 +263,7 @@ const persistEmployeeUpdate = async (identifierEmail, payload) => {
 
 const persistEmployeeDelete = async (identifierEmail) => {
   const encodedEmail = encodeURIComponent(identifierEmail);
-  await supabaseRequest(`/rest/v1/Employee?Email=eq.${encodedEmail}`, {
+  await supabaseRequest(`/rest/v1/employees?email=eq.${encodedEmail}`, {
     method: 'DELETE',
     headers: {
       Prefer: 'return=minimal',
@@ -272,7 +272,7 @@ const persistEmployeeDelete = async (identifierEmail) => {
 };
 
 const persistEmployeeInsert = async (payload) => {
-  const insertedRows = await supabaseRequest('/rest/v1/Employee', {
+  const insertedRows = await supabaseRequest('/rest/v1/employees', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -662,10 +662,10 @@ if (editEmployeeForm) {
 
     try {
       const updatedEmployee = await persistEmployeeUpdate(identifierEmail, {
-        'Full Name': updatedName,
-        Email: updatedEmail,
-        phone: Number(updatedPhone.replace(/\D/g, '')) || updatedPhone,
-        Role: updatedRole || 'Not Assigned',
+        full_name: updatedName,
+        email: updatedEmail,
+        phone_number: Number(updatedPhone.replace(/\D/g, '')) || updatedPhone,
+        role: updatedRole || 'Not Assigned',
         status: updatedStatus === 'active',
       });
 
@@ -678,39 +678,39 @@ if (editEmployeeForm) {
       const jobsDoneValue = selectedRowForEdit.querySelector('.rating-cell small');
 
       if (rowName) {
-        rowName.textContent = updatedEmployee['Full Name'] || updatedName;
+        rowName.textContent = updatedEmployee.full_name || updatedName;
       }
 
       if (rowAvatar) {
-        const avatarName = updatedEmployee['Full Name'] || updatedName;
+        const avatarName = updatedEmployee.full_name || updatedName;
         rowAvatar.alt = avatarName;
         rowAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(avatarName)}&background=eff3ff&color=1e3a8a`;
       }
 
       if (rowEmail) {
-        rowEmail.textContent = updatedEmployee.Email || updatedEmail;
+        rowEmail.textContent = updatedEmployee.email || updatedEmail;
       }
 
       if (rowRole) {
-        rowRole.textContent = updatedEmployee.Role || updatedRole || 'Not Assigned';
+        rowRole.textContent = updatedEmployee.role || updatedRole || 'Not Assigned';
       }
 
       if (rowPhone) {
-        rowPhone.textContent = formatPhone(updatedEmployee.phone ?? updatedPhone);
+        rowPhone.textContent = formatPhone(updatedEmployee.phone_number ?? updatedPhone);
       }
 
       if (ratingValue) {
-        ratingValue.textContent = Number.isFinite(Number(updatedEmployee.performance))
-          ? Number(updatedEmployee.performance).toFixed(1)
+        ratingValue.textContent = Number.isFinite(Number(updatedEmployee.performance_score))
+          ? Number(updatedEmployee.performance_score).toFixed(1)
           : '0.0';
       }
 
       if (jobsDoneValue) {
-        jobsDoneValue.textContent = `(${Number.isFinite(Number(updatedEmployee.jobs_done)) ? Number(updatedEmployee.jobs_done) : 0} jobs)`;
+        jobsDoneValue.textContent = `(${Number.isFinite(Number(updatedEmployee.jobs_completed)) ? Number(updatedEmployee.jobs_completed) : 0} jobs)`;
       }
 
-      selectedRowForEdit.dataset.employeeId = updatedEmployee.Email || updatedEmail;
-      selectedRowForEdit.dataset.employeeEmail = updatedEmployee.Email || updatedEmail;
+      selectedRowForEdit.dataset.employeeId = updatedEmployee.email || updatedEmail;
+      selectedRowForEdit.dataset.employeeEmail = updatedEmployee.email || updatedEmail;
 
       updateEmployeeRowStatus(selectedRowForEdit, normalizeStatus(updatedEmployee.status));
       applyFilters();
@@ -787,13 +787,13 @@ if (addEmployeeForm) {
 
     try {
       const insertedEmployee = await persistEmployeeInsert({
-        'Full Name': fullName,
-        Email: email,
-        phone: Number(phone.replace(/\D/g, '')) || phone,
-        Role: role,
-        password: 'temp123',
-        performance: 0,
-        jobs_done: 0,
+        full_name: fullName,
+        email: email,
+        phone_number: Number(phone.replace(/\D/g, '')) || phone,
+        role: role,
+        password_hash: 'temp123',
+        performance_score: 0,
+        jobs_completed: 0,
         status: true,
       });
 

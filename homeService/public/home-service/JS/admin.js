@@ -315,7 +315,7 @@ const getEmployeeStatusValue = (row) =>
 
 const loadActiveEmployeesCount = async () => {
   try {
-    const employees = await window.supabaseRequest("/rest/v1/Employee?select=*", {
+    const employees = await window.supabaseRequest("/rest/v1/employees?select=*", {
       method: "GET",
     });
 
@@ -341,7 +341,7 @@ const getCustomerStatusValue = (row) =>
 const loadActiveCustomersCount = async () => {
   try {
     const activeCustomers = await window.supabaseRequest(
-      "/rest/v1/Customer?select=status&status=eq.true",
+      "/rest/v1/customers?select=status&status=eq.true",
       {
         method: "GET",
       }
@@ -352,7 +352,7 @@ const loadActiveCustomersCount = async () => {
       return;
     }
 
-    const customers = await window.supabaseRequest("/rest/v1/Customer?select=*", {
+    const customers = await window.supabaseRequest("/rest/v1/customers?select=*", {
       method: "GET",
     });
 

@@ -41,7 +41,7 @@ if (signupForm) {
     }
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/Customer`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/customers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,10 +50,10 @@ if (signupForm) {
           Prefer: 'return=minimal',
         },
         body: JSON.stringify({
-          'Full Name': fullName,
-          Email: email,
-          Phone: phone,
-          Password: password,
+          full_name: fullName,
+          email: email,
+          phone_number: phone,
+          password_hash: password,
         }),
       });
 
@@ -66,7 +66,7 @@ if (signupForm) {
       showSignupMessage('Account created successfully.', '#0f9f98');
     } catch (error) {
       console.error('Signup error:', error);
-      showSignupMessage('Something went wrong. Please verify Customer table access and try again.');
+      showSignupMessage('Something went wrong. Please verify customers table access and try again.');
     }
   });
 }

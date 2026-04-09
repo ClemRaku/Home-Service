@@ -4,10 +4,10 @@ const SUPABASE_ANON_KEY =
 
 const checkOfferTable = async () => {
   try {
-    console.log('Fetching Offer table data...\n');
+    console.log('Fetching offers table data...\n');
     
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Offer?limit=1`,
+      `${SUPABASE_URL}/rest/v1/offers?limit=1`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -23,12 +23,12 @@ const checkOfferTable = async () => {
     const data = await response.json();
     
     if (!Array.isArray(data) || data.length === 0) {
-      console.log('⚠️  No data in Offer table or table does not exist');
+      console.log('⚠️  No data in offers table or table does not exist');
       return;
     }
 
     const firstOffer = data[0];
-    console.log('✅ Offer table exists! Here are the columns:\n');
+    console.log('✅ offers table exists! Here are the columns:\n');
     console.log('Column Name | Sample Value');
     console.log('─'.repeat(50));
     

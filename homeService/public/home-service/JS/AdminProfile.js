@@ -281,7 +281,7 @@ updatePassword?.addEventListener("click", async () => {
 
   try {
     const adminProfile = await getAdminProfile();
-    const existingPassword = String(adminProfile.password || '').trim();
+    const existingPassword = String(adminProfile.password_hash || '').trim();
 
     if (existingPassword !== currentPasswordValue) {
       showToast("Current password is incorrect.");
@@ -289,7 +289,7 @@ updatePassword?.addEventListener("click", async () => {
     }
 
     await persistAdminUpdate({
-      password: newPasswordValue,
+      password_hash: newPasswordValue,
     });
 
     showToast("Password updated successfully.");

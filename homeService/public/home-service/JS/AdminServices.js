@@ -46,7 +46,7 @@ const formatPrice = (value) => {
 };
 
 const normalizeActiveStatus = (service) => {
-  const activeValue = service.active ?? service.Active ?? true;
+  const activeValue = service.is_active ?? service.active ?? service.Active ?? true;
   return activeValue === false ? "inactive" : "active";
 };
 
@@ -77,7 +77,7 @@ const supabaseRequest = async (path, options = {}) => {
 const buildServiceFilter = (card) => {
   const serviceName = encodeURIComponent(card?.dataset.serviceName || "");
   const category = encodeURIComponent(card?.dataset.category || "");
-  return `Service%20Name=eq.${serviceName}&Category=eq.${category}`;
+  return `service_name=eq.${serviceName}&category=eq.${category}`;
 };
 
 const updateCardContent = (card, service) => {
@@ -85,11 +85,11 @@ const updateCardContent = (card, service) => {
     return;
   }
 
-  const serviceName = service["Service Name"] ?? service.service_name ?? "Unnamed Service";
-  const category = service.Category ?? service.category ?? "Uncategorized";
-  const price = service.Price ?? service.price ?? "N/A";
-  const duration = service.Duration ?? service.duration ?? "N/A";
-  const point = service.Point ?? service.point ?? service.Points ?? 0;
+  const serviceName = service.service_name ?? "Unnamed Service";
+  const category = service.category ?? "Uncategorized";
+  const price = service.price ?? "N/A";
+  const duration = service.duration ?? "N/A";
+  const point = service.points ?? 0;
   const status = normalizeActiveStatus(service);
 
   card.dataset.serviceName = serviceName;
@@ -114,7 +114,7 @@ const updateCardContent = (card, service) => {
 
 const persistServiceUpdate = async (card, payload) => {
   const filter = buildServiceFilter(card);
-  const updatedRows = await supabaseRequest(`/rest/v1/Service?${filter}`, {
+  const updatedRows = await supabaseRequest(`/rest/v1/services?${filter}`, {
     method: "PATCH",
     body: JSON.stringify(payload),
   });
@@ -128,7 +128,7 @@ const persistServiceUpdate = async (card, payload) => {
 
 const persistServiceDelete = async (card) => {
   const filter = buildServiceFilter(card);
-  await supabaseRequest(`/rest/v1/Service?${filter}`, {
+  await supabaseRequest(`/rest/v1/services?${filter}`, {
     method: "DELETE",
     headers: {
       Prefer: "return=minimal",
@@ -137,7 +137,7 @@ const persistServiceDelete = async (card) => {
 };
 
 const persistServiceInsert = async (payload) => {
-  const insertedRows = await supabaseRequest(`/rest/v1/Service`, {
+  const insertedRows = await supabaseRequest(`/rest/v1/services`, {
     method: "POST",
     body: JSON.stringify([payload]),
   });
@@ -151,11 +151,11 @@ const persistServiceInsert = async (payload) => {
 
 const buildServiceCardMarkup = (service) => {
   const status = normalizeActiveStatus(service);
-  const serviceName = service["Service Name"] ?? service.service_name ?? "Unnamed Service";
-  const category = service.Category ?? service.category ?? "Uncategorized";
-  const price = service.Price ?? service.price ?? "N/A";
-  const duration = service.Duration ?? service.duration ?? "N/A";
-  const point = service.Point ?? service.point ?? service.Points ?? 0;
+  const serviceName = service.service_name ?? "Unnamed Service";
+  const category = service.category ?? "Uncategorized";
+  const price = service.price ?? "N/A";
+  const duration = service.duration ?? "N/A";
+  const point = service.points ?? 0;
 
   return `
     <article class="service-card" data-status="${status}" data-service-name="${escapeHtml(serviceName)}" data-category="${escapeHtml(category)}" data-price="${escapeHtml(price)}" data-duration="${escapeHtml(duration)}" data-point="${escapeHtml(point)}">
@@ -186,7 +186,7 @@ const renderServiceCards = (services) => {
   }
 
   if (!Array.isArray(services) || !services.length) {
-    serviceGrid.innerHTML = '<p class="services-status">No services found in the Service table.</p>';
+    serviceGrid.innerHTML = '<p class="services-status">No services found in the services table.</p>';
     return;
   }
 
@@ -203,7 +203,7 @@ const loadServices = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Service?select=Service%20Name,Category,Price,Duration,Point,active&order=Service%20Name.asc`,
+      `${SUPABASE_URL}/rest/v1/services?select=service_name,category,price,duration,points,is_active&order=service_name.asc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -221,7 +221,7 @@ const loadServices = async () => {
   } catch (error) {
     console.error("Error loading services:", error);
     serviceGrid.innerHTML =
-      '<p class="services-status">Could not load services. Please check Supabase access for the Service table.</p>';
+      '<p class="services-status">Could not load services. Please check Supabase access for the services table.</p>';
   }
 };
 
@@ -331,7 +331,7 @@ if (serviceGrid) {
 
       button.disabled = true;
 
-      persistServiceUpdate(card, { active: nextStatus === "active" })
+      persistServiceUpdate(card, { is_active: nextStatus === "active" })
         .then((updatedService) => {
           updateCardContent(card, updatedService);
         })
@@ -348,7 +348,7 @@ if (serviceGrid) {
 
     if (button.classList.contains("delete")) {
       const serviceName = card.dataset.serviceName || "this service";
-      const shouldDelete = window.confirm(`Delete ${serviceName} from the Service table?`);
+      const shouldDelete = window.confirm(`Delete ${serviceName} from the services table?`);
 
       if (!shouldDelete) {
         return;
@@ -366,7 +366,7 @@ if (serviceGrid) {
           card.remove();
 
           if (!serviceGrid.querySelector(".service-card")) {
-            serviceGrid.innerHTML = '<p class="services-status">No services found in the Service table.</p>';
+            serviceGrid.innerHTML = '<p class="services-status">No services found in the services table.</p>';
           }
         })
         .catch((error) => {
@@ -422,11 +422,11 @@ editServiceForm?.addEventListener("submit", async (event) => {
 
   try {
     const updatedService = await persistServiceUpdate(selectedCardForEdit, {
-      "Service Name": updatedName,
-      Category: updatedCategory,
-      Point: Number(updatedPoint),
-      Price: Number(updatedPrice),
-      Duration: Number(updatedDuration),
+      service_name: updatedName,
+      category: updatedCategory,
+      points: Number(updatedPoint),
+      price: Number(updatedPrice),
+      duration: Number(updatedDuration),
     });
 
     updateCardContent(selectedCardForEdit, updatedService);
@@ -463,12 +463,12 @@ addServiceForm?.addEventListener("submit", async (event) => {
 
   try {
     const insertedService = await persistServiceInsert({
-      "Service Name": serviceName,
-      Category: category,
-      Point: Number(point),
-      Price: Number(price),
-      Duration: Number(duration),
-      active: true,
+      service_name: serviceName,
+      category: category,
+      points: Number(point),
+      price: Number(price),
+      duration: Number(duration),
+      is_active: true,
     });
 
     const emptyState = serviceGrid?.querySelector(".services-status");

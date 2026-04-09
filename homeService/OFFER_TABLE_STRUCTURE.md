@@ -1,21 +1,21 @@
-# Offer Table Structure & Implementation Summary
+# Offers Table Structure & Implementation Summary
 
 ## ✅ Findings
 
-### Database Columns (Offer Table)
+### Database Columns (offers Table)
 
-The Supabase `Offer` table has the following columns:
+The Supabase `offers` table has the following columns:
 
-| Column Name   | Type      | Example Value      | Used in Code |
-| ------------- | --------- | ------------------ | ------------ |
-| `Offer Title` | text      | "New Year Special" | ✅ Yes       |
-| `Service`     | text      | "Home Cleaning"    | ✅ Yes       |
-| `Discount`    | number    | 25                 | ✅ Yes       |
-| `Promo Code`  | text      | "NY2024"           | ✅ Yes       |
-| `Valid Until` | date      | "2024-02-28"       | ✅ Yes       |
-| `Used`        | number    | 156                | ✅ Yes       |
-| `Package`     | text/null | null               | ⚠️ Not used  |
-| `created_at`  | timestamp | (auto)             | ⚠️ Not used  |
+| Column Name    | Type      | Example Value      | Used in Code |
+| -------------- | --------- | ------------------ | ------------ |
+| `offer_title`  | text      | "New Year Special" | ✅ Yes       |
+| `service_name` | text      | "Home Cleaning"    | ✅ Yes       |
+| `discount`     | number    | 25                 | ✅ Yes       |
+| `promo_code`   | text      | "NY2024"           | ✅ Yes       |
+| `valid_until`  | date      | "2024-02-28"       | ✅ Yes       |
+| `times_used`   | number    | 156                | ✅ Yes       |
+| `package_name` | text/null | null               | ⚠️ Not used  |
+| `created_at`   | timestamp | (auto)             | ⚠️ Not used  |
 
 ### Image Column
 
@@ -47,12 +47,12 @@ Analysis of `Offers.css`:
 ### Mapped Columns:
 
 ```javascript
-- Offer Title     → Card title (h3)
-- Discount        → Discount percentage (p.offer-desc)
-- Service         → Used for both "Service:" and "Category:" display + filtering
-- Promo Code      → Promo code (li)
-- Valid Until     → Expiration date (li, formatted)
-- Used            → Usage count (li)
+- offer_title     → Card title (h3)
+- discount        → Discount percentage (p.offer-desc)
+- service_name    → Used for both "Service:" and "Category:" display + filtering
+- promo_code      → Promo code (li)
+- valid_until     → Expiration date (li, formatted)
+- times_used      → Usage count (li)
 ```
 
 ## 📋 What's Correct

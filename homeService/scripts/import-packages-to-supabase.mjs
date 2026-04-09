@@ -74,14 +74,14 @@ const rows = sectionMatches.flatMap(([, sectionHtml]) => {
       const services = listItems.filter((item) => item !== pointItem);
 
       return {
-        'Package Name': name,
-        Price: price,
-        Discount: 0,
-        Services: services.join('\n'),
-        Point: point,
-        package_catagory: category,
-        catagory_description: categoryDescription,
-        package_description: packageDescription,
+        package_name: name,
+        price: price,
+        discount: 0,
+        services_included: services.join('\n'),
+        points: point,
+        package_category: category,
+        category_description: categoryDescription,
+        description: packageDescription,
       };
     })
     .filter(Boolean);
@@ -91,15 +91,15 @@ const uniqueRows = [];
 const seenNames = new Set();
 
 for (const row of rows) {
-  if (seenNames.has(row['Package Name'])) continue;
-  seenNames.add(row['Package Name']);
+  if (seenNames.has(row.package_name)) continue;
+  seenNames.add(row.package_name);
   uniqueRows.push(row);
 }
 
 console.log(`Extracted package rows: ${rows.length}`);
 console.log(`Unique package rows: ${uniqueRows.length}`);
 
-const inserted = await request('/rest/v1/Package?on_conflict=Package%20Name', {
+const inserted = await request('/rest/v1/packages?on_conflict=package_name', {
   method: 'POST',
   headers: {
     Prefer: 'return=representation,resolution=merge-duplicates',
@@ -110,7 +110,7 @@ const inserted = await request('/rest/v1/Package?on_conflict=Package%20Name', {
 console.log(`Upserted package rows: ${inserted.length}`);
 
 const finalRows = await request(
-  '/rest/v1/Package?select=Package%20Name,Price,Discount,Services,Point,package_catagory,catagory_description,package_description&order=Package%20Name.asc'
+  '/rest/v1/packages?select=package_name,price,discount,services_included,points,package_category,category_description,description&order=package_name.asc'
 );
 
 console.log(`Final package row count: ${finalRows.length}`);

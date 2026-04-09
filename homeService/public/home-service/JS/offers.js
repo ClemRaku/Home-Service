@@ -56,7 +56,7 @@ const formatDate = (dateString) => {
 
 // Create offer card HTML
 const createOfferCard = (offer) => {
-  const filterCategory = mapServiceToFilter(offer.Service || '');
+  const filterCategory = mapServiceToFilter(offer.service_name || '');
   const isActive = isOfferActive(offer);
 
   return `
@@ -70,15 +70,15 @@ const createOfferCard = (offer) => {
         <span class="discount-badge">Active</span>
       </div>
       <div class="offer-body">
-        <h3>${offer['Offer Title'] || 'Special Offer'}</h3>
-        <p class="offer-desc">${offer.Discount || 0}% OFF</p>
+        <h3>${offer.offer_title || 'Special Offer'}</h3>
+        <p class="offer-desc">${offer.discount || 0}% OFF</p>
         <div class="offer-terms">
           <ul>
-            <li><i data-lucide="wrench"></i> Service: ${offer.Service || 'N/A'}</li>
-            <li><i data-lucide="layers"></i> Category: ${offer.Service || 'N/A'}</li>
-            <li><i data-lucide="ticket"></i> Code: ${offer['Promo Code'] || 'N/A'}</li>
-            <li><i data-lucide="calendar"></i> Valid until: ${formatDate(offer['Valid Until']) || 'N/A'}</li>
-            <li><i data-lucide="user"></i> Used: ${offer.Used || 0} times</li>
+            <li><i data-lucide="wrench"></i> Service: ${offer.service_name || 'N/A'}</li>
+            <li><i data-lucide="layers"></i> Category: ${offer.service_name || 'N/A'}</li>
+            <li><i data-lucide="ticket"></i> Code: ${offer.promo_code || 'N/A'}</li>
+            <li><i data-lucide="calendar"></i> Valid until: ${formatDate(offer.valid_until) || 'N/A'}</li>
+            <li><i data-lucide="user"></i> Used: ${offer.times_used || 0} times</li>
           </ul>
         </div>
         <button class="offer-btn">Book This Offer</button>
@@ -108,7 +108,7 @@ const loadOffers = async () => {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/Offer?select=Offer%20Title,Service,Discount,"Promo Code","Valid Until",Used,status&order=Offer%20Title.asc`,
+      `${SUPABASE_URL}/rest/v1/offers?select=offer_title,service_name,discount,promo_code,valid_until,times_used,status&order=offer_title.asc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
