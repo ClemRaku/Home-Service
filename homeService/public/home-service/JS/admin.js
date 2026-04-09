@@ -6,6 +6,7 @@ if (typeof window.SUPABASE_URL === 'undefined') {
 
 const revenueChart = document.getElementById("revenueChart");
 const bookingChart = document.getElementById("bookingChart");
+const servicesCard = document.querySelector(".services-card");
 
 const MONTH_ORDER = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -54,6 +55,164 @@ const parseTakaValue = (value) => {
 
   const parsedValue = Number(sanitizedValue);
   return Number.isFinite(parsedValue) ? parsedValue : 0;
+};
+
+const escapeHtml = (value) =>
+  String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+const parseCountValue = (value) => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const sanitizedValue = String(value || "")
+    .replace(/[^\d.-]/g, "")
+    .trim();
+
+  const parsedValue = Number(sanitizedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : 0;
+};
+
+const getServicePerformanceName = (row) =>
+  row?.service_name ||
+  row?.service ||
+  row?.["Service Name"] ||
+  row?.["service_name"] ||
+  "Unnamed Service";
+
+const getServicePerformanceBookings = (row) =>
+  parseCountValue(
+    row?.bookings ??
+      row?.booking_count ??
+      row?.total_bookings ??
+      row?.["Bookings"] ??
+      row?.["Booking Count"] ??
+      row?.["Total Bookings"]
+  );
+
+const getServicePerformanceRevenue = (row) =>
+  parseTakaValue(
+    row?.revenue ??
+      row?.total_revenue ??
+      row?.taka ??
+      row?.amount ??
+      row?.["Revenue"] ??
+      row?.["Total Revenue"] ??
+      row?.["Taka"]
+  );
+
+const formatCurrency = (value) => {
+  const numericValue = parseTakaValue(value);
+  return `$${numericValue.toLocaleString("en-US")}`;
+};
+
+const renderServicePerformanceState = (message) => {
+  if (!servicesCard) {
+    return;
+  }
+
+  const existingRows = servicesCard.querySelectorAll(".service-row");
+  existingRows.forEach((row) => row.remove());
+
+  let stateElement = servicesCard.querySelector(".services-empty-state");
+  if (!stateElement) {
+    stateElement = document.createElement("p");
+    stateElement.className = "services-empty-state";
+    servicesCard.appendChild(stateElement);
+  }
+
+  stateElement.textContent = message;
+};
+
+const renderTopPerformingServices = (rows) => {
+  if (!servicesCard) {
+    return;
+  }
+
+  const existingRows = servicesCard.querySelectorAll(".service-row");
+  existingRows.forEach((row) => row.remove());
+  servicesCard.querySelector(".services-empty-state")?.remove();
+
+  if (!Array.isArray(rows) || !rows.length) {
+    renderServicePerformanceState(
+      "No service_performance rows are being returned from Supabase."
+    );
+    return;
+  }
+
+  const normalizedRows = rows
+    .map((row) => ({
+      name: getServicePerformanceName(row),
+      bookings: getServicePerformanceBookings(row),
+      revenue: getServicePerformanceRevenue(row),
+    }))
+    .filter((row) => row.name)
+    .sort((firstRow, secondRow) => {
+      if (secondRow.bookings !== firstRow.bookings) {
+        return secondRow.bookings - firstRow.bookings;
+      }
+
+      return secondRow.revenue - firstRow.revenue;
+    })
+    .slice(0, 5);
+
+  if (!normalizedRows.length) {
+    renderServicePerformanceState(
+      "The service_performance data could not be mapped to service names, bookings, and revenue."
+    );
+    return;
+  }
+
+  const maxBookings = Math.max(...normalizedRows.map((row) => row.bookings), 1);
+
+  normalizedRows.forEach((row, index) => {
+    const rowMarkup = document.createElement("div");
+    rowMarkup.className = "service-row";
+    rowMarkup.innerHTML = `
+      <div class="service-info">
+        <span class="badge">#${index + 1}</span>
+        <div>
+          <h5>${escapeHtml(row.name)}</h5>
+          <p>${escapeHtml(row.bookings)} bookings <strong>${escapeHtml(
+            formatCurrency(row.revenue)
+          )}</strong></p>
+        </div>
+      </div>
+      <div class="progress"><span style="width: ${Math.max(
+        12,
+        Math.round((row.bookings / maxBookings) * 100)
+      )}%"></span></div>
+    `;
+
+    servicesCard.appendChild(rowMarkup);
+  });
+};
+
+const loadTopPerformingServices = async () => {
+  if (!servicesCard) {
+    return;
+  }
+
+  try {
+    const rows = await window.supabaseRequest(
+      "/rest/v1/service_performance?select=*",
+      {
+        method: "GET",
+      }
+    );
+
+    renderTopPerformingServices(Array.isArray(rows) ? rows : []);
+  } catch (error) {
+    console.error("Unable to load top performing services:", error);
+    renderServicePerformanceState(
+      "Unable to load Top Performing Services from Supabase."
+    );
+  }
 };
 
 if (typeof window.supabaseRequest === 'undefined') {
@@ -196,6 +355,7 @@ const buildBookingChart = () => {
 
 buildRevenueChart();
 buildBookingChart();
+loadTopPerformingServices();
 
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("sidebar");

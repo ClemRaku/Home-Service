@@ -4,7 +4,11 @@ const sidebar = document.getElementById("sidebar");
 const dashboard = document.querySelector(".dashboard");
 const scheduleTableBody = document.getElementById("scheduleTableBody");
 const scheduleForm = document.querySelector(".schedule-modal__form");
+const newScheduleButton = document.getElementById("newScheduleBtn");
+const scheduleModalTitle = document.getElementById("scheduleModalTitle");
+const scheduleBookingIdInput = document.getElementById("scheduleBookingId");
 const scheduleCustomerInput = document.getElementById("scheduleCustomer");
+const scheduleCustomerEmailInput = document.getElementById("scheduleCustomerEmail");
 const scheduleServiceSelect = document.getElementById("scheduleService");
 const scheduleEmployeeSelect = document.getElementById("scheduleEmployee");
 const scheduleDateInput = document.getElementById("scheduleDate");
@@ -33,6 +37,8 @@ const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o";
 
 let scheduleRows = [];
+let serviceOptions = [];
+let employeeOptions = [];
 
 if (menuToggle && sidebar && dashboard) {
   menuToggle.addEventListener("click", () => {
@@ -173,6 +179,106 @@ const buildScheduledAtValue = (dateValue, timeValue) => {
   return `${dateValue}T${timeValue}:00+00:00`;
 };
 
+const populateServiceOptions = (services = []) => {
+  if (!scheduleServiceSelect) {
+    return;
+  }
+
+  const uniqueServices = [...new Set(
+    services
+      .map((service) => service?.["Service Name"] ?? service?.service_name ?? "")
+      .map((name) => String(name).trim())
+      .filter(Boolean)
+  )];
+
+  serviceOptions = uniqueServices;
+  const currentValue = scheduleServiceSelect.value;
+
+  scheduleServiceSelect.innerHTML = '<option value="">Select a service</option>';
+
+  uniqueServices.forEach((serviceName) => {
+    const option = document.createElement("option");
+    option.value = serviceName;
+    option.textContent = serviceName;
+    scheduleServiceSelect.appendChild(option);
+  });
+
+  if (currentValue && uniqueServices.includes(currentValue)) {
+    scheduleServiceSelect.value = currentValue;
+  }
+};
+
+const populateEmployeeOptions = (employees = []) => {
+  if (!scheduleEmployeeSelect) {
+    return;
+  }
+
+  const uniqueEmployees = [...new Set(
+    employees
+      .map((employee) => employee?.["Full Name"] ?? employee?.full_name ?? "")
+      .map((name) => String(name).trim())
+      .filter(Boolean)
+  )];
+
+  employeeOptions = uniqueEmployees;
+  const currentValue = scheduleEmployeeSelect.value;
+
+  scheduleEmployeeSelect.innerHTML = '<option value="">Select an employee</option>';
+
+  uniqueEmployees.forEach((employeeName) => {
+    const option = document.createElement("option");
+    option.value = employeeName;
+    option.textContent = employeeName;
+    scheduleEmployeeSelect.appendChild(option);
+  });
+
+  if (currentValue && uniqueEmployees.includes(currentValue)) {
+    scheduleEmployeeSelect.value = currentValue;
+  }
+};
+
+const loadServiceOptions = async () => {
+  if (!scheduleServiceSelect) {
+    return;
+  }
+
+  try {
+    const services = await supabaseRequest(
+      "/rest/v1/Service?select=Service%20Name&order=Service%20Name.asc",
+      {
+        method: "GET",
+      }
+    );
+
+    populateServiceOptions(Array.isArray(services) ? services : []);
+  } catch (error) {
+    console.error("Failed to load service options:", error);
+    scheduleServiceSelect.innerHTML =
+      '<option value="">Unable to load services</option>';
+  }
+};
+
+const loadEmployeeOptions = async () => {
+  if (!scheduleEmployeeSelect) {
+    return;
+  }
+
+  try {
+    const employees = await supabaseRequest(
+      "/rest/v1/Employee?select=Full%20Name&order=Full%20Name.asc",
+      {
+        method: "GET",
+      }
+    );
+
+    populateEmployeeOptions(Array.isArray(employees) ? employees : []);
+  } catch (error) {
+    console.error("Failed to load employee options:", error);
+    scheduleEmployeeSelect.innerHTML =
+      '<option value="">Unable to load employees</option>';
+  }
+};
+
 const persistScheduleUpdate = async (bookingId, payload) => {
   const encodedBookingId = encodeURIComponent(bookingId);
   const updatedRows = await supabaseRequest(
@@ -190,6 +296,21 @@ const persistScheduleUpdate = async (bookingId, payload) => {
   }
 
   return updatedRows[0];
+};
+
+const persistScheduleInsert = async (payload) => {
+  const insertedRows = await supabaseRequest("/rest/v1/schedule", {
+    method: "POST",
+    body: JSON.stringify([payload]),
+  });
+
+  if (!insertedRows?.length) {
+    throw new Error(
+      "No row was inserted. This usually means Supabase Row Level Security (RLS) is blocking INSERT on the schedule table."
+    );
+  }
+
+  return insertedRows[0];
 };
 
 const persistScheduleStatusUpdate = async (bookingId, status) => {
@@ -304,6 +425,37 @@ const closeScheduleModal = () => {
   scheduleModal.setAttribute("aria-hidden", "true");
 };
 
+const resetScheduleForm = () => {
+  setFormValue(scheduleBookingIdInput, "");
+  setFormValue(scheduleCustomerInput, "");
+  setFormValue(scheduleCustomerEmailInput, "");
+  populateServiceOptions(serviceOptions.map((name) => ({ "Service Name": name })));
+  setFormValue(scheduleServiceSelect, "");
+  populateEmployeeOptions(employeeOptions.map((name) => ({ "Full Name": name })));
+  setFormValue(scheduleEmployeeSelect, "");
+  setFormValue(scheduleDateInput, "");
+  setFormValue(scheduleTimeInput, "");
+
+  if (scheduleForm) {
+    delete scheduleForm.dataset.bookingId;
+    scheduleForm.dataset.mode = "create";
+  }
+
+  if (scheduleModalTitle) {
+    scheduleModalTitle.textContent = "New Schedule";
+  }
+
+  const submitButton = scheduleForm?.querySelector(".modal-btn.save");
+  if (submitButton) {
+    submitButton.textContent = "Create Schedule";
+  }
+};
+
+const openCreateScheduleModal = () => {
+  resetScheduleForm();
+  openScheduleModal();
+};
+
 const openBookingModal = () => {
   if (!bookingModal) {
     return;
@@ -357,7 +509,9 @@ const populateScheduleModal = (record) => {
     ? new Date(record.scheduled_at)
     : null;
 
+  setFormValue(scheduleBookingIdInput, record.booking_id || "");
   setFormValue(scheduleCustomerInput, record.customer_name || "");
+  setFormValue(scheduleCustomerEmailInput, record.customer_email || "");
   setFormValue(scheduleServiceSelect, record.service_type || "");
   setFormValue(scheduleEmployeeSelect, record.employee_name || "");
 
@@ -371,7 +525,17 @@ const populateScheduleModal = (record) => {
   }
 
   if (scheduleForm) {
+    scheduleForm.dataset.mode = "edit";
     scheduleForm.dataset.bookingId = record.booking_id || "";
+  }
+
+  if (scheduleModalTitle) {
+    scheduleModalTitle.textContent = "Edit Schedule";
+  }
+
+  const submitButton = scheduleForm?.querySelector(".modal-btn.save");
+  if (submitButton) {
+    submitButton.textContent = "Save Changes";
   }
 };
 
@@ -415,6 +579,18 @@ const syncScheduleRowInState = (updatedRecord) => {
   );
 };
 
+const insertScheduleRowInState = (newRecord) => {
+  if (!newRecord?.booking_id) {
+    return;
+  }
+
+  scheduleRows = [...scheduleRows, newRecord].sort((a, b) => {
+    const first = new Date(a?.scheduled_at || 0).getTime();
+    const second = new Date(b?.scheduled_at || 0).getTime();
+    return first - second;
+  });
+};
+
 const setActionState = (state) => {
   bookingActionStep = state;
   if (!bookingProgressButton || !bookingActionLabel) {
@@ -452,6 +628,12 @@ const setActionState = (state) => {
 modalCloseTriggers.forEach((trigger) => {
   trigger.addEventListener("click", closeScheduleModal);
 });
+
+if (newScheduleButton) {
+  newScheduleButton.addEventListener("click", () => {
+    openCreateScheduleModal();
+  });
+}
 
 if (scheduleTableBody) {
   scheduleTableBody.addEventListener("click", (event) => {
@@ -569,13 +751,29 @@ if (scheduleForm) {
   scheduleForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const bookingId = scheduleForm.dataset.bookingId || "";
+    const formMode = scheduleForm.dataset.mode || "edit";
+    const bookingId = scheduleBookingIdInput?.value.trim() || scheduleForm.dataset.bookingId || "";
+
     if (!bookingId) {
+      window.alert("Booking ID is required.");
+      return;
+    }
+
+    if (
+      !scheduleCustomerInput?.value.trim() ||
+      !scheduleServiceSelect?.value.trim() ||
+      !scheduleEmployeeSelect?.value.trim() ||
+      !scheduleDateInput?.value ||
+      !scheduleTimeInput?.value
+    ) {
+      window.alert("Please fill in all required schedule fields.");
       return;
     }
 
     const payload = {
+      booking_id: bookingId,
       customer_name: scheduleCustomerInput?.value.trim() || null,
+      customer_email: scheduleCustomerEmailInput?.value.trim() || null,
       service_type: scheduleServiceSelect?.value.trim() || null,
       employee_name: scheduleEmployeeSelect?.value.trim() || null,
       scheduled_at: buildScheduledAtValue(
@@ -585,24 +783,50 @@ if (scheduleForm) {
     };
 
     const submitButton = scheduleForm.querySelector(".modal-btn.save");
-    const originalButtonText = submitButton?.textContent || "Save Changes";
+    const originalButtonText =
+      submitButton?.textContent ||
+      (formMode === "create" ? "Create Schedule" : "Save Changes");
 
     try {
       if (submitButton) {
         submitButton.disabled = true;
-        submitButton.textContent = "Saving...";
+        submitButton.textContent =
+          formMode === "create" ? "Creating..." : "Saving...";
       }
 
-      const updatedRecord = await persistScheduleUpdate(bookingId, payload);
-      syncScheduleRowInState(updatedRecord);
+      if (formMode === "create") {
+        const existingRecord = getScheduleByBookingId(bookingId);
+        if (existingRecord) {
+          throw new Error("A schedule with this Booking ID already exists.");
+        }
+
+        const insertedRecord = await persistScheduleInsert({
+          ...payload,
+          is_scheduled: true,
+          is_in_progress: false,
+          is_completed: false,
+        });
+
+        insertScheduleRowInState(insertedRecord);
+      } else {
+        const updatedRecord = await persistScheduleUpdate(bookingId, {
+          customer_name: payload.customer_name,
+          customer_email: payload.customer_email,
+          service_type: payload.service_type,
+          employee_name: payload.employee_name,
+          scheduled_at: payload.scheduled_at,
+        });
+        syncScheduleRowInState(updatedRecord);
+        activeBookingRow = scheduleTableBody?.querySelector(
+          `tr[data-booking-id="${CSS.escape(updatedRecord.booking_id)}"]`
+        ) || null;
+        activeScheduleRecord = getScheduleByBookingId(updatedRecord.booking_id);
+      }
+
       renderScheduleRows(scheduleRows);
 
-      activeBookingRow = scheduleTableBody?.querySelector(
-        `tr[data-booking-id="${CSS.escape(updatedRecord.booking_id)}"]`
-      ) || null;
-      activeScheduleRecord = getScheduleByBookingId(updatedRecord.booking_id);
-
       closeScheduleModal();
+      resetScheduleForm();
     } catch (error) {
       console.error("Failed to update schedule record:", error);
       window.alert(
@@ -629,5 +853,8 @@ if (typeof lucide !== "undefined") {
   lucide.createIcons();
 }
 
+resetScheduleForm();
+loadServiceOptions();
+loadEmployeeOptions();
 loadSchedules();
 })();

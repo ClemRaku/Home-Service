@@ -92,7 +92,7 @@
                 ></i>
               </div>
             </div>
-            <button class="primary-btn" type="button">
+            <button class="primary-btn" type="button" id="newScheduleBtn">
               <i data-lucide="plus"></i>
               <span>New Schedule</span>
             </button>
@@ -141,14 +141,33 @@
           </button>
         </div>
         <form class="schedule-modal__form">
-          <div class="schedule-modal__group">
-            <label for="scheduleCustomer">Customer</label>
-            <input id="scheduleCustomer" type="text" value="Sarah Johnson" />
+          <div class="schedule-modal__grid">
+            <div class="schedule-modal__group">
+              <label for="scheduleBookingId">Booking ID</label>
+              <input id="scheduleBookingId" type="text" placeholder="BK-1005" />
+            </div>
+            <div class="schedule-modal__group">
+              <label for="scheduleCustomer">Customer</label>
+              <input
+                id="scheduleCustomer"
+                type="text"
+                placeholder="Sarah Johnson"
+              />
+            </div>
+            <div class="schedule-modal__group">
+              <label for="scheduleCustomerEmail">Customer Email</label>
+              <input
+                id="scheduleCustomerEmail"
+                type="email"
+                placeholder="customer@example.com"
+              />
+            </div>
           </div>
           <div class="schedule-modal__grid">
             <div class="schedule-modal__group">
               <label for="scheduleService">Service</label>
               <select id="scheduleService">
+                <option value="">Select a service</option>
                 <option>Deep Cleaning</option>
                 <option>AC Maintenance</option>
                 <option>Plumbing Repair</option>
@@ -157,6 +176,7 @@
             <div class="schedule-modal__group">
               <label for="scheduleEmployee">Employee</label>
               <select id="scheduleEmployee">
+                <option value="">Select an employee</option>
                 <option>Michael Lee</option>
                 <option>Emily Stone</option>
                 <option>James Walker</option>
@@ -164,11 +184,11 @@
             </div>
             <div class="schedule-modal__group">
               <label for="scheduleDate">Date</label>
-              <input id="scheduleDate" type="date" value="2026-04-12" />
+              <input id="scheduleDate" type="date" />
             </div>
             <div class="schedule-modal__group">
               <label for="scheduleTime">Time</label>
-              <input id="scheduleTime" type="time" value="10:00" />
+              <input id="scheduleTime" type="time" />
             </div>
           </div>
           <div class="schedule-modal__actions">
@@ -229,11 +249,17 @@
           </div>
           <div class="booking-modal__status">
             Current status:
-            <span class="booking-status scheduled" data-booking-status>scheduled</span>
+            <span class="booking-status scheduled" data-booking-status
+              >scheduled</span
+            >
           </div>
         </div>
         <div class="booking-modal__actions">
-          <button class="booking-modal__btn ghost" type="button" data-booking-close>
+          <button
+            class="booking-modal__btn ghost"
+            type="button"
+            data-booking-close
+          >
             Close
           </button>
           <button
