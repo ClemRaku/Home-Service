@@ -1,7 +1,34 @@
+(() => {
 if (typeof window.SUPABASE_URL === 'undefined') {
   window.SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
   window.SUPABASE_ANON_KEY =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+}
+
+if (typeof window.supabaseRequest === 'undefined') {
+  window.supabaseRequest = async (path, options = {}) => {
+    const response = await fetch(`${window.SUPABASE_URL}${path}`, {
+      ...options,
+      headers: {
+        apikey: window.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+        ...(options.headers || {}),
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `Supabase request failed with status ${response.status}`);
+    }
+
+    if (response.status === 204) {
+      return null;
+    }
+
+    return response.json();
+  };
 }
 
 const revenueChart = document.getElementById("revenueChart");
@@ -119,7 +146,7 @@ const getServicePerformanceRevenue = (row) =>
 
 const formatCurrency = (value) => {
   const numericValue = parseTakaValue(value);
-  return `$${numericValue.toLocaleString("en-US")}`;
+  return `৳${numericValue.toLocaleString("en-US")}`;
 };
 
 const renderServicePerformanceState = (message) => {
@@ -169,8 +196,7 @@ const renderTopPerformingServices = (rows) => {
       }
 
       return secondRow.revenue - firstRow.revenue;
-    })
-    .slice(0, 5);
+    });
 
   if (!normalizedRows.length) {
     renderServicePerformanceState(
@@ -223,6 +249,28 @@ const loadTopPerformingServices = async () => {
     renderServicePerformanceState(
       "Unable to load Top Performing Services from Supabase."
     );
+  }
+};
+
+const loadTotalRevenueFromServicePerformance = async () => {
+  try {
+    const rows = await window.supabaseRequest(
+      "/rest/v1/service_performance?select=*",
+      {
+        method: "GET",
+      }
+    );
+
+    const totalRevenue = Array.isArray(rows)
+      ? rows.reduce(
+          (sum, row) => sum + getServicePerformanceRevenue(row),
+          0
+        )
+      : 0;
+
+    setStatCardValue("Total Revenue", formatCurrency(totalRevenue));
+  } catch (error) {
+    console.error("Unable to load total revenue from service_performance:", error);
   }
 };
 
@@ -318,121 +366,13 @@ const loadActiveCustomersCount = async () => {
   }
 };
 
-if (typeof window.supabaseRequest === 'undefined') {
-  window.supabaseRequest = async (path, options = {}) => {
-    const response = await fetch(`${window.SUPABASE_URL}${path}`, {
-      ...options,
-      headers: {
-        apikey: window.SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-        ...(options.headers || {}),
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || `Supabase request failed with status ${response.status}`);
-    }
-
-    if (response.status === 204) {
-      return null;
-    }
-
-    return response.json();
-  };
-}
-
-const getMonthlyRevenueMonth = (row) =>
-  row?.Month ??
-  row?.month ??
-  row?.label ??
-  row?.name ??
-  row?.date ??
-  row?.Date ??
-  row?.created_at ??
-  row?.createdAt ??
-  row?.month_number ??
-  row?.monthIndex ??
-  "";
-
-const getMonthlyRevenueValue = (row) =>
-  row?.Taka ?? row?.taka ?? row?.Revenue ?? row?.revenue ?? row?.amount ?? 0;
-
-const getObjectValueByKeyCandidates = (row, candidates = []) => {
-  if (!row || typeof row !== "object") {
-    return undefined;
-  }
-
-  const rowEntries = Object.entries(row);
-  const normalizedCandidates = candidates.map((candidate) =>
-    String(candidate).toLowerCase().replace(/[^a-z0-9]/g, "")
-  );
-
-  const matchedEntry = rowEntries.find(([key]) => {
-    const normalizedKey = String(key).toLowerCase().replace(/[^a-z0-9]/g, "");
-    return normalizedCandidates.includes(normalizedKey);
-  });
-
-  return matchedEntry?.[1];
-};
-
-const getFlexibleMonthlyRevenueMonth = (row) =>
-  getMonthlyRevenueMonth(row) ||
-  getObjectValueByKeyCandidates(row, [
-    "month",
-    "month_name",
-    "month label",
-    "monthlabel",
-    "period",
-    "date",
-    "created_at",
-    "month_number",
-  ]) ||
-  "";
-
-const getFlexibleMonthlyRevenueValue = (row) =>
-  getMonthlyRevenueValue(row) ??
-  getObjectValueByKeyCandidates(row, [
-    "taka",
-    "revenue",
-    "total_revenue",
-    "monthly_revenue",
-    "amount",
-    "value",
-    "income",
-  ]) ??
-  0;
-
-const fetchMonthlyRevenueRows = async () => {
-  const endpoints = [
-    '/rest/v1/monthly_revenue?select=*',
-    '/rest/v1/monthly%20revenue?select=*',
-    '/rest/v1/Monthly_Revenue?select=*',
-    '/rest/v1/Monthly%20Revenue?select=*',
-    '/rest/v1/monthlyRevenue?select=*',
-  ];
-
-  for (const endpoint of endpoints) {
-    try {
-      const rows = await window.supabaseRequest(endpoint, {
-        method: 'GET',
-      });
-
-      if (Array.isArray(rows) && rows.length) {
-        return rows;
-      }
-    } catch (error) {
-      console.warn(`Monthly revenue query failed for ${endpoint}:`, error);
-    }
-  }
-
-  return [];
-};
-
 const ADMIN_getMonthlyRevenueData = async () => {
-  const rows = await fetchMonthlyRevenueRows();
+  const rows = await window.supabaseRequest(
+    '/rest/v1/service_performance?select=year,month,revenue&order=year.asc,month.asc',
+    {
+      method: 'GET',
+    }
+  );
 
   if (!Array.isArray(rows) || !rows.length) {
     return null;
@@ -440,42 +380,113 @@ const ADMIN_getMonthlyRevenueData = async () => {
 
   const normalizedRows = rows
     .map((row) => ({
-      month: normalizeMonthLabel(getFlexibleMonthlyRevenueMonth(row)),
-      value: parseTakaValue(getFlexibleMonthlyRevenueValue(row)),
+      year: Number(row?.year),
+      monthNumber: Number(row?.month),
+      value: parseTakaValue(row?.revenue),
     }))
-    .filter((row) => row.month);
+    .filter(
+      (row) =>
+        Number.isFinite(row.year) &&
+        Number.isFinite(row.monthNumber) &&
+        row.monthNumber >= 1 &&
+        row.monthNumber <= 12
+    )
+    .sort((firstRow, secondRow) => {
+      if (firstRow.year !== secondRow.year) {
+        return firstRow.year - secondRow.year;
+      }
+
+      return firstRow.monthNumber - secondRow.monthNumber;
+    });
 
   if (!normalizedRows.length) {
     return null;
   }
 
-  const monthlyTotals = normalizedRows.reduce((totals, row) => {
-    totals[row.month] = (totals[row.month] || 0) + row.value;
+  const monthlyTotalsMap = normalizedRows.reduce((totals, row) => {
+    const key = `${row.year}-${String(row.monthNumber).padStart(2, '0')}`;
+
+    if (!totals.has(key)) {
+      totals.set(key, {
+        year: row.year,
+        monthNumber: row.monthNumber,
+        totalRevenue: 0,
+      });
+    }
+
+    totals.get(key).totalRevenue += row.value;
     return totals;
-  }, {});
+  }, new Map());
 
-  const sortedLabels = Object.keys(monthlyTotals).sort((firstMonth, secondMonth) => {
-    const firstIndex = MONTH_ORDER.indexOf(firstMonth);
-    const secondIndex = MONTH_ORDER.indexOf(secondMonth);
-
-    if (firstIndex !== -1 && secondIndex !== -1) {
-      return firstIndex - secondIndex;
-    }
-
-    if (firstIndex !== -1) {
-      return -1;
-    }
-
-    if (secondIndex !== -1) {
-      return 1;
-    }
-
-    return firstMonth.localeCompare(secondMonth);
-  });
+  const lastTwelveMonths = Array.from(monthlyTotalsMap.values()).slice(-12);
 
   return {
-    labels: sortedLabels,
-    values: sortedLabels.map((label) => monthlyTotals[label]),
+    labels: lastTwelveMonths.map(
+      (row) => `${MONTH_ORDER[row.monthNumber - 1]} ${row.year}`
+    ),
+    values: lastTwelveMonths.map((row) => row.totalRevenue),
+  };
+};
+
+const ADMIN_getMonthlyBookingData = async () => {
+  const rows = await window.supabaseRequest(
+    '/rest/v1/service_performance?select=year,month,bookings&order=year.asc,month.asc',
+    {
+      method: 'GET',
+    }
+  );
+
+  if (!Array.isArray(rows) || !rows.length) {
+    return null;
+  }
+
+  const normalizedRows = rows
+    .map((row) => ({
+      year: Number(row?.year),
+      monthNumber: Number(row?.month),
+      value: parseCountValue(row?.bookings),
+    }))
+    .filter(
+      (row) =>
+        Number.isFinite(row.year) &&
+        Number.isFinite(row.monthNumber) &&
+        row.monthNumber >= 1 &&
+        row.monthNumber <= 12
+    )
+    .sort((firstRow, secondRow) => {
+      if (firstRow.year !== secondRow.year) {
+        return firstRow.year - secondRow.year;
+      }
+
+      return firstRow.monthNumber - secondRow.monthNumber;
+    });
+
+  if (!normalizedRows.length) {
+    return null;
+  }
+
+  const monthlyTotalsMap = normalizedRows.reduce((totals, row) => {
+    const key = `${row.year}-${String(row.monthNumber).padStart(2, '0')}`;
+
+    if (!totals.has(key)) {
+      totals.set(key, {
+        year: row.year,
+        monthNumber: row.monthNumber,
+        totalBookings: 0,
+      });
+    }
+
+    totals.get(key).totalBookings += row.value;
+    return totals;
+  }, new Map());
+
+  const lastTwelveMonths = Array.from(monthlyTotalsMap.values()).slice(-12);
+
+  return {
+    labels: lastTwelveMonths.map(
+      (row) => `${MONTH_ORDER[row.monthNumber - 1]} ${row.year}`
+    ),
+    values: lastTwelveMonths.map((row) => row.totalBookings),
   };
 };
 
@@ -536,43 +547,64 @@ const buildRevenueChart = async () => {
   }
 };
 
-const buildBookingChart = () => {
+const buildBookingChart = async () => {
   if (!bookingChart) {
     return;
   }
 
-  new Chart(bookingChart, {
-    type: "bar",
-    data: {
-      labels: MONTH_ORDER,
-      datasets: [
-        {
-          data: [90, 102, 118, 97, 126, 142, 136, 150, 138, 160, 148, 170],
-          backgroundColor: "#3b82f6",
-          borderRadius: 10,
-          maxBarThickness: 26,
-        },
-      ],
-    },
-    options: {
-      plugins: {
-        legend: { display: false },
+  try {
+    const bookingData = await ADMIN_getMonthlyBookingData();
+
+    if (!bookingData) {
+      const chartCard = bookingChart.closest('.chart-card');
+      if (chartCard && !chartCard.querySelector('.chart-empty-state')) {
+        const emptyState = document.createElement('p');
+        emptyState.className = 'chart-empty-state';
+        emptyState.textContent = 'No Monthly Booking rows are being returned from service_performance.';
+        bookingChart.insertAdjacentElement('afterend', emptyState);
+      }
+      console.warn('Monthly Booking query returned no rows from service_performance.');
+      return;
+    }
+
+    const { labels, values } = bookingData;
+
+    new Chart(bookingChart, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            data: values,
+            backgroundColor: "#3b82f6",
+            borderRadius: 10,
+            maxBarThickness: 26,
+          },
+        ],
       },
-      scales: {
-        x: {
-          grid: { display: false },
+      options: {
+        plugins: {
+          legend: { display: false },
         },
-        y: {
-          grid: { color: "#eef2f7" },
+        scales: {
+          x: {
+            grid: { display: false },
+          },
+          y: {
+            grid: { color: "#eef2f7" },
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error('Unable to load monthly booking chart data:', error);
+  }
 };
 
 buildRevenueChart();
 buildBookingChart();
 loadTopPerformingServices();
+loadTotalRevenueFromServicePerformance();
 loadActiveEmployeesCount();
 loadActiveCustomersCount();
 
@@ -622,3 +654,5 @@ loadAdminTopbarInfo();
 if (typeof lucide !== "undefined") {
   lucide.createIcons();
 }
+
+})();
