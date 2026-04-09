@@ -90,9 +90,8 @@ const applyLoggedInNavbar = () => {
   }
 
   const avatarButton = authLinks.querySelector('.user-avatar');
-  avatarButton?.addEventListener('dblclick', () => {
-    localStorage.removeItem('hsAuthUser');
-    window.location.reload();
+  avatarButton?.addEventListener('click', () => {
+    window.location.href = '../Html/CustomerProfile.html';
   });
 };
 
