@@ -12,10 +12,7 @@
       rel="stylesheet"
     />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="../CSS/CustomerProfile.css" />
   </head>
   <body>
@@ -28,34 +25,34 @@
 
         <nav class="profile-nav" aria-label="Customer Profile Navigation">
           <a href="../Html/CustomerProfile.html" class="active">
-            <i class="fa-regular fa-user"></i>
+            <i data-lucide="user"></i>
             Profile
           </a>
           <a href="../Html/CustomerBoooking.html">
-            <i class="fa-regular fa-calendar-check"></i>
+            <i data-lucide="calendar-check"></i>
             Bookings
           </a>
           <a href="../Html/CustomerTracker.html">
-            <i class="fa-solid fa-location-dot"></i>
+            <i data-lucide="map-pin"></i>
             Track
           </a>
           <a href="../Html/CustomerSetting.html">
-            <i class="fa-solid fa-gear"></i>
+            <i data-lucide="settings"></i>
             Settings
           </a>
-          <a href="#">
-            <i class="fa-regular fa-message"></i>
+          <a href="../Html/CustomerMessage.html">
+            <i data-lucide="message-circle"></i>
             Messages
           </a>
         </nav>
 
         <nav class="profile-nav profile-nav-bottom" aria-label="Customer Quick Actions">
           <a href="../Html/Home.html">
-            <i class="fa-solid fa-house"></i>
+            <i data-lucide="house"></i>
             Back to Home
           </a>
           <a href="../Html/Login.html">
-            <i class="fa-solid fa-right-from-bracket"></i>
+            <i data-lucide="log-out"></i>
             Logout
           </a>
         </nav>
@@ -63,7 +60,7 @@
 
       <main class="profile-main">
         <a href="./Home.html" class="home-close-btn" aria-label="Back to Home">
-          <i class="fa-solid fa-xmark"></i>
+          <i data-lucide="x"></i>
         </a>
 
         <h2 class="page-title">Profile</h2>
@@ -86,7 +83,7 @@
                 aria-label="Choose a new avatar image"
               />
               <button class="camera-btn" type="button" aria-label="Update avatar">
-                <i class="fa-solid fa-camera"></i>
+                <i data-lucide="camera"></i>
               </button>
             </div>
 
@@ -97,11 +94,11 @@
               </div>
 
               <div class="info-row">
-                <p><i class="fa-solid fa-coins"></i> <strong>2,450 Coins</strong></p>
+                <p><i data-lucide="coins"></i> <strong>2,450 Coins</strong></p>
                 <p>
-                  <i class="fa-regular fa-money-bill-1"></i>
+                  <i data-lucide="badge-dollar-sign"></i>
                   <strong>$125.00</strong>
-                  <i class="fa-solid fa-plus wallet-plus-icon" aria-hidden="true"></i>
+                  <i data-lucide="plus" class="wallet-plus-icon" aria-hidden="true"></i>
                 </p>
               </div>
             </div>
@@ -174,5 +171,8 @@
     </div>
 
     <script src="../JS/CustomerProfile.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
   </body>
 </html>

@@ -7,8 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="../CSS/CustomerTacker.css" />
 </head>
 <body>
@@ -21,34 +20,34 @@
 
             <nav class="menu" aria-label="Customer Navigation">
                 <a class="menu-item" href="../Html/CustomerProfile.html">
-                    <i class="fa-regular fa-user"></i>
+                    <i data-lucide="user"></i>
                     Profile
                 </a>
                 <a class="menu-item" href="../Html/CustomerBoooking.html">
-                    <i class="fa-regular fa-calendar-check"></i>
+                    <i data-lucide="calendar-check"></i>
                     Bookings
                 </a>
                 <a class="menu-item active" href="../Html/CustomerTracker.html">
-                    <i class="fa-solid fa-location-dot"></i>
+                    <i data-lucide="map-pin"></i>
                     Track
                 </a>
                 <a class="menu-item" href="../Html/CustomerSetting.html">
-                    <i class="fa-solid fa-gear"></i>
+                    <i data-lucide="settings"></i>
                     Settings
                 </a>
                 <a class="menu-item" href="../Html/Messages.html">
-                    <i class="fa-regular fa-message"></i>
+                    <i data-lucide="message-circle"></i>
                     Messages
                 </a>
             </nav>
 
             <div class="sidebar-bottom">
                 <a class="menu-item" href="../Html/Home.html">
-                    <i class="fa-solid fa-house"></i>
+                    <i data-lucide="house"></i>
                     Back to Home
                 </a>
                 <a class="menu-item" href="../Html/Login.html">
-                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <i data-lucide="log-out"></i>
                     Logout
                 </a>
             </div>
@@ -75,9 +74,9 @@
                             </div>
                             <div class="card__role">Electrician</div>
                             <div class="card__meta">
-                                <span><i class="bi bi-clock"></i> ETA: 15 mins</span>
-                                <span><i class="bi bi-geo-alt"></i> 2.3 km away</span>
-                                <span><i class="bi bi-geo-alt"></i> Near Times Square, Manhattan</span>
+                                <span><i data-lucide="clock"></i> ETA: 15 mins</span>
+                                <span><i data-lucide="map-pin"></i> 2.3 km away</span>
+                                <span><i data-lucide="map-pin"></i> Near Times Square, Manhattan</span>
                             </div>
                         </div>
                     </div>
@@ -91,7 +90,7 @@
                             data-status="Connected"
                             data-avatar="https://i.pravatar.cc/120?img=12"
                         >
-                            <i class="bi bi-telephone"></i>
+                            <i data-lucide="phone"></i>
                         </button>
                         <button
                             class="primary-btn location-btn"
@@ -120,9 +119,9 @@
                             </div>
                             <div class="card__role">House Cleaning</div>
                             <div class="card__meta">
-                                <span><i class="bi bi-clock"></i> ETA: At location</span>
-                                <span><i class="bi bi-geo-alt"></i> 0 km away</span>
-                                <span><i class="bi bi-geo-alt"></i> 123 Main Street, Your Location</span>
+                                <span><i data-lucide="clock"></i> ETA: At location</span>
+                                <span><i data-lucide="map-pin"></i> 0 km away</span>
+                                <span><i data-lucide="map-pin"></i> 123 Main Street, Your Location</span>
                             </div>
                         </div>
                     </div>
@@ -136,7 +135,7 @@
                             data-status="Connected"
                             data-avatar="https://i.pravatar.cc/120?img=32"
                         >
-                            <i class="bi bi-telephone"></i>
+                            <i data-lucide="phone"></i>
                         </button>
                         <button
                             class="primary-btn location-btn"
@@ -165,9 +164,9 @@
                             </div>
                             <div class="card__role">Plumber</div>
                             <div class="card__meta">
-                                <span><i class="bi bi-clock"></i> ETA: 25 mins</span>
-                                <span><i class="bi bi-geo-alt"></i> 4.1 km away</span>
-                                <span><i class="bi bi-geo-alt"></i> 5th Avenue, Midtown</span>
+                                <span><i data-lucide="clock"></i> ETA: 25 mins</span>
+                                <span><i data-lucide="map-pin"></i> 4.1 km away</span>
+                                <span><i data-lucide="map-pin"></i> 5th Avenue, Midtown</span>
                             </div>
                         </div>
                     </div>
@@ -181,7 +180,7 @@
                             data-status="Connected"
                             data-avatar="https://i.pravatar.cc/120?img=47"
                         >
-                            <i class="bi bi-telephone"></i>
+                            <i data-lucide="phone"></i>
                         </button>
                         <button
                             class="primary-btn location-btn"
@@ -237,7 +236,7 @@
     <div class="location-modal" id="locationModal" aria-hidden="true">
         <div class="location-modal__content" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
             <button class="location-modal__close" type="button" aria-label="Close location details">
-                <i class="fa-solid fa-xmark"></i>
+                <i data-lucide="x"></i>
             </button>
             <div class="location-modal__header">
                 <div class="location-modal__avatar" id="locationModalAvatar">MR</div>
@@ -248,7 +247,7 @@
                             On the way
                         </span>
                         <span class="location-modal__eta" id="locationModalEta">
-                            <i class="bi bi-clock"></i>
+                            <i data-lucide="clock"></i>
                             ETA: 15 mins
                         </span>
                     </div>
@@ -270,12 +269,12 @@
                     rel="noopener noreferrer"
                 >
                     Open in Maps
-                    <i class="bi bi-box-arrow-up-right"></i>
+                    <i data-lucide="external-link"></i>
                 </a>
             </div>
             <div class="location-modal__footer">
                 <span class="location-modal__address" id="locationModalAddress">
-                    <i class="bi bi-geo-alt"></i>
+                    <i data-lucide="map-pin"></i>
                     Near Times Square, Manhattan
                 </span>
                 <span class="location-modal__distance" id="locationModalDistance">2.3 km away</span>
@@ -292,7 +291,7 @@
             <p class="call-modal__role" id="callModalRole">Electrician</p>
             <p class="call-modal__status" id="callModalStatus">Connected</p>
             <button class="call-modal__end" type="button" aria-label="End call">
-                <i class="fa-solid fa-phone-slash"></i>
+                <i data-lucide="phone-off"></i>
             </button>
             <span class="call-modal__hint">Tap to end call</span>
         </div>
@@ -314,19 +313,19 @@
             </p>
             <div class="rating-modal__stars" role="radiogroup" aria-label="Rating">
                 <button class="rating-star" type="button" data-value="1" aria-label="1 star">
-                    <i class="bi bi-star"></i>
+                    <i data-lucide="star"></i>
                 </button>
                 <button class="rating-star" type="button" data-value="2" aria-label="2 stars">
-                    <i class="bi bi-star"></i>
+                    <i data-lucide="star"></i>
                 </button>
                 <button class="rating-star" type="button" data-value="3" aria-label="3 stars">
-                    <i class="bi bi-star"></i>
+                    <i data-lucide="star"></i>
                 </button>
                 <button class="rating-star" type="button" data-value="4" aria-label="4 stars">
-                    <i class="bi bi-star"></i>
+                    <i data-lucide="star"></i>
                 </button>
                 <button class="rating-star" type="button" data-value="5" aria-label="5 stars">
-                    <i class="bi bi-star"></i>
+                    <i data-lucide="star"></i>
                 </button>
             </div>
             <textarea
@@ -342,5 +341,8 @@
     </div>
 
     <script src="../JS/CustomerTracker.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

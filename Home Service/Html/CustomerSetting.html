@@ -12,10 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="../CSS/CustomerSetting.css" />
   </head>
   <body>
@@ -28,34 +25,34 @@
 
         <nav class="menu" aria-label="Customer Navigation">
           <a class="menu-item" href="../Html/CustomerProfile.html">
-            <i class="fa-regular fa-user"></i>
+            <i data-lucide="user"></i>
             Profile
           </a>
           <a class="menu-item" href="../Html/CustomerBoooking.html">
-            <i class="fa-regular fa-calendar-check"></i>
+            <i data-lucide="calendar-check"></i>
             Bookings
           </a>
           <a class="menu-item" href="../Html/CustomerTracker.html">
-            <i class="fa-solid fa-location-dot"></i>
+            <i data-lucide="map-pin"></i>
             Track
           </a>
           <a class="menu-item active" href="../Html/CustomerSetting.html">
-            <i class="fa-solid fa-gear"></i>
+            <i data-lucide="settings"></i>
             Settings
           </a>
-          <a class="menu-item" href="#">
-            <i class="fa-regular fa-message"></i>
+          <a class="menu-item" href="../Html/CustomerMessage.html">
+            <i data-lucide="message-circle"></i>
             Messages
           </a>
         </nav>
 
         <div class="sidebar-bottom">
           <a class="menu-item" href="../Html/Home.html">
-            <i class="fa-solid fa-house"></i>
+            <i data-lucide="house"></i>
             Back to Home
           </a>
           <a class="menu-item" href="../Html/Login.html">
-            <i class="fa-solid fa-right-from-bracket"></i>
+            <i data-lucide="log-out"></i>
             Logout
           </a>
         </div>
@@ -135,14 +132,14 @@
               aria-controls="passwordModal"
             >
               <div class="security-icon icon-green">
-                <i class="fa-solid fa-lock"></i>
+                <i data-lucide="lock"></i>
               </div>
               <div class="security-text">
                 <h4>Change Password</h4>
                 <p>Update your account password</p>
               </div>
               <span class="chevron">
-                <i class="fa-solid fa-chevron-right"></i>
+                <i data-lucide="chevron-right"></i>
               </span>
             </div>
 
@@ -154,14 +151,14 @@
               aria-controls="twoFactorModal"
             >
               <div class="security-icon icon-blue">
-                <i class="fa-solid fa-shield-halved"></i>
+                <i data-lucide="shield"></i>
               </div>
               <div class="security-text">
                 <h4>Two-Factor Authentication</h4>
                 <p>Add an extra layer of security</p>
               </div>
               <span class="chevron">
-                <i class="fa-solid fa-chevron-right"></i>
+                <i data-lucide="chevron-right"></i>
               </span>
             </div>
 
@@ -173,14 +170,14 @@
               aria-controls="privacyModal"
             >
               <div class="security-icon icon-purple">
-                <i class="fa-solid fa-user-shield"></i>
+                <i data-lucide="shield-check"></i>
               </div>
               <div class="security-text">
                 <h4>Privacy Settings</h4>
                 <p>Control who can see your information</p>
               </div>
               <span class="chevron">
-                <i class="fa-solid fa-chevron-right"></i>
+                <i data-lucide="chevron-right"></i>
               </span>
             </div>
           </div>
@@ -326,5 +323,8 @@
     </div>
 
     <script src="../JS/CustomerSetting.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
   </body>
 </html>
