@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Bookings - HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/CustomerBooking.css" />
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../Image/logo.png" alt="HomeServe" />
+                <h1>HomeService</h1>
+            </div>
+
+            <nav class="menu" aria-label="Customer Navigation">
+                <a class="menu-item" href="../Html/CustomerProfile.html">
+                    <i data-lucide="user"></i>
+                    Profile
+                </a>
+                <a class="menu-item active" href="../Html/CustomerBoooking.html">
+                    <i data-lucide="calendar-check"></i>
+                    Bookings
+                </a>
+                <a class="menu-item" href="../Html/CustomerTracker.html">
+                    <i data-lucide="map-pin"></i>
+                    Track
+                </a>
+                <a class="menu-item" href="../Html/CustomerSetting.html">
+                    <i data-lucide="settings"></i>
+                    Settings
+                </a>
+                <a class="menu-item" href="../Html/CustomerMessage.html">
+                    <i data-lucide="message-circle"></i>
+                    Messages
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a class="menu-item" href="../Html/Home.html">
+                    <i data-lucide="house"></i>
+                    Back to Home
+                </a>
+                <a class="menu-item" href="../Html/Login.html">
+                    <i data-lucide="log-out"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="page-header">
+                <h1>My Bookings</h1>
+                <div class="tabs">
+                    <button class="tab active" data-filter="all">All Bookings</button>
+                    <button class="tab" data-filter="upcoming">Upcoming</button>
+                    <button class="tab" data-filter="completed">Completed</button>
+                </div>
+            </header>
+
+            <section class="bookings-grid">
+                <article class="booking-card" data-status="upcoming">
+                    <div class="card-top">
+                        <div class="service-meta">
+                            <div class="service-icon yellow"><i data-lucide="zap"></i></div>
+                            <div>
+                                <h3>Electrician</h3>
+                                <p>Booking #10234</p>
+                            </div>
+                        </div>
+                        <span class="status-pill upcoming">Upcoming</span>
+                    </div>
+                    <div class="details">
+                        <p><i data-lucide="user"></i><strong>Worker:</strong> John Martinez</p>
+                        <p><i data-lucide="calendar"></i><strong>Date:</strong> March 25, 2025</p>
+                        <p><i data-lucide="clock"></i><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
+                        <p><i data-lucide="map-pin"></i><strong>Location:</strong> 123 Main Street, Apt 4B</p>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price">$85.00</div>
+                        <div class="actions">
+                            <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
+                            <button class="details-btn">View Details</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="booking-card" data-status="completed">
+                    <div class="card-top">
+                        <div class="service-meta">
+                            <div class="service-icon mint"><i data-lucide="droplet"></i></div>
+                            <div>
+                                <h3>Plumber</h3>
+                                <p>Booking #10198</p>
+                            </div>
+                        </div>
+                        <span class="status-pill completed">Completed</span>
+                    </div>
+                    <div class="details">
+                        <p><i data-lucide="user"></i><strong>Worker:</strong> Michael Chen</p>
+                        <p><i data-lucide="calendar"></i><strong>Date:</strong> March 20, 2025</p>
+                        <p><i data-lucide="clock"></i><strong>Time:</strong> 2:00 PM - 4:00 PM</p>
+                        <p><i data-lucide="map-pin"></i><strong>Location:</strong> 123 Main Street, Apt 4B</p>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price">$120.00</div>
+                        <div class="actions">
+                            <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
+                            <button class="details-btn">View Details</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="booking-card" data-status="upcoming">
+                    <div class="card-top">
+                        <div class="service-meta">
+                            <div class="service-icon lavender"><i data-lucide="home-heart"></i></div>
+                            <div>
+                                <h3>Maid Service</h3>
+                                <p>Booking #10156</p>
+                            </div>
+                        </div>
+                        <span class="status-pill upcoming">Upcoming</span>
+                    </div>
+                    <div class="details">
+                        <p><i data-lucide="user"></i><strong>Worker:</strong> Emma Wilson</p>
+                        <p><i data-lucide="calendar"></i><strong>Date:</strong> March 28, 2025</p>
+                        <p><i data-lucide="clock"></i><strong>Time:</strong> 9:00 AM - 1:00 PM</p>
+                        <p><i data-lucide="map-pin"></i><strong>Location:</strong> 123 Main Street, Apt 4B</p>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price">$95.00</div>
+                        <div class="actions">
+                            <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
+                            <button class="details-btn">View Details</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="booking-card" data-status="completed">
+                    <div class="card-top">
+                        <div class="service-meta">
+                            <div class="service-icon lavender"><i data-lucide="hammer"></i></div>
+                            <div>
+                                <h3>Carpenter</h3>
+                                <p>Booking #10089</p>
+                            </div>
+                        </div>
+                        <span class="status-pill completed">Completed</span>
+                    </div>
+                    <div class="details">
+                        <p><i data-lucide="user"></i><strong>Worker:</strong> David Brown</p>
+                        <p><i data-lucide="calendar"></i><strong>Date:</strong> March 15, 2025</p>
+                        <p><i data-lucide="clock"></i><strong>Time:</strong> 11:00 AM - 3:00 PM</p>
+                        <p><i data-lucide="map-pin"></i><strong>Location:</strong> 123 Main Street, Apt 4B</p>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price">$150.00</div>
+                        <div class="actions">
+                            <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
+                            <button class="details-btn">View Details</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="booking-card" data-status="upcoming">
+                    <div class="card-top">
+                        <div class="service-meta">
+                            <div class="service-icon yellow"><i data-lucide="zap"></i></div>
+                            <div>
+                                <h3>Electrician</h3>
+                                <p>Booking #10045</p>
+                            </div>
+                        </div>
+                        <span class="status-pill progress">In Progress</span>
+                    </div>
+                    <div class="details">
+                        <p><i data-lucide="user"></i><strong>Worker:</strong> Sarah Thompson</p>
+                        <p><i data-lucide="calendar"></i><strong>Date:</strong> March 22, 2025</p>
+                        <p><i data-lucide="clock"></i><strong>Time:</strong> 3:00 PM - 5:00 PM</p>
+                        <p><i data-lucide="map-pin"></i><strong>Location:</strong> 123 Main Street, Apt 4B</p>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price">$75.00</div>
+                        <div class="actions">
+                            <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
+                            <button class="details-btn">View Details</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="booking-card" data-status="completed">
+                    <div class="card-top">
+                        <div class="service-meta">
+                            <div class="service-icon mint"><i data-lucide="droplet"></i></div>
+                            <div>
+                                <h3>Plumber</h3>
+                                <p>Booking #10012</p>
+                            </div>
+                        </div>
+                        <span class="status-pill completed">Completed</span>
+                    </div>
+                    <div class="details">
+                        <p><i data-lucide="user"></i><strong>Worker:</strong> Robert Garcia</p>
+                        <p><i data-lucide="calendar"></i><strong>Date:</strong> March 10, 2025</p>
+                        <p><i data-lucide="clock"></i><strong>Time:</strong> 1:00 PM - 3:00 PM</p>
+                        <p><i data-lucide="map-pin"></i><strong>Location:</strong> 123 Main Street, Apt 4B</p>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price">$110.00</div>
+                        <div class="actions">
+                            <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
+                            <button class="details-btn">View Details</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="detailsModal" aria-hidden="true">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h2>Booking Details</h2>
+                    <p class="modal-subtitle" id="modalBookingId">Booking #10234</p>
+                </div>
+                <button class="modal-close" type="button" aria-label="Close details">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="modal-service">
+                <div class="modal-icon" id="modalIcon">
+                    <i data-lucide="zap" id="modalIconSymbol"></i>
+                </div>
+                <div class="modal-service-info">
+                    <h3 id="modalServiceName">Electrician</h3>
+                    <span class="status-pill upcoming" id="modalStatus">Upcoming</span>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-item" data-field="worker">
+                    <span>Worker</span>
+                    <strong id="modalWorker">John Martinez</strong>
+                </div>
+                <div class="modal-item" data-field="date">
+                    <span>Date</span>
+                    <strong id="modalDate">March 25, 2025</strong>
+                </div>
+                <div class="modal-item" data-field="time">
+                    <span>Time</span>
+                    <strong id="modalTime">10:00 AM - 12:00 PM</strong>
+                </div>
+                <div class="modal-item full" data-field="location">
+                    <span>Location</span>
+                    <strong id="modalLocation">123 Main Street, Apt 4B</strong>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-price" id="modalPrice">$85.00</div>
+                <button class="modal-action" type="button" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/CustomerBooking.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

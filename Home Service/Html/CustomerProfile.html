@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Profile | HomeService</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/CustomerProfile.css" />
+  </head>
+  <body>
+    <div class="profile-layout">
+      <aside class="profile-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <nav class="profile-nav" aria-label="Customer Profile Navigation">
+          <a href="../Html/CustomerProfile.html" class="active">
+            <i data-lucide="user"></i>
+            Profile
+          </a>
+          <a href="../Html/CustomerBoooking.html">
+            <i data-lucide="calendar-check"></i>
+            Bookings
+          </a>
+          <a href="../Html/CustomerTracker.html">
+            <i data-lucide="map-pin"></i>
+            Track
+          </a>
+          <a href="../Html/CustomerSetting.html">
+            <i data-lucide="settings"></i>
+            Settings
+          </a>
+          <a href="../Html/CustomerMessage.html">
+            <i data-lucide="message-circle"></i>
+            Messages
+          </a>
+        </nav>
+
+        <nav class="profile-nav profile-nav-bottom" aria-label="Customer Quick Actions">
+          <a href="../Html/Home.html">
+            <i data-lucide="house"></i>
+            Back to Home
+          </a>
+          <a href="../Html/Login.html">
+            <i data-lucide="log-out"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <main class="profile-main">
+        <a href="./Home.html" class="home-close-btn" aria-label="Back to Home">
+          <i data-lucide="x"></i>
+        </a>
+
+        <h2 class="page-title">Profile</h2>
+
+        <section class="profile-card">
+          <div class="profile-top">
+            <div class="avatar-wrap">
+              <div class="avatar-box">
+                <img
+                  id="profileAvatar"
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80"
+                  alt="Sarah Johnson"
+                />
+              </div>
+              <input
+                id="avatarInput"
+                class="avatar-input"
+                type="file"
+                accept="image/*"
+                aria-label="Choose a new avatar image"
+              />
+              <button class="camera-btn" type="button" aria-label="Update avatar">
+                <i data-lucide="camera"></i>
+              </button>
+            </div>
+
+            <div class="profile-summary">
+              <div class="name-row">
+                <h3>Sarah Johnson</h3>
+                <span class="membership-badge">Premium Member</span>
+              </div>
+
+              <div class="info-row">
+                <p><i data-lucide="coins"></i> <strong>2,450 Coins</strong></p>
+                <p>
+                  <i data-lucide="badge-dollar-sign"></i>
+                  <strong>$125.00</strong>
+                  <i data-lucide="plus" class="wallet-plus-icon" aria-hidden="true"></i>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              <span>Full Name</span>
+              <input type="text" value="Sarah Johnson" readonly />
+            </label>
+
+            <label>
+              <span>Location</span>
+              <input type="text" value="New York, NY" readonly />
+            </label>
+
+            <label>
+              <span>Phone Number</span>
+              <input type="text" value="+1 (555) 123-4567" readonly />
+            </label>
+
+            <label>
+              <span>Email</span>
+              <input type="email" value="sarah.johnson@email.com" readonly />
+            </label>
+
+            <label class="full">
+              <span>Date of Birth</span>
+              <input type="text" value="March 15, 1990" readonly />
+            </label>
+
+            <label class="full">
+              <span>Address</span>
+              <textarea readonly>123 Main Street, Apartment 4B, New York, NY 10001</textarea>
+            </label>
+          </div>
+
+          <div class="actions" id="profileActions">
+            <button class="btn btn-primary" id="editProfileBtn" type="button">Edit Profile</button>
+            <button class="btn btn-secondary" id="secondaryActionBtn" type="button">Change Password</button>
+          </div>
+        </section>
+
+        <div class="password-modal-overlay" id="passwordModalOverlay" aria-hidden="true">
+          <div class="password-modal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
+            <h3 id="passwordModalTitle">Change Password</h3>
+
+            <label>
+              <span>Current Password</span>
+              <input type="password" id="currentPasswordInput" />
+            </label>
+
+            <label>
+              <span>New Password</span>
+              <input type="password" id="newPasswordInput" />
+            </label>
+
+            <label>
+              <span>Confirm New Password</span>
+              <input type="password" id="confirmPasswordInput" />
+            </label>
+
+            <div class="password-modal-actions">
+              <button class="btn modal-save-btn" id="passwordSaveBtn" type="button">Save</button>
+              <button class="btn modal-cancel-btn" id="passwordCancelBtn" type="button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../JS/CustomerProfile.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
