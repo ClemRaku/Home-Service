@@ -25,6 +25,8 @@ body {
   left: 0;
   width: 256px;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .brand {
@@ -52,6 +54,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.profile-nav-bottom {
+  margin-top: auto;
 }
 
 .profile-nav a {

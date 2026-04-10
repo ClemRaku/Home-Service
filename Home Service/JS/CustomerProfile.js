@@ -2,9 +2,13 @@ const navLinks = document.querySelectorAll(".profile-nav a");
 
 navLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
-    event.preventDefault();
-    navLinks.forEach((item) => item.classList.remove("active"));
-    link.classList.add("active");
+    const href = link.getAttribute("href");
+
+    if (!href || href === "#") {
+      event.preventDefault();
+      navLinks.forEach((item) => item.classList.remove("active"));
+      link.classList.add("active");
+    }
   });
 });
 
