@@ -9,7 +9,7 @@ body {
   background: #f5f7f8;
   color: #1f2a3d;
   min-height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .profile-layout {
@@ -508,5 +508,94 @@ body {
 
   .actions {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    overflow: auto;
+  }
+
+  .profile-sidebar {
+    padding: 16px 12px 20px;
+  }
+
+  .brand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand h1 {
+    font-size: 16px;
+  }
+
+  .profile-nav a,
+  .profile-nav-bottom a {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .profile-nav a i,
+  .profile-nav-bottom a i {
+    font-size: 14px;
+    width: 16px;
+  }
+
+  .profile-main {
+    padding: 14px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .profile-card {
+    padding: 16px;
+  }
+
+  .avatar-box {
+    width: 80px;
+    height: 80px;
+  }
+
+  #profileAvatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .camera-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .name-row h3 {
+    font-size: 18px;
+  }
+
+  .info-row p {
+    font-size: 13px;
+  }
+
+  .form-grid input,
+  .form-grid textarea {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .btn {
+    height: 42px;
+    font-size: 13px;
+    padding: 0 18px;
+  }
+
+  .password-modal {
+    padding: 20px;
+  }
+
+  .password-modal input {
+    font-size: 13px;
+    padding: 10px 12px;
   }
 }

@@ -412,3 +412,80 @@ a {
     gap: 8px;
   }
 }
+
+@media (max-width: 480px) {
+  .login-page {
+    overflow: auto;
+  }
+
+  .login {
+    padding-top: 60px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .login-card {
+    padding: 20px 16px;
+  }
+
+  .login-header h1 {
+    font-size: 24px;
+  }
+
+  .login-header p {
+    font-size: 13px;
+  }
+
+  .login-form label {
+    font-size: 13px;
+  }
+
+  .primary-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .divider span {
+    font-size: 12px;
+  }
+
+  .social-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .login-footer {
+    font-size: 12px;
+  }
+
+  .login-terms {
+    font-size: 11px;
+    padding: 0 10px;
+  }
+
+  .close-btn {
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+  }
+
+  .footer {
+    padding: 40px 14px 16px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .footer-bottom div {
+    justify-content: center;
+  }
+}

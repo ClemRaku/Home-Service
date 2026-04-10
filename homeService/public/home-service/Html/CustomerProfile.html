@@ -51,7 +51,7 @@
             <i data-lucide="house"></i>
             Back to Home
           </a>
-          <a href="../Html/Login.html">
+          <a href="../Html/Home.html" onclick="localStorage.removeItem('hsAuthUser');">
             <i data-lucide="log-out"></i>
             Logout
           </a>
@@ -72,7 +72,7 @@
                 <img
                   id="profileAvatar"
                   src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80"
-                  alt="Sarah Johnson"
+                  alt="Customer"
                 />
               </div>
               <input
@@ -89,15 +89,14 @@
 
             <div class="profile-summary">
               <div class="name-row">
-                <h3>Sarah Johnson</h3>
-                <span class="membership-badge">Premium Member</span>
+                <h3 id="profileName">Loading...</h3>
               </div>
 
               <div class="info-row">
-                <p><i data-lucide="coins"></i> <strong>2,450 Coins</strong></p>
+                <p><i data-lucide="coins"></i> <strong id="profilePoints">0 Points</strong></p>
                 <p>
                   <i data-lucide="badge-dollar-sign"></i>
-                  <strong>$125.00</strong>
+                  <strong id="profileWallet">$0.00</strong>
                   <i data-lucide="plus" class="wallet-plus-icon" aria-hidden="true"></i>
                 </p>
               </div>
@@ -107,32 +106,27 @@
           <div class="form-grid">
             <label>
               <span>Full Name</span>
-              <input type="text" value="Sarah Johnson" readonly />
+              <input type="text" id="fieldFullName" value="" readonly />
             </label>
 
             <label>
               <span>Location</span>
-              <input type="text" value="New York, NY" readonly />
+              <input type="text" id="fieldLocation" value="" readonly />
             </label>
 
             <label>
               <span>Phone Number</span>
-              <input type="text" value="+1 (555) 123-4567" readonly />
+              <input type="text" id="fieldPhone" value="" readonly />
             </label>
 
             <label>
               <span>Email</span>
-              <input type="email" value="sarah.johnson@email.com" readonly />
-            </label>
-
-            <label class="full">
-              <span>Date of Birth</span>
-              <input type="text" value="March 15, 1990" readonly />
+              <input type="email" id="fieldEmail" value="" readonly />
             </label>
 
             <label class="full">
               <span>Address</span>
-              <textarea readonly>123 Main Street, Apartment 4B, New York, NY 10001</textarea>
+              <textarea id="fieldAddress" readonly></textarea>
             </label>
           </div>
 

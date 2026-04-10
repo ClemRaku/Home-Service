@@ -9,7 +9,7 @@ body {
     background: #f5f7f8;
     color: #1f2a3d;
     min-height: 100vh;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .layout {
@@ -292,6 +292,15 @@ body {
     display: none;
 }
 
+.bookings-status,
+.no-bookings {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #9aa3b2;
+}
+
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -520,5 +529,129 @@ body {
 
     .modal-grid {
         grid-template-columns: 1fr;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    .details p {
+        font-size: 14px;
+    }
+
+    .price {
+        font-size: 22px;
+    }
+
+    .service-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .menu-item {
+        min-height: 40px;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        overflow: auto;
+    }
+
+    .sidebar {
+        padding: 16px 12px 20px;
+    }
+
+    .brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .brand h1 {
+        font-size: 16px;
+    }
+
+    .menu-item {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 12px;
+        gap: 8px;
+    }
+
+    .menu-item i {
+        font-size: 14px;
+        width: 16px;
+    }
+
+    .content {
+        padding: 14px;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    .tab {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .booking-card {
+        padding: 14px;
+    }
+
+    .service-meta h3 {
+        font-size: 18px;
+    }
+
+    .service-meta p {
+        font-size: 13px;
+    }
+
+    .details p {
+        font-size: 13px;
+        gap: 6px;
+    }
+
+    .details p i {
+        font-size: 12px;
+    }
+
+    .details p strong {
+        font-size: 12px;
+    }
+
+    .price {
+        font-size: 20px;
+    }
+
+    .details-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .modal {
+        padding: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 18px;
+    }
+
+    .modal-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+
+    .modal-item span {
+        font-size: 11px;
+    }
+
+    .modal-item strong {
+        font-size: 13px;
     }
 }

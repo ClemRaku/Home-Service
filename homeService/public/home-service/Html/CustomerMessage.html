@@ -51,7 +51,7 @@
             <i data-lucide="house"></i>
             Back to Home
           </a>
-          <a href="../Html/Login.html">
+          <a href="../Html/Home.html" onclick="localStorage.removeItem('hsAuthUser');">
             <i data-lucide="log-out"></i>
             Logout
           </a>
@@ -64,130 +64,25 @@
         </header>
 
         <section class="message-shell">
-          <aside class="message-list">
+          <aside class="message-list" id="messageList">
             <div class="search-bar">
               <i data-lucide="search"></i>
-              <input type="text" placeholder="Search messages..." />
+              <input type="text" placeholder="Search messages..." id="searchInput" />
             </div>
-
-            <div class="chat-card active">
-              <div class="chat-avatar">
-                <img
-                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
-                  alt="John Martinez"
-                />
-                <span class="status-dot"></span>
-              </div>
-              <div class="chat-info">
-                <div class="chat-name-row">
-                  <h4>John Martinez</h4>
-                  <span>2m ago</span>
-                </div>
-                <p>I will arrive at 10 AM tomorrow</p>
-                <small>Electrician</small>
-              </div>
-              <span class="unread">2</span>
-            </div>
-
-            <div class="chat-card">
-              <div class="chat-avatar">
-                <img
-                  src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80"
-                  alt="Michael Chen"
-                />
-              </div>
-              <div class="chat-info">
-                <div class="chat-name-row">
-                  <h4>Michael Chen</h4>
-                  <span>1h ago</span>
-                </div>
-                <p>The job is completed. Thank you!</p>
-                <small>Plumber</small>
-              </div>
-            </div>
-
-            <div class="chat-card">
-              <div class="chat-avatar">
-                <img
-                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80"
-                  alt="Emma Wilson"
-                />
-                <span class="status-dot"></span>
-              </div>
-              <div class="chat-info">
-                <div class="chat-name-row">
-                  <h4>Emma Wilson</h4>
-                  <span>3h ago</span>
-                </div>
-                <p>Should I bring my own cleaning supplies?</p>
-                <small>Maid Service</small>
-              </div>
-              <span class="unread">1</span>
-            </div>
-
-            <div class="chat-card">
-              <div class="chat-avatar">
-                <img
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
-                  alt="David Brown"
-                />
-              </div>
-              <div class="chat-info">
-                <div class="chat-name-row">
-                  <h4>David Brown</h4>
-                  <span>2d ago</span>
-                </div>
-                <p>The furniture looks amazing!</p>
-                <small>Carpenter</small>
-              </div>
-            </div>
-
-            <div class="chat-card">
-              <div class="chat-avatar">
-                <img
-                  src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=200&q=80"
-                  alt="Sarah Thompson"
-                />
-                <span class="status-dot"></span>
-              </div>
-              <div class="chat-info">
-                <div class="chat-name-row">
-                  <h4>Sarah Thompson</h4>
-                  <span>30m ago</span>
-                </div>
-                <p>I am working on the wiring now</p>
-                <small>Electrician</small>
-              </div>
-            </div>
-
-            <div class="chat-card">
-              <div class="chat-avatar">
-                <img
-                  src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=200&q=80"
-                  alt="Robert Garcia"
-                />
-              </div>
-              <div class="chat-info">
-                <div class="chat-name-row">
-                  <h4>Robert Garcia</h4>
-                  <span>1w ago</span>
-                </div>
-                <p>You are welcome! Have a great day!</p>
-                <small>Plumber</small>
-              </div>
-            </div>
+            <p class="conversations-status">Loading conversations...</p>
           </aside>
 
           <section class="message-detail">
             <div class="detail-header">
               <div class="detail-user">
                 <img
+                  id="detailAvatar"
                   src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
                   alt="John Martinez"
                 />
                 <div>
-                  <h3>John Martinez</h3>
-                  <span>Online</span>
+                  <h3 id="detailName">John Martinez</h3>
+                  <span id="detailStatus">Online</span>
                 </div>
               </div>
               <div class="detail-actions">
@@ -238,37 +133,15 @@
               </div>
             </div>
 
-            <div class="message-body">
-              <div class="bubble received">
-                <p>Hi Sarah! I received your booking request.</p>
-                <span>9:30 AM</span>
-              </div>
-              <div class="bubble sent">
-                <p>Great! Can you come tomorrow at 10 AM?</p>
-                <span>9:32 AM</span>
-              </div>
-              <div class="bubble received">
-                <p>Yes, that works perfectly for me.</p>
-                <span>9:35 AM</span>
-              </div>
-              <div class="bubble received">
-                <p>I will arrive at 10 AM tomorrow</p>
-                <span>9:36 AM</span>
-              </div>
-              <div class="bubble sent">
-                <p>Perfect! See you then.</p>
-                <span>9:38 AM</span>
-              </div>
+            <div class="message-body" id="messageBody">
+              <p class="no-messages">Select a conversation to view messages.</p>
             </div>
 
             <div class="message-input">
               <button class="icon-btn" type="button" aria-label="Attach">
                 <i data-lucide="paperclip"></i>
               </button>
-              <button class="icon-btn" type="button" aria-label="Emoji">
-                <i data-lucide="smile"></i>
-              </button>
-              <input type="text" placeholder="Type a message..." />
+              <textarea class="message-textarea" placeholder="Type a message..." rows="1"></textarea>
               <button class="send-btn" type="button" aria-label="Send">
                 <i data-lucide="send"></i>
               </button>

@@ -1,416 +1,370 @@
-if (typeof lucide !== "undefined") {
-  lucide.createIcons();
-}
+const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
 
-const openAddPackage = document.getElementById("openAddPackage");
-const addPackageModal = document.getElementById("addPackageModal");
-const closeAddPackage = document.getElementById("closeAddPackage");
-const cancelAddPackage = document.getElementById("cancelAddPackage");
-const editPackageModal = document.getElementById("editPackageModal");
-const closeEditPackage = document.getElementById("closeEditPackage");
-const cancelEditPackage = document.getElementById("cancelEditPackage");
-const editButtons = document.querySelectorAll(".edit-btn");
-const submitAddPackage = document.getElementById("submitAddPackage");
-const submitEditPackage = document.getElementById("submitEditPackage");
-const editPackageName = document.getElementById("editPackageName");
-const editPackagePrice = document.getElementById("editPackagePrice");
-const editPackageDiscount = document.getElementById("editPackageDiscount");
-const editPackagePoints = document.getElementById("editPackagePoints");
-const addPackageName = document.getElementById("addPackageName");
-const addPackagePrice = document.getElementById("addPackagePrice");
-const addPackageDiscount = document.getElementById("addPackageDiscount");
-const addPackagePoints = document.getElementById("addPackagePoints");
-const toggleServiceList = document.getElementById("toggleServiceList");
-const servicePicker = document.getElementById("servicePicker");
-const servicePickerGrid = document.getElementById("servicePickerGrid");
-const selectedServices = document.getElementById("selectedServices");
-const customServiceInput = document.getElementById("customServiceInput");
-const addCustomService = document.getElementById("addCustomService");
-const toggleServiceListEdit = document.getElementById("toggleServiceListEdit");
-const servicePickerEdit = document.getElementById("servicePickerEdit");
-const servicePickerGridEdit = document.getElementById("servicePickerGridEdit");
-const selectedServicesEdit = document.getElementById("selectedServicesEdit");
-const customServiceInputEdit = document.getElementById("customServiceInputEdit");
-const addCustomServiceEdit = document.getElementById("addCustomServiceEdit");
-const serviceOrder = [];
-const serviceOrderEdit = [];
+// ── DOM refs ──
+const packagesRoot = document.getElementById('packagesRoot');
+const addPackageModal = document.getElementById('addPackageModal');
+const editPackageModal = document.getElementById('editPackageModal');
+const manageCategoriesModal = document.getElementById('manageCategoriesModal');
+const categoriesList = document.getElementById('categoriesList');
 
-servicePickerGrid?.querySelectorAll("label").forEach((label) => {
-  serviceOrder.push(label.textContent?.trim() || "");
-});
+let allCategories = [];
+let editingPackageName = null;
 
-servicePickerGridEdit?.querySelectorAll("label").forEach((label) => {
-  serviceOrderEdit.push(label.textContent?.trim() || "");
-});
+// ── Helpers ──
+const escapeHtml = (v = '') => String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const formatPrice = (v) => `$${Number(v || 0).toLocaleString()}`;
+const colorDot = { teal: '#0d9488', orange: '#f59e0b', purple: '#8b5cf6', blue: '#3b82f6', green: '#22c55e', red: '#ef4444' };
 
-const toggleModal = (show) => {
-  if (!addPackageModal) return;
-  addPackageModal.classList.toggle("active", show);
-  addPackageModal.setAttribute("aria-hidden", show ? "false" : "true");
-};
+// ── Modal helpers ──
+const openModal = (m) => { if (m) { m.classList.add('active'); m.setAttribute('aria-hidden','false'); }};
+const closeModal = (m) => { if (m) { m.classList.remove('active'); m.setAttribute('aria-hidden','true'); }};
 
-const toggleEditModal = (show) => {
-  if (!editPackageModal) return;
-  editPackageModal.classList.toggle("active", show);
-  editPackageModal.setAttribute("aria-hidden", show ? "false" : "true");
-};
-
-openAddPackage?.addEventListener("click", () => toggleModal(true));
-closeAddPackage?.addEventListener("click", () => toggleModal(false));
-cancelAddPackage?.addEventListener("click", () => toggleModal(false));
-
-let activeEditCard = null;
-
-const insertLabelByOrder = (label, pickerGrid, order) => {
-  if (!pickerGrid) return;
-  const serviceName = label.dataset.service || label.textContent?.trim() || "";
-  const input = label.querySelector("input");
-  if (input) {
-    input.checked = false;
+const bindModal = (openBtn, closeBtn, cancelBtn, modal) => {
+  if (openBtn) openBtn.addEventListener('click', () => openModal(modal));
+  if (closeBtn) closeBtn.addEventListener('click', () => closeModal(modal));
+  if (cancelBtn) cancelBtn.addEventListener('click', () => closeModal(modal));
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal(modal);
+    });
   }
+};
 
-  const index = order.indexOf(serviceName);
-  const siblings = Array.from(pickerGrid.querySelectorAll("label"));
-  if (index === -1 || siblings.length === 0) {
-    pickerGrid.appendChild(label);
+// ── Fetch & render categories ──
+const loadCategories = async () => {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/package_categories?select=*&order=name.asc`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    allCategories = res.ok ? await res.json() : [];
+    populateCategoryDropdowns();
+    renderCategoriesList();
+  } catch (err) { console.error('Error loading categories:', err); }
+};
+
+const populateCategoryDropdowns = () => {
+  const addSel = document.getElementById('addPackageCategory');
+  const editSel = document.getElementById('editPackageCategory');
+  const opts = allCategories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  if (addSel) addSel.innerHTML = '<option value="">Select category...</option>' + opts;
+  if (editSel) editSel.innerHTML = '<option value="">Select category...</option>' + opts;
+};
+
+const renderCategoriesList = () => {
+  if (!categoriesList) return;
+  if (!allCategories.length) {
+    categoriesList.innerHTML = '<p class="loading-text">No categories yet.</p>';
+    return;
+  }
+  categoriesList.innerHTML = allCategories.map(c => `
+    <div class="category-item" data-id="${c.id}">
+      <span class="category-color-dot ${c.color_class}"></span>
+      <div class="category-info">
+        <h4>${escapeHtml(c.name)}</h4>
+        <p>${escapeHtml(c.description)}</p>
+      </div>
+      <div class="category-actions">
+        <button class="cat-edit-btn" data-action="edit-cat" title="Edit"><i data-lucide="pencil"></i></button>
+        <button class="cat-delete-btn" data-action="delete-cat" title="Delete"><i data-lucide="trash-2"></i></button>
+      </div>
+    </div>
+  `).join('');
+  window.lucide?.createIcons();
+
+  // Attach events
+  categoriesList.querySelectorAll('[data-action="edit-cat"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.closest('.category-item').dataset.id;
+      const cat = allCategories.find(c => c.id === id);
+      if (!cat) return;
+      const newName = prompt('Category name:', cat.name);
+      if (!newName || newName.trim() === cat.name) return;
+      const newDesc = prompt('Category description:', cat.description);
+      if (newDesc === null) return;
+      const newColor = prompt('Color (teal, orange, purple, blue, green, red):', cat.color_class);
+      await fetch(`${SUPABASE_URL}/rest/v1/package_categories?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
+        body: JSON.stringify({ name: newName.trim(), description: newDesc.trim(), color_class: newColor?.trim() || cat.color_class })
+      });
+      loadCategories();
+      loadPackages();
+    });
+  });
+
+  categoriesList.querySelectorAll('[data-action="delete-cat"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.closest('.category-item').dataset.id;
+      const cat = allCategories.find(c => c.id === id);
+      if (!cat || !confirm(`Delete category "${cat.name}"?`)) return;
+      await fetch(`${SUPABASE_URL}/rest/v1/package_categories?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      loadCategories();
+      loadPackages();
+    });
+  });
+};
+
+// ── Fetch & render packages ──
+const loadPackages = async () => {
+  if (!packagesRoot) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/packages?select=*,package_categories(id,name,description,color_class)&order=price.asc`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if (!res.ok) throw new Error(`Failed (${res.status})`);
+    const packages = await res.json();
+    renderPackages(packages);
+    window.lucide?.createIcons();
+  } catch (err) {
+    console.error('Error loading packages:', err);
+    packagesRoot.innerHTML = '<p class="loading-text">Could not load packages.</p>';
+  }
+};
+
+const renderPackages = (packages) => {
+  if (!packagesRoot) return;
+  if (!packages.length) {
+    packagesRoot.innerHTML = `
+      <section class="package-section">
+        <div class="section-heading">
+          <h2>No Packages</h2>
+          <p>No packages found. Click "Add Package" to create one.</p>
+        </div>
+      </section>`;
     return;
   }
 
-  let inserted = false;
-  for (const sibling of siblings) {
-    const siblingIndex = order.indexOf(sibling.textContent?.trim() || "");
-    if (siblingIndex === -1 || siblingIndex > index) {
-      pickerGrid.insertBefore(label, sibling);
-      inserted = true;
-      break;
-    }
-  }
-  if (!inserted) {
-    pickerGrid.appendChild(label);
-  }
-};
-
-const setSelectedServices = (services, selectedContainer, pickerGrid, order) => {
-  if (!selectedContainer || !pickerGrid) return;
-
-  const currentLabels = Array.from(selectedContainer.querySelectorAll("label"));
-  currentLabels.forEach((label) => {
-    insertLabelByOrder(label, pickerGrid, order);
+  const grouped = {};
+  packages.forEach(pkg => {
+    const cat = pkg.package_categories;
+    if (!cat) return;
+    if (!grouped[cat.id]) grouped[cat.id] = { cat, packages: [] };
+    grouped[cat.id].packages.push(pkg);
   });
 
-  services.forEach((serviceName) => {
-    if (!serviceName) return;
-    const availableLabels = Array.from(pickerGrid.querySelectorAll("label"));
-    const matchingLabel = availableLabels.find(
-      (label) => label.textContent?.trim() === serviceName
-    );
-
-    if (matchingLabel) {
-      const input = matchingLabel.querySelector("input");
-      if (input) {
-        input.checked = true;
-      }
-      matchingLabel.dataset.service = serviceName;
-      selectedContainer.appendChild(matchingLabel);
-    } else {
-      const label = document.createElement("label");
-      const input = document.createElement("input");
-      input.type = "checkbox";
-      input.checked = true;
-      label.appendChild(input);
-      label.append(` ${serviceName}`);
-      label.dataset.service = serviceName;
-      selectedContainer.appendChild(label);
-      if (!order.includes(serviceName)) {
-        order.push(serviceName);
-      }
-    }
-  });
-};
-
-const populateEditModalFromCard = (card) => {
-  if (!card) return;
-  const name = card.querySelector("h3")?.textContent?.trim() || "";
-  const priceText = card.querySelector(".price strong")?.textContent?.trim() || "";
-  const priceValue = priceText.replace(/[^0-9.]/g, "");
-  const services = Array.from(card.querySelectorAll(".card-body li"))
-    .map((item) => item.textContent?.trim() || "")
-    .filter(Boolean);
-  const pointsService = services.find((service) => /points/i.test(service));
-  const pointsMatch = pointsService?.match(/([\d,.]+)/);
-  const pointsValue = pointsMatch ? pointsMatch[1].replace(/,/g, "") : "";
-  const filteredServices = services.filter((service) => !/points/i.test(service));
-
-  if (editPackageName) editPackageName.value = name;
-  if (editPackagePrice) editPackagePrice.value = priceValue;
-  if (editPackageDiscount) editPackageDiscount.value = "";
-  if (editPackagePoints) editPackagePoints.value = pointsValue;
-  setSelectedServices(filteredServices, selectedServicesEdit, servicePickerGridEdit, serviceOrderEdit);
-};
-
-const getServicesFromSelected = (selectedContainer) =>
-  Array.from(selectedContainer?.querySelectorAll("label") || [])
-    .map((label) => label.textContent?.trim() || "")
-    .filter(Boolean);
-
-const buildServiceListItems = (services, points) => {
-  const listItems = [];
-  if (points) {
-    listItems.push(`<li><i data-lucide="check"></i> ${points} Points</li>`);
-  }
-  services.forEach((service) => {
-    listItems.push(`<li><i data-lucide="check"></i> ${service}</li>`);
-  });
-  return listItems.join("");
-};
-
-const updateCardFromForm = (card, { name, price, points, services }) => {
-  if (!card) return;
-  const title = card.querySelector("h3");
-  const priceEl = card.querySelector(".price strong");
-  const listEl = card.querySelector(".card-body ul");
-  if (title) title.textContent = name || "Package";
-  if (priceEl) priceEl.textContent = `$${price || 0}`;
-  if (listEl) {
-    listEl.innerHTML = buildServiceListItems(services, points);
-  }
-  lucide?.createIcons();
-};
-
-const attachCardActions = (card) => {
-  if (!card) return;
-  const editBtn = card.querySelector(".edit-btn");
-  const disableBtn = card.querySelector(".actions .muted");
-  const deleteBtn = card.querySelector(".actions .danger");
-
-  editBtn?.addEventListener("click", (event) => {
-    const target = event.currentTarget;
-    const parentCard = target?.closest(".package-card");
-    populateEditModalFromCard(parentCard);
-    activeEditCard = parentCard;
-    toggleEditModal(true);
-  });
-
-  disableBtn?.addEventListener("click", () => {
-    const status = card.querySelector(".status");
-    const isDisabled = card.classList.toggle("disabled");
-    disableBtn.classList.toggle("disabled-toggle", isDisabled);
-    if (status) {
-      status.textContent = isDisabled ? "disabled" : "active";
-      status.classList.toggle("disabled", isDisabled);
-    }
-    disableBtn.innerHTML = isDisabled
-      ? '<i data-lucide="play"></i> Enable'
-      : '<i data-lucide="pause"></i> Disable';
-    lucide?.createIcons();
-  });
-
-  deleteBtn?.addEventListener("click", () => {
-    const name = card.querySelector("h3")?.textContent?.trim() || "this package";
-    if (window.confirm(`Delete ${name}?`)) {
-      card.remove();
-    }
-  });
-};
-
-const createPackageCard = ({ name, price, services, points }) => {
-  const card = document.createElement("article");
-  card.className = "package-card";
-  card.innerHTML = `
-    <div class="card-header">
-      <div>
-        <h3>${name || "New Package"}</h3>
-        <p class="card-subtitle">Newly added package</p>
-        <span class="status">active</span>
+  packagesRoot.innerHTML = Object.values(grouped).map(g => `
+    <section class="package-section">
+      <div class="section-heading">
+        <h2>${escapeHtml(g.cat.name)}</h2>
+        <p>${escapeHtml(g.cat.description)}</p>
       </div>
-      <div class="price">
-        <strong>$${price || 0}</strong>
-        <small>/month</small>
+      <div class="package-grid">
+        ${g.packages.map(pkg => renderPackageCard(pkg, g.cat.color_class)).join('')}
       </div>
-    </div>
-    <div class="card-body">
-      <p class="label">Included Services:</p>
-      <ul>
-        ${buildServiceListItems(services, points)}
-      </ul>
-    </div>
-    <div class="card-footer">
-      <div>
-        <span>Total Sales</span>
-        <strong>0 packages</strong>
-      </div>
-      <div class="actions">
-        <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
-        <button class="muted"><i data-lucide="pause"></i> Disable</button>
-        <button class="danger"><i data-lucide="trash-2"></i></button>
-      </div>
-    </div>
-  `;
-
-  attachCardActions(card);
-
-  return card;
+    </section>
+  `).join('');
 };
 
-editButtons?.forEach((button) => {
-  const card = button.closest(".package-card");
-  if (card) {
-    attachCardActions(card);
-  }
-});
-
-closeEditPackage?.addEventListener("click", () => toggleEditModal(false));
-cancelEditPackage?.addEventListener("click", () => toggleEditModal(false));
-
-addPackageModal?.addEventListener("click", (event) => {
-  if (event.target === addPackageModal) {
-    toggleModal(false);
-  }
-});
-
-editPackageModal?.addEventListener("click", (event) => {
-  if (event.target === editPackageModal) {
-    toggleEditModal(false);
-  }
-});
-
-submitEditPackage?.addEventListener("click", () => {
-  if (!activeEditCard) return;
-  const services = getServicesFromSelected(selectedServicesEdit);
-  updateCardFromForm(activeEditCard, {
-    name: editPackageName?.value.trim(),
-    price: editPackagePrice?.value.trim(),
-    points: editPackagePoints?.value.trim(),
-    services,
-  });
-  toggleEditModal(false);
-});
-
-submitAddPackage?.addEventListener("click", () => {
-  const services = getServicesFromSelected(selectedServices);
-  const newCard = createPackageCard({
-    name: addPackageName?.value.trim(),
-    price: addPackagePrice?.value.trim(),
-    points: addPackagePoints?.value.trim(),
-    services,
-  });
-  const grid = document.querySelector(".package-section .package-grid");
-  grid?.prepend(newCard);
-  addPackageName && (addPackageName.value = "");
-  addPackagePrice && (addPackagePrice.value = "");
-  addPackageDiscount && (addPackageDiscount.value = "");
-  addPackagePoints && (addPackagePoints.value = "");
-  toggleModal(false);
-  lucide?.createIcons();
-});
-
-const setupServicePicker = ({
-  toggleButton,
-  picker,
-  pickerGrid,
-  selectedContainer,
-  customInput,
-  addButton,
-  order,
-}) => {
-  toggleButton?.addEventListener("click", () => {
-    picker?.classList.toggle("hidden");
-  });
-
-  pickerGrid?.addEventListener("change", (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
-      return;
-    }
-    if (!selectedContainer || !target.checked) {
-      return;
-    }
-
-    const label = target.closest("label");
-    if (!label) return;
-
-    const clonedLabel = label.cloneNode(true);
-    const clonedInput = clonedLabel.querySelector("input");
-    if (clonedInput) {
-      clonedInput.checked = true;
-    }
-    clonedLabel.dataset.service = label.textContent?.trim() || "";
-    clonedInput?.addEventListener("change", handleSelectedChange);
-    selectedContainer.appendChild(clonedLabel);
-    label.remove();
-  });
-
-  const handleSelectedChange = (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
-      return;
-    }
-    if (target.checked) return;
-    const label = target.closest("label");
-    if (!label || !pickerGrid) return;
-    const serviceName = label.dataset.service || label.textContent?.trim() || "";
-    const restoredLabel = label.cloneNode(true);
-    const restoredInput = restoredLabel.querySelector("input");
-    if (restoredInput) {
-      restoredInput.checked = false;
-    }
-
-    const index = order.indexOf(serviceName);
-    const siblings = Array.from(pickerGrid.querySelectorAll("label"));
-    if (index === -1 || siblings.length === 0) {
-      pickerGrid.appendChild(restoredLabel);
-    } else {
-      let inserted = false;
-      for (const sibling of siblings) {
-        const siblingIndex = order.indexOf(sibling.textContent?.trim() || "");
-        if (siblingIndex === -1 || siblingIndex > index) {
-          pickerGrid.insertBefore(restoredLabel, sibling);
-          inserted = true;
-          break;
-        }
-      }
-      if (!inserted) {
-        pickerGrid.appendChild(restoredLabel);
-      }
-    }
-
-    label.remove();
-  };
-
-  selectedContainer?.addEventListener("change", handleSelectedChange);
-
-  addButton?.addEventListener("click", () => {
-    if (!customInput || !pickerGrid) return;
-    const value = customInput.value.trim();
-    if (!value) return;
-
-    const label = document.createElement("label");
-    const input = document.createElement("input");
-    input.type = "checkbox";
-    label.appendChild(input);
-    label.append(` ${value}`);
-    pickerGrid.prepend(label);
-    order.unshift(value);
-    customInput.value = "";
-  });
+const renderPackageCard = (pkg, colorClass) => {
+  const services = String(pkg.services_included || '').split('\n').filter(Boolean);
+  return `
+    <article class="package-card" data-name="${escapeHtml(pkg.package_name)}">
+      <div class="card-header">
+        <div>
+          <h3>${escapeHtml(pkg.package_name)}</h3>
+          <p class="card-subtitle">${escapeHtml(pkg.description || '')}</p>
+          <span class="status">active</span>
+        </div>
+        <div class="price">
+          <strong>${formatPrice(pkg.price)}</strong>
+          <small>/month</small>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="label">Included Services:</p>
+        <ul>
+          ${services.map(s => `<li><i data-lucide="check"></i> ${escapeHtml(s)}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="card-footer">
+        <div>
+          <span>Discount</span>
+          <strong>${pkg.discount || 0}%</strong>
+          ${pkg.points ? `<br><span>Points</span><strong>${pkg.points}</strong>` : ''}
+        </div>
+        <div class="actions">
+          <button class="edit-btn" data-action="edit-pkg"><i data-lucide="pencil"></i> Edit</button>
+          <button class="danger" data-action="delete-pkg"><i data-lucide="trash-2"></i></button>
+        </div>
+      </div>
+    </article>`;
 };
 
-setupServicePicker({
-  toggleButton: toggleServiceList,
-  picker: servicePicker,
-  pickerGrid: servicePickerGrid,
-  selectedContainer: selectedServices,
-  customInput: customServiceInput,
-  addButton: addCustomService,
-  order: serviceOrder,
-});
+// ── Add package ──
+const submitAddPackage = async () => {
+  const catId = document.getElementById('addPackageCategory')?.value;
+  const name = document.getElementById('addPackageName')?.value.trim();
+  const price = parseFloat(document.getElementById('addPackagePrice')?.value);
+  const discount = parseInt(document.getElementById('addPackageDiscount')?.value) || 0;
+  const points = parseInt(document.getElementById('addPackagePoints')?.value) || null;
+  const services = document.getElementById('addPackageServices')?.value.trim();
 
-setupServicePicker({
-  toggleButton: toggleServiceListEdit,
-  picker: servicePickerEdit,
-  pickerGrid: servicePickerGridEdit,
-  selectedContainer: selectedServicesEdit,
-  customInput: customServiceInputEdit,
-  addButton: addCustomServiceEdit,
-  order: serviceOrderEdit,
-});
+  console.log('Adding package:', { catId, name, price, discount, points, services });
+
+  if (!catId || !name || isNaN(price)) { alert('Please fill in category, name, and price.'); return; }
+
+  const cat = allCategories.find(c => c.id === catId);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/packages`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
+    body: JSON.stringify({ package_name: name, price, discount, points, category_id: catId, services_included: services, package_category: cat?.name || '', category_description: cat?.description || '', description: '' })
+  });
+
+  console.log('Add package response:', res.status, res.statusText);
+
+  if (!res.ok) { const txt = await res.text(); alert(`Failed to add package: ${txt}`); return; }
+
+  // Reset form
+  document.getElementById('addPackageName').value = '';
+  document.getElementById('addPackagePrice').value = '';
+  document.getElementById('addPackageDiscount').value = '';
+  document.getElementById('addPackagePoints').value = '';
+  document.getElementById('addPackageServices').value = '';
+  document.getElementById('addPackageCategory').value = '';
+
+  closeModal(addPackageModal);
+  loadPackages();
+};
+
+// ── Edit package ──
+const openEditPackage = (pkg) => {
+  editingPackageName = pkg.package_name;
+  document.getElementById('editPackageName').value = pkg.package_name;
+  document.getElementById('editPackagePrice').value = pkg.price;
+  document.getElementById('editPackageDiscount').value = pkg.discount || 0;
+  document.getElementById('editPackagePoints').value = pkg.points || '';
+  document.getElementById('editPackageServices').value = pkg.services_included || '';
+  document.getElementById('editPackageCategory').value = pkg.category_id || '';
+  openModal(editPackageModal);
+};
+
+const submitEditPackage = async () => {
+  const catId = document.getElementById('editPackageCategory')?.value;
+  const name = document.getElementById('editPackageName')?.value.trim();
+  const price = parseFloat(document.getElementById('editPackagePrice')?.value);
+  const discount = parseInt(document.getElementById('editPackageDiscount')?.value) || 0;
+  const points = parseInt(document.getElementById('editPackagePoints')?.value) || null;
+  const services = document.getElementById('editPackageServices')?.value.trim();
+
+  console.log('Editing package:', { oldName: editingPackageName, catId, name, price, discount, points, services });
+
+  if (!name || isNaN(price)) { alert('Please fill in name and price.'); return; }
+
+  const cat = allCategories.find(c => c.id === catId);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/packages?package_name=eq.${encodeURIComponent(editingPackageName)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
+    body: JSON.stringify({
+      package_name: name, price, discount, points,
+      category_id: catId || null,
+      services_included: services,
+      package_category: cat?.name || '',
+      category_description: cat?.description || ''
+    })
+  });
+
+  console.log('Edit package response:', res.status, res.statusText);
+
+  if (!res.ok) { const txt = await res.text(); alert(`Failed to update package: ${txt}`); return; }
+  closeModal(editPackageModal);
+  loadPackages();
+};
+
+// ── Delete package ──
+const deletePackage = async (name) => {
+  if (!confirm(`Delete package "${name}"?`)) return;
+  await fetch(`${SUPABASE_URL}/rest/v1/packages?package_name=eq.${encodeURIComponent(name)}`, {
+    method: 'DELETE',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+  });
+  loadPackages();
+};
+
+// ── Add category ──
+const submitNewCategory = async () => {
+  const name = document.getElementById('newCategoryName')?.value.trim();
+  const desc = document.getElementById('newCategoryDescription')?.value.trim();
+  const color = document.getElementById('newCategoryColor')?.value;
+
+  console.log('Adding category:', { name, desc, color });
+
+  if (!name || !desc) { alert('Please fill in name and description.'); return; }
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/package_categories`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
+    body: JSON.stringify({ name, description: desc, color_class: color })
+  });
+
+  console.log('Add category response:', res.status, res.statusText);
+
+  if (!res.ok) { const txt = await res.text(); alert(`Failed to add category: ${txt}`); return; }
+  document.getElementById('newCategoryName').value = '';
+  document.getElementById('newCategoryDescription').value = '';
+  loadCategories();
+};
+
+// ── Init ──
+const init = () => {
+  // Bind modals
+  bindModal(
+    document.getElementById('openAddPackage'),
+    document.getElementById('closeAddPackage'),
+    document.getElementById('cancelAddPackage'),
+    addPackageModal
+  );
+  bindModal(
+    null,
+    document.getElementById('closeEditPackage'),
+    document.getElementById('cancelEditPackage'),
+    editPackageModal
+  );
+  bindModal(
+    document.getElementById('openManageCategories'),
+    document.getElementById('closeCategoriesModal'),
+    null,
+    manageCategoriesModal
+  );
+
+  // Submit handlers
+  document.getElementById('submitAddPackage')?.addEventListener('click', submitAddPackage);
+  document.getElementById('submitEditPackage')?.addEventListener('click', submitEditPackage);
+  document.getElementById('submitNewCategory')?.addEventListener('click', submitNewCategory);
+
+  // Delegate card actions
+  if (packagesRoot) {
+    packagesRoot.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('[data-action="edit-pkg"]');
+      const deleteBtn = e.target.closest('[data-action="delete-pkg"]');
+
+      if (editBtn) {
+        const card = editBtn.closest('.package-card');
+        const name = card?.dataset.name;
+        fetch(`${SUPABASE_URL}/rest/v1/packages?select=*,category_id&package_name=eq.${encodeURIComponent(name)}`, {
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+        }).then(r => r.json()).then(rows => {
+          if (rows.length) openEditPackage(rows[0]);
+        }).catch(err => { console.error('Fetch error:', err); alert('Failed to fetch package data.'); });
+      }
+      if (deleteBtn) {
+        const card = deleteBtn.closest('.package-card');
+        deletePackage(card?.dataset.name);
+      }
+    });
+  }
+
+  // Load data
+  loadCategories();
+  loadPackages();
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

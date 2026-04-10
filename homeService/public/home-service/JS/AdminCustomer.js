@@ -220,12 +220,12 @@ const buildActionButtons = (status) => {
   `;
 };
 
-const buildCustomerRowMarkup = (customer, index) => {
+const buildCustomerRowMarkup = (customer, bookingCount, index) => {
   const fullName = customer.full_name || 'Unnamed Customer';
   const email = customer.email || 'No email';
   const phone = formatPhone(customer.phone_number);
   const address = customer.address || 'No address provided';
-  const bookings = Number.isFinite(Number(customer.bookings)) ? Number(customer.bookings) : 0;
+  const bookings = Number.isFinite(Number(bookingCount)) ? bookingCount : 0;
   const totalSpent = formatCurrency(customer.wallet_balance);
   const joinedAt = customer.joined_at || 'Unknown';
   const status = normalizeStatus(customer.status);
@@ -263,7 +263,7 @@ const buildCustomerRowMarkup = (customer, index) => {
   `;
 };
 
-const renderCustomers = (customers) => {
+const renderCustomers = (customers, bookingCounts) => {
   if (!tableBody) {
     return;
   }
@@ -273,7 +273,7 @@ const renderCustomers = (customers) => {
     return;
   }
 
-  tableBody.innerHTML = customers.map(buildCustomerRowMarkup).join('');
+  tableBody.innerHTML = customers.map((c, i) => buildCustomerRowMarkup(c, bookingCounts[c.email] || 0, i)).join('');
 
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
@@ -291,7 +291,24 @@ const fetchCustomers = async () => {
     const customers = await supabaseRequest('/rest/v1/customers?select=*&order=created_at.desc', {
       method: 'GET',
     });
-    renderCustomers(customers);
+
+    // Fetch booking counts from the bookings table
+    const bookings = await supabaseRequest('/rest/v1/bookings?select=customer_email', {
+      method: 'GET',
+    });
+
+    // Count bookings per customer
+    const bookingCounts = {};
+    if (Array.isArray(bookings)) {
+      bookings.forEach((b) => {
+        const email = b.customer_email;
+        if (email) {
+          bookingCounts[email] = (bookingCounts[email] || 0) + 1;
+        }
+      });
+    }
+
+    renderCustomers(customers, bookingCounts);
   } catch (error) {
     console.error(error);
     renderEmptyState('Unable to load customers right now.');
@@ -320,7 +337,7 @@ const updateRowStatus = (row, status) => {
   }
 };
 
-const openModal = (row) => {
+const openModal = async (row) => {
   if (!modal || !row) {
     return;
   }
@@ -365,6 +382,43 @@ const openModal = (row) => {
   }
 
   updateModalStatus(status);
+
+  // Fetch real booking data from Supabase
+  const bookingsContainer = document.querySelector(".customer-modal__bookings");
+  if (bookingsContainer && email) {
+    try {
+      const customerBookings = await supabaseRequest(
+        `/rest/v1/bookings?select=service_name,scheduled_date,status&customer_email=eq.${encodeURIComponent(email)}&order=scheduled_date.desc&limit=5`,
+        { method: 'GET' }
+      );
+
+      if (Array.isArray(customerBookings) && customerBookings.length) {
+        const lastBooking = customerBookings[customerBookings.length - 1];
+        bookingsContainer.innerHTML = `
+          <h5>Recent Bookings</h5>
+          ${customerBookings.slice(0, 5).map(b => `
+            <div class="booking-item">
+              <span class="booking-icon"><i data-lucide="calendar"></i></span>
+              <div>
+                <strong>${escapeHtml(b.service_name || 'Service')}</strong>
+                <span>${b.scheduled_date || 'N/A'}</span>
+              </div>
+              <span class="booking-status ${b.status === 'completed' ? 'completed' : 'scheduled'}">${escapeHtml(b.status || 'unknown')}</span>
+            </div>
+          `).join('')}
+          <div class="last-booking"><i data-lucide="clock"></i>Last booking: ${lastBooking.scheduled_date || 'N/A'}</div>
+        `;
+      } else {
+        bookingsContainer.innerHTML = `
+          <h5>Recent Bookings</h5>
+          <p style="color:#9aa3b2;font-size:13px;padding:12px 0;">No bookings found for this customer.</p>
+        `;
+      }
+    } catch (err) {
+      console.error('Error fetching bookings:', err);
+    }
+  }
+
   modal.classList.add("active");
   modal.setAttribute("aria-hidden", "false");
 
