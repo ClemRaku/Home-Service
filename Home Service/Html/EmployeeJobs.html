@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Jobs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link rel="stylesheet" href="../CSS/EmployeeJobs.css" />
+    <script src="../JS/EmployeeJobs.js" defer></script>
+  </head>
+  <body>
+    <div class="profile-layout">
+      <aside class="profile-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="profile-nav" aria-label="Employee Navigation">
+            <a href="../Html/EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              Profile
+            </a>
+            <a class="active" href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              Jobs
+            </a>
+            <a href="#">
+              <i data-lucide="wallet"></i>
+              Earnings
+            </a>
+            <a href="#">
+              <i data-lucide="calendar"></i>
+              Schedule
+            </a>
+            <a href="#">
+              <i data-lucide="message-square"></i>
+              Messages
+            </a>
+            <a href="#">
+              <i data-lucide="activity"></i>
+              Experience
+            </a>
+            <a href="#">
+              <i data-lucide="clipboard-list"></i>
+              Projects
+            </a>
+            <a href="#">
+              <i data-lucide="settings"></i>
+              Settings
+            </a>
+          </nav>
+
+          <div class="sidebar-metrics">
+            <div class="metric-card">
+              <p>৳32k</p>
+              <span>This Month</span>
+            </div>
+            <div class="metric-card">
+              <p>4.9</p>
+              <span>Rating</span>
+            </div>
+          </div>
+
+          <div class="sidebar-actions">
+            <a class="logout" href="../Html/Login.html">
+              <i data-lucide="log-out"></i>
+              Logout
+            </a>
+            <div class="status-card">
+              <div>
+                <p>Status</p>
+                <span><span class="dot"></span>Online</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="content-header">
+          <div>
+            <h1>My Jobs</h1>
+            <p>Manage and track all your service jobs</p>
+          </div>
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search jobs..." />
+          </div>
+        </header>
+
+        <section class="stats-row">
+          <div class="summary-card">
+            <span class="summary-icon teal"><i data-lucide="briefcase"></i></span>
+            <div>
+              <h2>7</h2>
+              <span>Total Jobs</span>
+            </div>
+          </div>
+          <div class="summary-card">
+            <span class="summary-icon blue"><i data-lucide="loader"></i></span>
+            <div>
+              <h2>1</h2>
+              <span>In Progress</span>
+            </div>
+          </div>
+          <div class="summary-card">
+            <span class="summary-icon orange"><i data-lucide="calendar"></i></span>
+            <div>
+              <h2>3</h2>
+              <span>Scheduled</span>
+            </div>
+          </div>
+          <div class="summary-card">
+            <span class="summary-icon green"><i data-lucide="check"></i></span>
+            <div>
+              <h2>2</h2>
+              <span>Completed</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="filter-row">
+          <button class="filter-pill active" data-filter="all">All <span>7</span></button>
+          <button class="filter-pill" data-filter="in-progress">In Progress <span>1</span></button>
+          <button class="filter-pill" data-filter="scheduled">Scheduled <span>3</span></button>
+          <button class="filter-pill" data-filter="completed">Completed <span>2</span></button>
+          <button class="filter-pill" data-filter="cancelled">Cancelled <span>1</span></button>
+        </section>
+
+        <section class="jobs-list">
+          <article class="job-card" data-status="in-progress">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>AC Repair &amp; Servicing</h3>
+                <span class="job-client">Fatima Begum</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>House 12, Dhanmondi, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Today, 10:00 AM</li>
+                  <li><i data-lucide="clock"></i>2 hours</li>
+                  <li><i data-lucide="navigation"></i>2.3 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge high">High</span>
+                <span class="badge in-progress">In Progress</span>
+              </div>
+              <div class="price">
+                ৳1,200
+                <span>AC Repair</span>
+              </div>
+              <button class="btn primary status-toggle" data-state="in-progress">Mark Done</button>
+            </div>
+          </article>
+
+          <article class="job-card" data-status="scheduled">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>Fan Installation (3 units)</h3>
+                <span class="job-client">Karim Ahmed</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>Flat 5B, Mirpur-10, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Today, 2:00 PM</li>
+                  <li><i data-lucide="clock"></i>1.5 hours</li>
+                  <li><i data-lucide="navigation"></i>4.1 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge normal">Normal</span>
+                <span class="badge scheduled">Scheduled</span>
+              </div>
+              <div class="price">
+                ৳900
+                <span>Fan Installation</span>
+              </div>
+              <button
+                class="btn outline view-details"
+                data-state="scheduled"
+                data-title="Fan Installation (3 units)"
+                data-client="Karim Ahmed"
+                data-status="scheduled"
+                data-status-label="Scheduled"
+                data-priority="normal"
+                data-priority-label="Normal"
+                data-date="Today, 2:00 PM"
+                data-duration="1.5 hours"
+                data-distance="4.1 km"
+                data-location="Flat 5B, Mirpur-10, Dhaka"
+                data-price="৳900"
+                data-service="Fan Installation"
+                data-phone="+880 1700-123456"
+                data-note="Please bring the ceiling fans and check the existing wiring before installation."
+              >
+                View Details
+              </button>
+            </div>
+          </article>
+
+          <article class="job-card" data-status="scheduled">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>Circuit Breaker Replacement</h3>
+                <span class="job-client">Nasreen Akter</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>Road 7, Gulshan-1, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Tomorrow, 9:00 AM</li>
+                  <li><i data-lucide="clock"></i>3 hours</li>
+                  <li><i data-lucide="navigation"></i>6.8 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge high">High</span>
+                <span class="badge scheduled">Scheduled</span>
+              </div>
+              <div class="price">
+                ৳2,500
+                <span>Circuit Breaker</span>
+              </div>
+              <button
+                class="btn outline view-details"
+                data-state="scheduled"
+                data-title="Circuit Breaker Replacement"
+                data-client="Nasreen Akter"
+                data-status="scheduled"
+                data-status-label="Scheduled"
+                data-priority="high"
+                data-priority-label="High"
+                data-date="Tomorrow, 9:00 AM"
+                data-duration="3 hours"
+                data-distance="6.8 km"
+                data-location="Road 7, Gulshan-1, Dhaka"
+                data-price="৳2,500"
+                data-service="Circuit Breaker"
+                data-phone="+880 1712-450980"
+                data-note="Customer reported frequent power trips. Bring replacement breakers and safety gear."
+              >
+                View Details
+              </button>
+            </div>
+          </article>
+
+          <article class="job-card" data-status="scheduled">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>LED Lighting Installation</h3>
+                <span class="job-client">Rafiq Islam</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>Banani, Block C, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Apr 12, 11:00 AM</li>
+                  <li><i data-lucide="clock"></i>4 hours</li>
+                  <li><i data-lucide="navigation"></i>5.5 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge normal">Normal</span>
+                <span class="badge scheduled">Scheduled</span>
+              </div>
+              <div class="price">
+                ৳3,200
+                <span>LED Installation</span>
+              </div>
+              <button
+                class="btn outline view-details"
+                data-state="scheduled"
+                data-title="LED Lighting Installation"
+                data-client="Rafiq Islam"
+                data-status="scheduled"
+                data-status-label="Scheduled"
+                data-priority="normal"
+                data-priority-label="Normal"
+                data-date="Apr 12, 11:00 AM"
+                data-duration="4 hours"
+                data-distance="5.5 km"
+                data-location="Banani, Block C, Dhaka"
+                data-price="৳3,200"
+                data-service="LED Installation"
+                data-phone="+880 1715-908321"
+                data-note="Install LED strips in living room and bedroom. Coordinate with caretaker for access."
+              >
+                View Details
+              </button>
+            </div>
+          </article>
+
+          <article class="job-card" data-status="completed">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>Complete House Wiring</h3>
+                <span class="job-client">Nazmul Hasan</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>Uttara Sector 7, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Apr 8, 10:00 AM</li>
+                  <li><i data-lucide="clock"></i>5 hours</li>
+                  <li><i data-lucide="navigation"></i>9.2 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge normal">Normal</span>
+                <span class="badge completed">Completed</span>
+              </div>
+              <div class="price">
+                ৳4,500
+                <span>Wiring</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="job-card" data-status="completed">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>Generator Maintenance</h3>
+                <span class="job-client">Dhaka Medical Center</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>Shyamoli, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Apr 7, 3:00 PM</li>
+                  <li><i data-lucide="clock"></i>2.5 hours</li>
+                  <li><i data-lucide="navigation"></i>3.7 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge high">High</span>
+                <span class="badge completed">Completed</span>
+              </div>
+              <div class="price">
+                ৳2,800
+                <span>Generator</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="job-card" data-status="cancelled">
+            <div class="job-main">
+              <img
+                class="avatar"
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                alt="Customer"
+              />
+              <div class="job-info">
+                <h3>Smart Switch Installation</h3>
+                <span class="job-client">Sumaiya Rahman</span>
+                <ul class="job-meta">
+                  <li><i data-lucide="map-pin"></i>Bashundhara R/A, Dhaka</li>
+                  <li><i data-lucide="calendar"></i>Apr 5, 1:00 PM</li>
+                  <li><i data-lucide="clock"></i>3 hours</li>
+                  <li><i data-lucide="navigation"></i>11.4 km</li>
+                </ul>
+              </div>
+            </div>
+            <div class="job-actions">
+              <div class="badges">
+                <span class="badge normal">Normal</span>
+                <span class="badge cancelled">Cancelled</span>
+              </div>
+              <div class="price">
+                ৳0
+                <span>Smart Home</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="jobModal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <button class="modal-close" type="button" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+
+        <div class="modal-header">
+          <div>
+            <p class="modal-label">Job Details</p>
+            <h2 id="modalTitle">Job title</h2>
+            <span id="modalClient">Client name</span>
+          </div>
+          <div class="modal-tags">
+            <span class="badge" id="modalPriority">Priority</span>
+            <span class="badge" id="modalStatus">Status</span>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-section">
+            <h3>Schedule</h3>
+            <div class="modal-grid">
+              <div class="modal-item">
+                <i data-lucide="calendar"></i>
+                <div>
+                  <span>Date &amp; Time</span>
+                  <p id="modalDate">-</p>
+                </div>
+              </div>
+              <div class="modal-item">
+                <i data-lucide="clock"></i>
+                <div>
+                  <span>Duration</span>
+                  <p id="modalDuration">-</p>
+                </div>
+              </div>
+              <div class="modal-item">
+                <i data-lucide="navigation"></i>
+                <div>
+                  <span>Distance</span>
+                  <p id="modalDistance">-</p>
+                </div>
+              </div>
+              <div class="modal-item">
+                <i data-lucide="briefcase"></i>
+                <div>
+                  <span>Service</span>
+                  <p id="modalService">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Customer Info</h3>
+            <div class="modal-grid">
+              <div class="modal-item">
+                <i data-lucide="map-pin"></i>
+                <div>
+                  <span>Location</span>
+                  <p id="modalLocation">-</p>
+                </div>
+              </div>
+              <div class="modal-item">
+                <i data-lucide="phone"></i>
+                <div>
+                  <span>Phone</span>
+                  <p id="modalPhone">-</p>
+                </div>
+              </div>
+              <div class="modal-item">
+                <i data-lucide="banknote"></i>
+                <div>
+                  <span>Estimated Payment</span>
+                  <p id="modalPrice">-</p>
+                </div>
+              </div>
+              <div class="modal-item">
+                <i data-lucide="shield-alert"></i>
+                <div>
+                  <span>Priority</span>
+                  <p id="modalPriorityText">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-note">
+            <h3>Notes</h3>
+            <p id="modalNote">-</p>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn outline modal-secondary" type="button">Close</button>
+          <button class="btn primary modal-primary" type="button">Start Job</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
