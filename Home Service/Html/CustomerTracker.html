@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Track Service Workers - HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="../CSS/CustomerTacker.css" />
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../Image/logo.png" alt="HomeServe" />
+                <h1>HomeService</h1>
+            </div>
+
+            <nav class="menu" aria-label="Customer Navigation">
+                <a class="menu-item" href="../Html/CustomerProfile.html">Profile</a>
+                <a class="menu-item" href="../Html/CustomerBoooking.html">Bookings</a>
+                <a class="menu-item active" href="../Html/CustomerTracker.html">Track</a>
+                <a class="menu-item" href="../Html/Settings.html">Settings</a>
+                <a class="menu-item" href="../Html/Messages.html">Messages</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a class="menu-item" href="../Html/Home.html">Back to Home</a>
+                <a class="menu-item" href="../Html/Login.html">Logout</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="page-header">
+                <h1>Track Service Workers</h1>
+            </header>
+
+            <section class="section">
+                <div class="section__title">
+                    <span class="section__dot"></span>
+                    Active Services (3)
+                </div>
+
+                <div class="card">
+                    <div class="card__profile">
+                        <div class="avatar avatar--warning">MR</div>
+                        <div>
+                            <div class="card__name">
+                                Mike Rodriguez
+                                <span class="status status--warning">On the way</span>
+                            </div>
+                            <div class="card__role">Electrician</div>
+                            <div class="card__meta">
+                                <span><i class="bi bi-clock"></i> ETA: 15 mins</span>
+                                <span><i class="bi bi-geo-alt"></i> 2.3 km away</span>
+                                <span><i class="bi bi-geo-alt"></i> Near Times Square, Manhattan</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card__actions">
+                        <button
+                            class="icon-btn call-btn"
+                            type="button"
+                            aria-label="Call"
+                            data-name="Mike Rodriguez"
+                            data-role="Electrician"
+                            data-status="Connected"
+                            data-avatar="https://i.pravatar.cc/120?img=12"
+                        >
+                            <i class="bi bi-telephone"></i>
+                        </button>
+                        <button
+                            class="primary-btn location-btn"
+                            type="button"
+                            data-name="Mike Rodriguez"
+                            data-status="On the way"
+                            data-status-class="status--warning"
+                            data-eta="ETA: 15 mins"
+                            data-distance="2.3 km away"
+                            data-location="Near Times Square, Manhattan"
+                            data-map="https://www.google.com/maps?q=Times%20Square%2C%20Manhattan&output=embed"
+                            data-map-link="https://www.google.com/maps?q=Times%20Square%2C%20Manhattan"
+                        >
+                            View Location
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__profile">
+                        <div class="avatar avatar--success">LC</div>
+                        <div>
+                            <div class="card__name">
+                                Lisa Chen
+                                <span class="status status--success">Working</span>
+                            </div>
+                            <div class="card__role">House Cleaning</div>
+                            <div class="card__meta">
+                                <span><i class="bi bi-clock"></i> ETA: At location</span>
+                                <span><i class="bi bi-geo-alt"></i> 0 km away</span>
+                                <span><i class="bi bi-geo-alt"></i> 123 Main Street, Your Location</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card__actions">
+                        <button
+                            class="icon-btn call-btn"
+                            type="button"
+                            aria-label="Call"
+                            data-name="Lisa Chen"
+                            data-role="House Cleaning"
+                            data-status="Connected"
+                            data-avatar="https://i.pravatar.cc/120?img=32"
+                        >
+                            <i class="bi bi-telephone"></i>
+                        </button>
+                        <button
+                            class="primary-btn location-btn"
+                            type="button"
+                            data-name="Lisa Chen"
+                            data-status="Working"
+                            data-status-class="status--success"
+                            data-eta="ETA: At location"
+                            data-distance="0 km away"
+                            data-location="123 Main Street, Your Location"
+                            data-map="https://www.google.com/maps?q=123%20Main%20Street&output=embed"
+                            data-map-link="https://www.google.com/maps?q=123%20Main%20Street"
+                        >
+                            View Location
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__profile">
+                        <div class="avatar avatar--warning">JW</div>
+                        <div>
+                            <div class="card__name">
+                                James Wilson
+                                <span class="status status--warning">On the way</span>
+                            </div>
+                            <div class="card__role">Plumber</div>
+                            <div class="card__meta">
+                                <span><i class="bi bi-clock"></i> ETA: 25 mins</span>
+                                <span><i class="bi bi-geo-alt"></i> 4.1 km away</span>
+                                <span><i class="bi bi-geo-alt"></i> 5th Avenue, Midtown</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card__actions">
+                        <button
+                            class="icon-btn call-btn"
+                            type="button"
+                            aria-label="Call"
+                            data-name="James Wilson"
+                            data-role="Plumber"
+                            data-status="Connected"
+                            data-avatar="https://i.pravatar.cc/120?img=47"
+                        >
+                            <i class="bi bi-telephone"></i>
+                        </button>
+                        <button
+                            class="primary-btn location-btn"
+                            type="button"
+                            data-name="James Wilson"
+                            data-status="On the way"
+                            data-status-class="status--warning"
+                            data-eta="ETA: 25 mins"
+                            data-distance="4.1 km away"
+                            data-location="5th Avenue, Midtown"
+                            data-map="https://www.google.com/maps?q=5th%20Avenue%20Midtown&output=embed"
+                            data-map-link="https://www.google.com/maps?q=5th%20Avenue%20Midtown"
+                        >
+                            View Location
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section section--completed">
+                <div class="section__title">
+                    <span class="section__dot section__dot--muted"></span>
+                    Completed Today (1)
+                </div>
+
+                <div class="card card--completed">
+                    <div class="card__profile">
+                        <div class="avatar avatar--muted">MS</div>
+                        <div>
+                            <div class="card__name">
+                                Maria Santos
+                                <span class="status status--muted">Completed</span>
+                            </div>
+                            <div class="card__role">AC Repair</div>
+                        </div>
+                    </div>
+                    <div class="card__actions">
+                        <button
+                            class="ghost-btn rate-btn"
+                            type="button"
+                            data-name="Maria Santos"
+                            data-role="AC Repair"
+                            data-avatar="https://i.pravatar.cc/120?img=28"
+                        >
+                            ☆ Rate Service
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="location-modal" id="locationModal" aria-hidden="true">
+        <div class="location-modal__content" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
+            <button class="location-modal__close" type="button" aria-label="Close location details">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="location-modal__header">
+                <div class="location-modal__avatar" id="locationModalAvatar">MR</div>
+                <div>
+                    <h3 class="location-modal__name" id="locationModalTitle">Mike Rodriguez</h3>
+                    <div class="location-modal__status">
+                        <span class="status location-modal__status-pill status--warning" id="locationModalStatus">
+                            On the way
+                        </span>
+                        <span class="location-modal__eta" id="locationModalEta">
+                            <i class="bi bi-clock"></i>
+                            ETA: 15 mins
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="location-modal__map">
+                <iframe
+                    id="locationModalMap"
+                    title="Worker location map"
+                    src="https://www.google.com/maps?q=Times%20Square%2C%20Manhattan&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+                <a
+                    class="location-modal__maps-btn"
+                    id="locationModalMapLink"
+                    href="https://www.google.com/maps?q=Times%20Square%2C%20Manhattan"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Open in Maps
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </div>
+            <div class="location-modal__footer">
+                <span class="location-modal__address" id="locationModalAddress">
+                    <i class="bi bi-geo-alt"></i>
+                    Near Times Square, Manhattan
+                </span>
+                <span class="location-modal__distance" id="locationModalDistance">2.3 km away</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="call-modal" id="callModal" aria-hidden="true">
+        <div class="call-modal__card" role="dialog" aria-modal="true" aria-labelledby="callModalName">
+            <div class="call-modal__avatar" id="callModalAvatar">
+                <img id="callModalAvatarImg" src="https://i.pravatar.cc/120?img=12" alt="Worker" />
+            </div>
+            <h3 class="call-modal__name" id="callModalName">Mike Rodriguez</h3>
+            <p class="call-modal__role" id="callModalRole">Electrician</p>
+            <p class="call-modal__status" id="callModalStatus">Connected</p>
+            <button class="call-modal__end" type="button" aria-label="End call">
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+            <span class="call-modal__hint">Tap to end call</span>
+        </div>
+    </div>
+
+    <div class="rating-modal" id="ratingModal" aria-hidden="true">
+        <div class="rating-modal__card" role="dialog" aria-modal="true" aria-labelledby="ratingModalName">
+            <div class="rating-modal__header">
+                <div class="rating-modal__avatar" id="ratingModalAvatar">
+                    <img id="ratingModalAvatarImg" src="https://i.pravatar.cc/120?img=28" alt="Worker" />
+                </div>
+                <div>
+                    <h3 class="rating-modal__name" id="ratingModalName">Maria Santos</h3>
+                    <p class="rating-modal__role" id="ratingModalRole">AC Repair</p>
+                </div>
+            </div>
+            <p class="rating-modal__question" id="ratingModalQuestion">
+                How was your experience with Maria Santos?
+            </p>
+            <div class="rating-modal__stars" role="radiogroup" aria-label="Rating">
+                <button class="rating-star" type="button" data-value="1" aria-label="1 star">
+                    <i class="bi bi-star"></i>
+                </button>
+                <button class="rating-star" type="button" data-value="2" aria-label="2 stars">
+                    <i class="bi bi-star"></i>
+                </button>
+                <button class="rating-star" type="button" data-value="3" aria-label="3 stars">
+                    <i class="bi bi-star"></i>
+                </button>
+                <button class="rating-star" type="button" data-value="4" aria-label="4 stars">
+                    <i class="bi bi-star"></i>
+                </button>
+                <button class="rating-star" type="button" data-value="5" aria-label="5 stars">
+                    <i class="bi bi-star"></i>
+                </button>
+            </div>
+            <textarea
+                class="rating-modal__comment"
+                placeholder="Leave a comment (optional)..."
+                rows="3"
+            ></textarea>
+            <div class="rating-modal__actions">
+                <button class="rating-modal__submit" type="button">Submit Rating</button>
+                <button class="rating-modal__cancel" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/CustomerTracker.js"></script>
+</body>
+</html>
