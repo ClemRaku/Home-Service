@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Settings | HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/EmployeeSetting.css" />
+  </head>
+  <body>
+    <div class="setting-layout">
+      <aside class="setting-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="setting-nav" aria-label="Employee Navigation">
+            <a href="../Html/EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              <span>Jobs</span>
+            </a>
+            <a href="../Html/EmployeeEarnings.html">
+              <i data-lucide="wallet"></i>
+              <span>Earnings</span>
+            </a>
+            <a href="../Html/EmployeeSchedule.html">
+              <i data-lucide="calendar"></i>
+              <span>Schedule</span>
+            </a>
+            <a href="../Html/EmployeeMessage.html">
+              <i data-lucide="message-square"></i>
+              <span>Messages</span>
+            </a>
+            <a href="../Html/EmployeeExperience.html">
+              <i data-lucide="clock"></i>
+              <span>Experience</span>
+            </a>
+            <a href="#">
+              <i data-lucide="clipboard-list"></i>
+              <span>Projects</span>
+            </a>
+            <a class="active" href="../Html/EmployeeSetting.html">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <div class="sidebar-metrics">
+              <div class="metric-card">
+                <p>৳32k</p>
+                <span>This Month</span>
+              </div>
+              <div class="metric-card">
+                <p>4.9</p>
+                <span>Rating</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <a class="logout" id="logoutBtn" href="../Html/Login.html">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+              </a>
+              <div class="status-card">
+                <div class="status-info">
+                  <p>Status</p>
+                  <span><span class="dot" id="statusDot"></span><span id="statusLabel">Online</span></span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="statusToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="setting-content">
+        <header class="page-header">
+          <h1>Settings</h1>
+          <p>Manage your account and preferences</p>
+        </header>
+
+        <!-- Availability -->
+        <section class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-card-icon availability">
+              <i data-lucide="calendar-check"></i>
+            </div>
+            <h2>Availability</h2>
+          </div>
+
+          <div class="setting-section">
+            <label class="setting-label">Current Status</label>
+            <div class="status-buttons">
+              <button type="button" class="status-btn available active" data-status="available">Available</button>
+              <button type="button" class="status-btn busy" data-status="busy">Busy</button>
+              <button type="button" class="status-btn offline" data-status="offline">Offline</button>
+            </div>
+          </div>
+
+          <div class="setting-section">
+            <label class="setting-label">Working Hours</label>
+            <div class="time-range">
+              <div class="time-input">
+                <input type="time" id="startTime" value="08:00" />
+                <span>to</span>
+              </div>
+              <div class="time-input">
+                <input type="time" id="endTime" value="20:00" />
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-section">
+            <label class="setting-label">Working Days</label>
+            <div class="day-toggles">
+              <button type="button" class="day-btn active" data-day="mon">M</button>
+              <button type="button" class="day-btn active" data-day="tue">T</button>
+              <button type="button" class="day-btn active" data-day="wed">W</button>
+              <button type="button" class="day-btn active" data-day="thu">T</button>
+              <button type="button" class="day-btn active" data-day="fri">F</button>
+              <button type="button" class="day-btn active" data-day="sat">S</button>
+              <button type="button" class="day-btn" data-day="sun">S</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-section">
+              <label class="setting-label">Max Jobs Per Day</label>
+              <input type="number" id="maxJobs" value="3" min="1" max="10" />
+            </div>
+            <div class="setting-section">
+              <label class="setting-label">Service Radius</label>
+              <input type="text" id="serviceRadius" value="15 km" />
+            </div>
+          </div>
+
+          <div class="setting-actions">
+            <button type="button" class="save-btn" id="saveAvailability">Save Changes</button>
+          </div>
+        </section>
+
+        <!-- Notification Preferences -->
+        <section class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-card-icon notification">
+              <i data-lucide="bell"></i>
+            </div>
+            <h2>Notification Preferences</h2>
+          </div>
+
+          <div class="toggle-list">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <span class="toggle-title">New Job Alerts</span>
+                <span class="toggle-desc">Get notified when new jobs are available near you</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <span class="toggle-title">Job Reminders</span>
+                <span class="toggle-desc">Reminders before your scheduled jobs</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <span class="toggle-title">Payment Notifications</span>
+                <span class="toggle-desc">Notifications about payment status</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <span class="toggle-title">Review Notifications</span>
+                <span class="toggle-desc">When clients leave you a review</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <span class="toggle-title">Promotional Emails</span>
+                <span class="toggle-desc">Special offers and platform updates</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <span class="toggle-title">SMS Alerts</span>
+                <span class="toggle-desc">Receive important alerts via SMS</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-actions">
+            <button type="button" class="save-btn" id="saveNotifications">Save Preferences</button>
+          </div>
+        </section>
+
+        <!-- Payment Methods -->
+        <section class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-card-icon payment">
+              <i data-lucide="credit-card"></i>
+            </div>
+            <h2>Payment Methods</h2>
+          </div>
+
+          <div class="payment-list">
+            <div class="payment-item primary">
+              <div class="payment-info">
+                <div class="payment-icon bkash">
+                  <i data-lucide="smartphone"></i>
+                </div>
+                <div>
+                  <span class="payment-name">bKash</span>
+                  <span class="payment-type">Mobile Banking</span>
+                  <span class="payment-detail">+880 1712-345678</span>
+                </div>
+              </div>
+              <span class="payment-badge">Primary</span>
+            </div>
+
+            <div class="payment-item">
+              <div class="payment-info">
+                <div class="payment-icon bank">
+                  <i data-lucide="building-2"></i>
+                </div>
+                <div>
+                  <span class="payment-name">Dutch-Bangla Bank</span>
+                  <span class="payment-type">Bank Transfer</span>
+                  <span class="payment-detail">Rahim Uddin · 1234567890</span>
+                </div>
+              </div>
+              <button type="button" class="set-primary-btn">Set Primary</button>
+            </div>
+
+            <button type="button" class="add-payment-btn">
+              <i data-lucide="plus"></i>
+              Add Payment Method
+            </button>
+          </div>
+        </section>
+
+        <!-- Security Settings -->
+        <section class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-card-icon security">
+              <i data-lucide="shield"></i>
+            </div>
+            <h2>Security Settings</h2>
+          </div>
+
+          <div class="security-list">
+            <div class="security-item">
+              <div class="security-info">
+                <div class="security-icon password">
+                  <i data-lucide="lock"></i>
+                </div>
+                <div>
+                  <span class="security-title">Password</span>
+                  <span class="security-desc">Last changed 3 months ago</span>
+                </div>
+              </div>
+              <button type="button" class="security-action-btn" id="changePasswordBtn">Change Password</button>
+            </div>
+
+            <div class="security-item">
+              <div class="security-info">
+                <div class="security-icon twofa">
+                  <i data-lucide="shield-check"></i>
+                </div>
+                <div>
+                  <span class="security-title">Two-Factor Authentication</span>
+                  <span class="security-desc">Extra layer of security for your account</span>
+                </div>
+              </div>
+              <span class="enabled-badge">Enabled</span>
+            </div>
+
+            <div class="security-item sessions">
+              <div class="security-info">
+                <div class="security-icon sessions-icon">
+                  <i data-lucide="monitor"></i>
+                </div>
+                <div>
+                  <span class="security-title">Active Sessions</span>
+                  <span class="security-desc">2 devices logged in</span>
+                </div>
+              </div>
+              <button type="button" class="security-action-btn danger" id="signOutAllBtn">Sign Out All</button>
+            </div>
+
+            <div class="session-devices">
+              <div class="session-device">
+                <div class="session-device-info">
+                  <i data-lucide="monitor"></i>
+                  <div>
+                    <span class="session-name">Chrome on Windows</span>
+                    <span class="session-location">Dhaka, Bangladesh</span>
+                  </div>
+                </div>
+                <span class="session-badge current">Current</span>
+              </div>
+              <div class="session-device">
+                <div class="session-device-info">
+                  <i data-lucide="smartphone"></i>
+                  <div>
+                    <span class="session-name">Mobile App (Android)</span>
+                    <span class="session-location">Dhaka, Bangladesh</span>
+                  </div>
+                </div>
+                <button type="button" class="session-signout-btn" id="signOutDevice">Sign Out</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay hidden" id="passwordModalOverlay">
+      <div class="modal modal-sm" id="passwordModal">
+        <div class="modal-header">
+          <h3>Change Password</h3>
+          <button class="modal-close" id="passwordModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="passwordForm">
+            <div class="form-group">
+              <label for="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" placeholder="Enter current password" required />
+            </div>
+            <div class="form-group">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" placeholder="Enter new password" required />
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" placeholder="Confirm new password" required />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="passwordCancel">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Payment Method Modal -->
+    <div class="modal-overlay hidden" id="paymentModalOverlay">
+      <div class="modal modal-sm" id="paymentModal">
+        <div class="modal-header">
+          <h3>Add Payment Method</h3>
+          <button class="modal-close" id="paymentModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="paymentForm">
+            <div class="form-group">
+              <label for="paymentType">Payment Type</label>
+              <select id="paymentType" required>
+                <option value="">Select type</option>
+                <option value="bkash">bKash</option>
+                <option value="nagad">Nagad</option>
+                <option value="rocket">Rocket</option>
+                <option value="bank">Bank Transfer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="accountName">Account Name</label>
+              <input type="text" id="accountName" placeholder="Account holder name" required />
+            </div>
+            <div class="form-group">
+              <label for="accountNumber">Account Number</label>
+              <input type="text" id="accountNumber" placeholder="Account or phone number" required />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="paymentCancel">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add Method</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay hidden" id="logoutModalOverlay">
+      <div class="modal modal-sm" id="logoutModal">
+        <div class="modal-header">
+          <h3>Confirm Logout</h3>
+          <button class="modal-close" id="logoutModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="logoutCancel">Cancel</button>
+          <button class="btn btn-danger" id="logoutConfirm">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="../JS/EmployeeSetting.js"></script>
+  </body>
+</html>
