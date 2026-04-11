@@ -381,8 +381,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!conv) return;
 
     callNameEl.textContent = conv.name;
+    document.getElementById("callCategory").textContent = conv.category || "";
     callAvatarImg.src = conv.avatar || "";
-    callStatusText.textContent = "Calling...";
+    callStatusText.textContent = "Ringing...";
     callTimer.textContent = "00:00";
     callModalOverlay.classList.remove("hidden");
     isMuted = false;
