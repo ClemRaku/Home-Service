@@ -28,12 +28,10 @@ function App() {
       src={iframeSrc}
       onLoad={handleFrameLoad}
       style={{
-        width: '1920px',
-        maxWidth: '100%',
-        height: '1080px',
-        border: '0',
+        width: '100vw',
+        height: '100vh',
+        border: 'none',
         display: 'block',
-        margin: '0 auto',
       }}
     />
   )
