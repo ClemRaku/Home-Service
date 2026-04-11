@@ -255,17 +255,156 @@
             </div>
 
             <div class="chat-input">
-              <button type="button" class="attach-btn" id="attachBtn">
+              <button type="button" class="attach-btn" id="attachBtn" title="Attach file">
                 <i data-lucide="paperclip"></i>
               </button>
+              <button type="button" class="emoji-btn" id="emojiBtn" title="Emoji">
+                <i data-lucide="smile"></i>
+              </button>
               <input type="text" id="messageInput" placeholder="Type a message..." />
-              <button type="button" class="send-btn" id="sendBtn">
+              <button type="button" class="send-btn" id="sendBtn" title="Send">
                 <i data-lucide="send"></i>
               </button>
             </div>
           </section>
         </div>
       </main>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file" id="fileInput" style="display:none" />
+
+    <!-- Emoji Picker -->
+    <div class="emoji-picker hidden" id="emojiPicker">
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+
+    <!-- Call Modal -->
+    <div class="modal-overlay hidden" id="callModalOverlay">
+      <div class="modal call-modal" id="callModal">
+        <div class="modal-body call-body">
+          <button class="modal-close" id="callModalClose">
+            <i data-lucide="x"></i>
+          </button>
+          <div class="call-avatar-large" id="callAvatar">
+            <img src="" alt="" id="callAvatarImg" />
+          </div>
+          <h3 id="callName">Fatima Begum</h3>
+          <span class="call-status-text" id="callStatusText">Calling...</span>
+          <div class="call-timer" id="callTimer">00:00</div>
+          <div class="call-actions-row">
+            <button type="button" class="call-action" id="muteBtn" title="Mute">
+              <i data-lucide="mic"></i>
+            </button>
+            <button type="button" class="call-action" id="speakerBtn" title="Speaker">
+              <i data-lucide="volume-2"></i>
+            </button>
+            <button type="button" class="call-end-btn" id="endCallBtn" title="End Call">
+              <i data-lucide="phone-off"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- More Options Dropdown -->
+    <div class="dropdown-menu hidden" id="moreDropdown">
+      <button type="button" class="dropdown-item" id="viewProfileBtn">
+        <i data-lucide="user"></i>
+        <span>View Profile</span>
+      </button>
+      <button type="button" class="dropdown-item" id="muteNotifBtn">
+        <i data-lucide="bell-off"></i>
+        <span>Mute Notifications</span>
+      </button>
+      <button type="button" class="dropdown-item" id="clearChatBtn">
+        <i data-lucide="eraser"></i>
+        <span>Clear Chat</span>
+      </button>
+      <button type="button" class="dropdown-item" id="blockUserBtn">
+        <i data-lucide="ban"></i>
+        <span>Block User</span>
+      </button>
+      <button type="button" class="dropdown-item" id="deleteChatBtn">
+        <i data-lucide="trash-2"></i>
+        <span>Delete Chat</span>
+      </button>
+    </div>
+
+    <!-- Clear Chat Confirmation Modal -->
+    <div class="modal-overlay hidden" id="clearChatModalOverlay">
+      <div class="modal modal-sm" id="clearChatModal">
+        <div class="modal-header">
+          <h3>Clear Chat</h3>
+          <button class="modal-close" id="clearChatModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to clear all messages in this chat?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="clearChatCancel">Cancel</button>
+          <button class="btn btn-danger" id="clearChatConfirm">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Chat Confirmation Modal -->
+    <div class="modal-overlay hidden" id="deleteChatModalOverlay">
+      <div class="modal modal-sm" id="deleteChatModal">
+        <div class="modal-header">
+          <h3>Delete Chat</h3>
+          <button class="modal-close" id="deleteChatModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this entire conversation? This cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="deleteChatCancel">Cancel</button>
+          <button class="btn btn-danger" id="deleteChatConfirm">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block User Confirmation Modal -->
+    <div class="modal-overlay hidden" id="blockModalOverlay">
+      <div class="modal modal-sm" id="blockModal">
+        <div class="modal-header">
+          <h3>Block User</h3>
+          <button class="modal-close" id="blockModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="blockUserText">Are you sure you want to block this user? They won't be able to message you.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="blockCancel">Cancel</button>
+          <button class="btn btn-danger" id="blockConfirm">Block</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay hidden" id="logoutModalOverlay">
+      <div class="modal modal-sm" id="logoutModal">
+        <div class="modal-header">
+          <h3>Confirm Logout</h3>
+          <button class="modal-close" id="logoutModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="logoutCancel">Cancel</button>
+          <button class="btn btn-danger" id="logoutConfirm">Logout</button>
+        </div>
+      </div>
     </div>
 
     <!-- Toast Container -->
