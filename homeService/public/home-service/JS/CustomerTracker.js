@@ -2,6 +2,26 @@ const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
 
+// Leaflet map instance (reused)
+let leafletMap = null;
+let customerMarker = null;
+let employeeMarker = null;
+
+// Custom Leaflet icons
+const customerIcon = L.divIcon({
+  className: '',
+  html: `<div style="background:#3b82f6;width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+
+const employeeIcon = L.divIcon({
+  className: '',
+  html: `<div style="background:#f97316;width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+
 // Get logged-in customer
 const authUser = (() => {
   try { return JSON.parse(localStorage.getItem('hsAuthUser')); } catch { return null; }
@@ -140,7 +160,8 @@ const renderTracker = async () => {
           <button class="primary-btn location-btn" type="button"
             data-name="${empName}" data-status="${status.label}"
             data-status-class="${status.class}" data-eta="${timeStr || 'TBD'}"
-            data-distance="—” data-location="${location}"
+            data-distance="—" data-location="${location}"
+            data-employee-email="${b.employee_email || ''}"
             data-map="" data-map-link="">
             View Location
           </button>
@@ -219,24 +240,73 @@ const renderTracker = async () => {
 const openModal = (el) => { el?.classList.add('is-visible'); el?.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; };
 const closeModal = (el) => { el?.classList.remove('is-visible'); el?.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; };
 
+// Render Leaflet map with customer + employee markers
+const renderLeafletMap = (custLat, custLng, empLat, empLng, empName) => {
+  if (typeof L === 'undefined') return;
+
+  const mapEl = document.getElementById('leafletMap');
+  if (!mapEl) return;
+
+  // Destroy previous map instance
+  if (leafletMap) {
+    leafletMap.remove();
+    leafletMap = null;
+    customerMarker = null;
+    employeeMarker = null;
+  }
+
+  // Create map
+  leafletMap = L.map(mapEl, { zoomControl: true, attributionControl: false }).setView([custLat, custLng], 14);
+
+  // Add OpenStreetMap tiles (free, no API key)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+  }).addTo(leafletMap);
+
+  // Customer marker (blue dot)
+  customerMarker = L.marker([custLat, custLng], { icon: customerIcon })
+    .bindPopup('<b>You</b><br>Customer Location')
+    .addTo(leafletMap);
+
+  // Employee marker (orange dot)
+  employeeMarker = L.marker([empLat, empLng], { icon: employeeIcon })
+    .bindPopup(`<b>${empName}</b><br>Employee Location`)
+    .addTo(leafletMap);
+
+  // Draw dashed line between them
+  const line = L.polyline(
+    [[custLat, custLng], [empLat, empLng]],
+    { color: '#6b7280', weight: 2, dashArray: '6,6', opacity: 0.7 }
+  ).addTo(leafletMap);
+
+  // Fit map to show both markers
+  const bounds = L.latLngBounds([[custLat, custLng], [empLat, empLng]]);
+  leafletMap.fitBounds(bounds, { padding: [40, 40] });
+
+  // Force Leaflet to recalculate size (modal may not be fully visible yet)
+  setTimeout(() => leafletMap?.invalidateSize(), 200);
+};
+
 let selectedRating = 0;
 
 const bindModalHandlers = () => {
   // Location modal
   const locationModal = document.getElementById('locationModal');
   document.querySelectorAll('.location-btn').forEach(btn => {
-    btn.onclick = () => {
+    btn.onclick = async () => {
       const name = btn.dataset.name || '';
       const status = btn.dataset.status || '';
       const statusClass = btn.dataset.statusClass || '';
       const eta = btn.dataset.eta || '';
       const location = btn.dataset.location || '';
+      const empEmail = btn.dataset.employeeEmail || '';
 
       const modalTitle = document.getElementById('locationModalTitle');
       const modalStatus = document.getElementById('locationModalStatus');
       const modalEta = document.getElementById('locationModalEta');
       const modalAddress = document.getElementById('locationModalAddress');
       const modalAvatar = document.getElementById('locationModalAvatar');
+      const mapLink = document.getElementById('locationModalMapLink');
 
       if (modalTitle) modalTitle.textContent = name;
       if (modalStatus) {
@@ -247,8 +317,45 @@ const bindModalHandlers = () => {
       if (modalAddress) modalAddress.innerHTML = `<i data-lucide="map-pin"></i> ${location}`;
       if (modalAvatar) modalAvatar.textContent = initials(name);
 
+      // ── Render Leaflet map ──
+      // Customer location (from localStorage or DB)
+      const custLat = parseFloat(localStorage.getItem('customer_latitude')) || 23.8103;
+      const custLng = parseFloat(localStorage.getItem('customer_longitude')) || 90.4125;
+
+      // Employee location (from DB if available, otherwise use booking address or default)
+      let empLat = null, empLng = null;
+      if (empEmail) {
+        try {
+          const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/employees?select=last_latitude,last_longitude&email=eq.${encodeURIComponent(empEmail)}`,
+            { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.[0]) {
+              empLat = data[0].last_latitude;
+              empLng = data[0].last_longitude;
+            }
+          }
+        } catch (err) { /* ignore */ }
+      }
+
+      // Fallback: if no employee GPS, use customer coords offset
+      if (!empLat || !empLng) {
+        empLat = custLat + (Math.random() - 0.5) * 0.02;
+        empLng = custLng + (Math.random() - 0.5) * 0.02;
+      }
+
+      // Update Google Maps link
+      if (mapLink) {
+        mapLink.href = `https://www.google.com/maps?q=${empLat},${empLng}`;
+      }
+
       if (typeof lucide !== 'undefined') lucide.createIcons();
       openModal(locationModal);
+
+      // Render map after modal is visible (needs a tick for CSS transition)
+      setTimeout(() => renderLeafletMap(custLat, custLng, empLat, empLng, name), 100);
     };
   });
 

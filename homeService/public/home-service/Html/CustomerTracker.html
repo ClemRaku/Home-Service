@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <!-- Leaflet.js for dynamic maps (free, no API key) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="../CSS/CustomerTacker.css" />
 </head>
 <body>
@@ -254,30 +257,28 @@
                 </div>
             </div>
             <div class="location-modal__map">
-                <iframe
-                    id="locationModalMap"
-                    title="Worker location map"
-                    src="https://www.google.com/maps?q=Times%20Square%2C%20Manhattan&output=embed"
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                ></iframe>
+                <div id="leafletMap" style="width:100%;height:260px;border-radius:12px;z-index:1"></div>
                 <a
                     class="location-modal__maps-btn"
                     id="locationModalMapLink"
-                    href="https://www.google.com/maps?q=Times%20Square%2C%20Manhattan"
+                    href="#"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Open in Maps
+                    Open in Google Maps
                     <i data-lucide="external-link"></i>
                 </a>
             </div>
             <div class="location-modal__footer">
                 <span class="location-modal__address" id="locationModalAddress">
                     <i data-lucide="map-pin"></i>
-                    Near Times Square, Manhattan
+                    —
                 </span>
-                <span class="location-modal__distance" id="locationModalDistance">2.3 km away</span>
+                <span class="location-modal__distance" id="locationModalDistance">—</span>
+                <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:#6b7280">
+                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3b82f6;margin-right:4px"></span> You (Customer)</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f97316;margin-right:4px"></span> Employee</span>
+                </div>
             </div>
         </div>
     </div>
