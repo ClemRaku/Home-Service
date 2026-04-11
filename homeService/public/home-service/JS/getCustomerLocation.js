@@ -1,9 +1,6 @@
 /**
  * getCustomerLocation.js
- * Captures the customer's latitude/longitude on login and stores it in:
- *   1. localStorage (for quick access)
- *   2. Supabase `customers` table (persistent storage)
- *
+ * Captures the customer's latitude/longitude on page load.
  * Uses the browser's built-in Geolocation API — no API key needed.
  */
 
@@ -24,22 +21,17 @@ const captureLocation = async () => {
   const email = getAuthEmail();
   if (!email) return;
 
-  if (!navigator.geolocation) {
-    console.warn('Geolocation not supported');
-    return;
-  }
+  if (!navigator.geolocation) return;
 
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
 
-      // Store locally
       localStorage.setItem('customer_latitude', String(lat));
       localStorage.setItem('customer_longitude', String(lng));
       localStorage.setItem('customer_location_time', String(Date.now()));
 
-      // Persist to Supabase
       try {
         await fetch(
           `${SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(email)}`,
@@ -58,18 +50,11 @@ const captureLocation = async () => {
             }),
           }
         );
-        console.log(`📍 Customer location saved: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      } catch (err) {
-        console.warn('Failed to persist location:', err);
-      }
+      } catch (err) { /* silent fail — don't break page */ }
     },
-    (err) => console.warn('Location permission denied:', err.message),
+    () => { /* permission denied — silent */ },
     GEO_OPTIONS
   );
 };
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', captureLocation);
-} else {
-  captureLocation();
-}
+captureLocation();
