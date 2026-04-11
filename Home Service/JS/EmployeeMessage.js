@@ -23,16 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusLabel = document.getElementById("statusLabel");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  // Modals
-  const callModalOverlay = document.getElementById("callModalOverlay");
-  const callModalClose = document.getElementById("callModalClose");
-  const callAvatarImg = document.getElementById("callAvatarImg");
-  const callNameEl = document.getElementById("callName");
-  const callStatusText = document.getElementById("callStatusText");
-  const callTimer = document.getElementById("callTimer");
-  const muteBtn = document.getElementById("muteBtn");
-  const speakerBtn = document.getElementById("speakerBtn");
-  const endCallBtn = document.getElementById("endCallBtn");
+  // Call popup elements
+  const callPopup = document.getElementById("callPopup");
+  const callPopupAvatarImg = document.getElementById("callPopupAvatarImg");
+  const callPopupName = document.getElementById("callPopupName");
+  const callPopupCategory = document.getElementById("callPopupCategory");
+  const callPopupStatus = document.getElementById("callPopupStatus");
+  const callPopupTimer = document.getElementById("callPopupTimer");
+  const callPopupMute = document.getElementById("callPopupMute");
+  const callPopupSpeaker = document.getElementById("callPopupSpeaker");
+  const callPopupEnd = document.getElementById("callPopupEnd");
 
   const moreDropdown = document.getElementById("moreDropdown");
   const viewProfileBtn = document.getElementById("viewProfileBtn");
@@ -380,28 +380,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const conv = conversations[currentConversation];
     if (!conv) return;
 
-    callNameEl.textContent = conv.name;
-    document.getElementById("callCategory").textContent = conv.category || "";
-    callAvatarImg.src = conv.avatar || "";
-    callStatusText.textContent = "Ringing...";
-    callTimer.textContent = "00:00";
-    callModalOverlay.classList.remove("hidden");
+    callPopupName.textContent = conv.name;
+    callPopupCategory.textContent = conv.category || "";
+    callPopupAvatarImg.src = conv.avatar || "";
+    callPopupStatus.textContent = "Ringing...";
+    callPopupTimer.textContent = "00:00";
+    callPopup.classList.remove("hidden");
     isMuted = false;
     isSpeaker = true;
     callSeconds = 0;
-    muteBtn.classList.remove("active");
-    speakerBtn.classList.add("active");
+    callPopupMute.classList.remove("active");
+    callPopupSpeaker.classList.add("active");
     lucide.createIcons();
 
-    // Simulate call connecting
     setTimeout(() => {
-      if (!callModalOverlay.classList.contains("hidden")) {
-        callStatusText.textContent = "Connected";
+      if (!callPopup.classList.contains("hidden")) {
+        callPopupStatus.textContent = "Connected";
         callInterval = setInterval(() => {
           callSeconds++;
           const m = Math.floor(callSeconds / 60).toString().padStart(2, "0");
           const s = (callSeconds % 60).toString().padStart(2, "0");
-          callTimer.textContent = `${m}:${s}`;
+          callPopupTimer.textContent = `${m}:${s}`;
         }, 1000);
       }
     }, 2000);
@@ -412,9 +411,9 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInterval(callInterval);
       callInterval = null;
     }
-    callModalOverlay.classList.add("hidden");
+    callPopup.classList.add("hidden");
     if (callSeconds > 0) {
-      showToast(`Call ended · Duration: ${callTimer.textContent}`, "info");
+      showToast(`Call ended · ${callPopupTimer.textContent}`, "info");
     }
   }
 
@@ -571,19 +570,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupModalClose(overlay, closeBtn) {
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) {
-        if (overlay === callModalOverlay) endCall();
         overlay.classList.add("hidden");
       }
     });
     if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        if (overlay === callModalOverlay) endCall();
-        overlay.classList.add("hidden");
-      });
+      closeBtn.addEventListener("click", () => overlay.classList.add("hidden"));
     }
   }
-
-  setupModalClose(callModalOverlay, callModalClose);
   setupModalClose(clearChatModalOverlay, clearChatModalClose);
   setupModalClose(deleteChatModalOverlay, deleteChatModalClose);
   setupModalClose(blockModalOverlay, blockModalClose);
@@ -593,22 +586,22 @@ document.addEventListener("DOMContentLoaded", () => {
   blockCancel.addEventListener("click", () => blockModalOverlay.classList.add("hidden"));
 
   // Mute/Speaker/End Call
-  muteBtn.addEventListener("click", () => {
+  callPopupMute.addEventListener("click", () => {
     isMuted = !isMuted;
-    muteBtn.classList.toggle("active", isMuted);
-    const icon = muteBtn.querySelector("i");
+    callPopupMute.classList.toggle("active", isMuted);
+    const icon = callPopupMute.querySelector("i");
     icon.setAttribute("data-lucide", isMuted ? "mic-off" : "mic");
     lucide.createIcons();
     showToast(isMuted ? "Microphone muted" : "Microphone unmuted", "info");
   });
 
-  speakerBtn.addEventListener("click", () => {
+  callPopupSpeaker.addEventListener("click", () => {
     isSpeaker = !isSpeaker;
-    speakerBtn.classList.toggle("active", isSpeaker);
+    callPopupSpeaker.classList.toggle("active", isSpeaker);
     showToast(isSpeaker ? "Speaker on" : "Speaker off", "info");
   });
 
-  endCallBtn.addEventListener("click", endCall);
+  callPopupEnd.addEventListener("click", endCall);
 
   // Status toggle
   if (statusToggle) {
@@ -656,12 +649,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") {
       closeEmojiPicker();
       closeMoreDropdown();
-      callModalOverlay.classList.add("hidden");
+      endCall();
       clearChatModalOverlay.classList.add("hidden");
       deleteChatModalOverlay.classList.add("hidden");
       blockModalOverlay.classList.add("hidden");
       logoutModalOverlay.classList.add("hidden");
-      endCall();
     }
   });
 

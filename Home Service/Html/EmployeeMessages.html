@@ -279,31 +279,33 @@
       <div class="emoji-grid" id="emojiGrid"></div>
     </div>
 
-    <!-- Call Modal -->
-    <div class="modal-overlay hidden" id="callModalOverlay">
-      <div class="modal call-modal" id="callModal">
-        <div class="modal-body call-body">
-          <button class="modal-close" id="callModalClose">
-            <i data-lucide="x"></i>
+    <!-- Call Popup -->
+    <div class="call-popup hidden" id="callPopup">
+      <div class="call-popup-content">
+        <div class="call-popup-header">
+          <div class="call-popup-avatar" id="callPopupAvatar">
+            <img src="" alt="" id="callPopupAvatarImg" />
+          </div>
+          <div class="call-popup-info">
+            <h4 id="callPopupName">Fatima Begum</h4>
+            <span id="callPopupCategory">AC Repair &amp; Servicing</span>
+          </div>
+        </div>
+        <div class="call-popup-status" id="callPopupStatus">Ringing...</div>
+        <div class="call-popup-timer" id="callPopupTimer">00:00</div>
+        <div class="call-popup-actions">
+          <button type="button" class="call-popup-btn call-popup-btn-secondary" id="callPopupMute" title="Mute">
+            <i data-lucide="mic"></i>
+            <span>Mute</span>
           </button>
-          <div class="call-avatar-large" id="callAvatar">
-            <img src="" alt="" id="callAvatarImg" />
-          </div>
-          <h3 id="callName">Fatima Begum</h3>
-          <span class="call-category" id="callCategory">AC Repair &amp; Servicing</span>
-          <span class="call-status-text" id="callStatusText">Ringing...</span>
-          <div class="call-timer" id="callTimer">00:00</div>
-          <div class="call-actions-row">
-            <button type="button" class="call-action" id="muteBtn" title="Mute">
-              <i data-lucide="mic"></i>
-            </button>
-            <button type="button" class="call-action active" id="speakerBtn" title="Speaker">
-              <i data-lucide="volume-2"></i>
-            </button>
-            <button type="button" class="call-end-btn" id="endCallBtn" title="End Call">
-              <i data-lucide="phone-off"></i>
-            </button>
-          </div>
+          <button type="button" class="call-popup-btn call-popup-btn-danger" id="callPopupEnd" title="End Call">
+            <i data-lucide="phone-off"></i>
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="call-popup-btn call-popup-btn-secondary" id="callPopupSpeaker" title="Speaker">
+            <i data-lucide="volume-2"></i>
+            <span>Speaker</span>
+          </button>
         </div>
       </div>
     </div>

@@ -964,141 +964,150 @@ body {
   margin-top: 4px;
 }
 
-/* Call Modal */
-.call-modal {
-  max-width: 360px;
+/* Call Popup */
+.call-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  z-index: 500;
+  width: 340px;
+  padding: 24px;
+  animation: popupIn 0.25s ease;
+}
+
+@keyframes popupIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.call-popup.hidden {
+  display: none;
+}
+
+.call-popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  border-radius: 20px;
-  overflow: hidden;
 }
 
-.call-body {
-  padding: 40px 24px 32px;
-  position: relative;
-  background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 60%);
+.call-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 16px;
 }
 
-.call-body .modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 28px;
-  height: 28px;
-  background: #f3f4f6;
+.call-popup-avatar {
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-}
-
-.call-body .modal-close:hover {
-  background: #e5e7eb;
-}
-
-.call-avatar-large {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  margin: 0 auto 20px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.2);
+  flex-shrink: 0;
 }
 
-.call-avatar-large img {
+.call-popup-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.call-body h3 {
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 4px;
+.call-popup-info {
+  text-align: left;
+  flex: 1;
+  min-width: 0;
 }
 
-.call-category {
-  font-size: 13px;
+.call-popup-info h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.call-popup-info span {
+  font-size: 12px;
   color: #0d9488;
   font-weight: 500;
-  display: block;
+}
+
+.call-popup-status {
+  font-size: 14px;
+  color: #6b7280;
   margin-bottom: 8px;
 }
 
-.call-status-text {
-  font-size: 14px;
-  color: #6b7280;
-  display: block;
-  margin-bottom: 16px;
-}
-
-.call-timer {
-  font-size: 28px;
+.call-popup-timer {
+  font-size: 32px;
   font-weight: 700;
   color: #0d9488;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }
 
-.call-actions-row {
+.call-popup-actions {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  align-items: center;
+  gap: 16px;
+  width: 100%;
 }
 
-.call-action {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #6b7280;
+.call-popup-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: "Poppins", sans-serif;
 }
 
-.call-action:hover {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.call-action.active {
-  background: #0d9488;
-  color: #fff;
-  border-color: #0d9488;
-}
-
-.call-action i {
+.call-popup-btn i {
   width: 22px;
   height: 22px;
 }
 
-.call-end-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: none;
+.call-popup-btn span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.call-popup-btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.call-popup-btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.call-popup-btn-secondary.active {
+  background: #0d9488;
+  color: #fff;
+}
+
+.call-popup-btn-danger {
   background: #ef4444;
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.call-end-btn:hover {
+.call-popup-btn-danger:hover {
   background: #dc2626;
-  transform: scale(1.05);
 }
 
-.call-end-btn i {
-  width: 26px;
-  height: 26px;
-}
+/* Old call modal styles removed */
 
 /* More Options Dropdown */
 .dropdown-menu {
