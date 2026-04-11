@@ -61,6 +61,27 @@ async function fetchAdmins(email) {
   return Array.isArray(data) ? data : [];
 }
 
+async function fetchEmployees(email) {
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/employees?select=*&email=eq.${encodeURIComponent(email)}`,
+    {
+      method: 'GET',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to fetch employees (${response.status}): ${errorText}`);
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) ? data : [];
+}
+
 function findCustomer(rows, password) {
   for (const row of rows) {
     const rowPassword = getText(row.password_hash);
@@ -72,6 +93,16 @@ function findCustomer(rows, password) {
 }
 
 function findAdmin(rows, password) {
+  for (const row of rows) {
+    const rowPassword = getText(row.password_hash);
+    if (rowPassword === password) {
+      return row;
+    }
+  }
+  return null;
+}
+
+function findEmployee(rows, password) {
   for (const row of rows) {
     const rowPassword = getText(row.password_hash);
     if (rowPassword === password) {
@@ -156,6 +187,25 @@ if (loginForm) {
 
         setLoginMessage('Login successful. Redirecting...', false);
         window.location.href = 'Admin.html';
+        return;
+      }
+
+      // Then check employees table
+      const employeeRows = await fetchEmployees(email);
+      const matchedEmployee = findEmployee(employeeRows, password);
+
+      if (matchedEmployee) {
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            role: 'employee',
+            name: matchedEmployee.full_name || matchedEmployee.name,
+            email: matchedEmployee.email,
+          })
+        );
+
+        setLoginMessage('Login successful. Redirecting...', false);
+        window.location.href = 'EmployeeProfile.html';
         return;
       }
 

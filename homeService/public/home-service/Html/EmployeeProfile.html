@@ -25,10 +25,10 @@
 
         <div class="sidebar-scroll">
           <div class="worker-card">
-            <div class="worker-avatar">R</div>
+            <div class="worker-avatar" id="sidebarAvatar">R</div>
             <div>
               <p>Worker Portal</p>
-              <h2>Electrician</h2>
+              <h2 id="sidebarRole">Electrician</h2>
             </div>
           </div>
 
@@ -65,11 +65,11 @@
 
           <div class="sidebar-metrics">
             <div class="metric-card">
-              <p>৳32k</p>
+              <p id="sidebarMonthlyEarnings">৳32k</p>
               <span>This Month</span>
             </div>
             <div class="metric-card">
-              <p>4.9</p>
+              <p id="sidebarRating">4.9</p>
               <span>Rating</span>
             </div>
           </div>
@@ -122,10 +122,6 @@
                 <h4>342</h4>
                 <p>Jobs Done</p>
               </div>
-              <div>
-                <h4>15</h4>
-                <p>min Response</p>
-              </div>
             </div>
 
             <div class="status-row">
@@ -175,10 +171,6 @@
                   <i data-lucide="calendar"></i>
                   <span>Member since January 2022</span>
                 </div>
-                <div class="icon-row">
-                  <i data-lucide="badge-dollar-sign"></i>
-                  <span>৳500/hour</span>
-                </div>
               </div>
             </section>
 
@@ -214,7 +206,7 @@
               </div>
             </section>
 
-            <section class="detail-card reviews-card">
+            <section class="detail-card reviews-card" style="display: none;">
               <div class="reviews-header">
                 <h3>Recent Reviews</h3>
                 <a href="#">View All</a>
@@ -277,5 +269,72 @@
     <script>
       lucide.createIcons();
     </script>
+
+    <!-- Edit Profile Modal -->
+    <div class="edit-modal" id="editModal" style="display: none;">
+      <div class="edit-modal-content">
+        <div class="edit-modal-header">
+          <h3>Edit Profile</h3>
+          <button class="modal-close-btn" id="closeModal" type="button">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <form class="edit-modal-form" id="editProfileForm">
+          <div class="form-group">
+            <label for="editFullName">Full Name</label>
+            <input type="text" id="editFullName" name="full_name" />
+          </div>
+
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" name="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="editPhone">Phone Number</label>
+            <input type="text" id="editPhone" name="phone_number" />
+          </div>
+
+          <div class="form-group">
+            <label for="editRole">Role</label>
+            <input type="text" id="editRole" name="role" />
+          </div>
+
+          <div class="form-group">
+            <label for="editStatus">Status</label>
+            <select id="editStatus" name="status">
+              <option value="true">Available</option>
+              <option value="false">Unavailable</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editAddress">Address</label>
+            <textarea id="editAddress" name="address" rows="2"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editAboutMe">About Me</label>
+            <textarea id="editAboutMe" name="about_me" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editSkills">Skills (comma separated)</label>
+            <input type="text" id="editSkills" name="skills" placeholder="Wiring, AC Repair, Fan Installation" />
+          </div>
+
+          <div class="form-group">
+            <label for="editCertifications">Certifications (comma separated)</label>
+            <input type="text" id="editCertifications" name="certifications" placeholder="Licensed Electrician, Safety Training" />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+            <button type="submit" class="btn-save">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

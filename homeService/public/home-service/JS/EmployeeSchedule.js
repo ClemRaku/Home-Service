@@ -1,640 +1,533 @@
-document.addEventListener("DOMContentLoaded", () => {
+const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+
+// Get logged-in employee
+const authUser = JSON.parse(localStorage.getItem('hsAuthUser'));
+if (!authUser || authUser.role !== 'employee') {
+  window.location.href = 'Login.html';
+}
+
+// Fetch bookings for this employee
+async function fetchBookings(email) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
+      {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error('Failed to fetch bookings');
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('Error fetching bookings:', err);
+    return [];
+  }
+}
+
+// Format time
+function formatTime(timeStr) {
+  if (!timeStr) return '';
+  const time = new Date(`1970-01-01T${timeStr}`);
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  const displayMinutes = minutes.toString().padStart(2, '0');
+  return `${displayHours}:${displayMinutes} ${ampm}`;
+}
+
+// Format date string for display
+function formatDateShort(dateObj) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[dateObj.getMonth()]} ${dateObj.getDate()}`;
+}
+
+// Get week dates (Mon-Sun) with offset
+function getWeekDates(offset) {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) + offset * 7);
+  monday.setHours(0, 0, 0, 0);
+
+  const dates = [];
+  const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dates.push({
+      key: days[i],
+      name: dayNames[i],
+      number: d.getDate(),
+      month: d.getMonth(),
+      year: d.getFullYear(),
+      fullDate: `${dayNames[i]}, ${formatDateShort(d)}`,
+      dateStr: formatDateShort(d),
+      jsDate: d,
+    });
+  }
+  return dates;
+}
+
+// Group bookings by date within a week range
+function groupBookingsByWeek(bookings, weekDates) {
+  const grouped = {};
+  weekDates.forEach(d => {
+    grouped[d.key] = [];
+  });
+
+  bookings.forEach(b => {
+    const dateVal = b.scheduled_date || b.created_at;
+    if (!dateVal) return;
+
+    const bookingDate = new Date(dateVal);
+    weekDates.forEach(d => {
+      if (
+        bookingDate.getFullYear() === d.year &&
+        bookingDate.getMonth() === d.month &&
+        bookingDate.getDate() === d.number
+      ) {
+        grouped[d.key].push(b);
+      }
+    });
+  });
+
+  // Sort each day's bookings by start_time
+  Object.keys(grouped).forEach(key => {
+    grouped[key].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+  });
+
+  return grouped;
+}
+
+// State
+let weekOffset = 0;
+let currentSelectedDay = null;
+let bookingsByWeek = {};
+let allBookings = [];
+
+// DOM Elements
+let weekDaysRow, selectedDayTitle, jobCount, jobCards, weekRange, prevWeekBtn, nextWeekBtn;
+let weekOverviewList, remindersList, logoutBtn, statusToggle, statusDot, statusLabel;
+let addReminderBtn, reminderModalOverlay, reminderModalClose, reminderCancel, reminderForm;
+let jobModalOverlay, jobModalClose, jobModalTitle, jobModalBody;
+
+// Render week days row
+function renderWeekDays(weekDates) {
+  weekDaysRow.innerHTML = '';
+  weekDates.forEach(date => {
+    const dayEl = document.createElement('div');
+    dayEl.className = `week-day ${currentSelectedDay === date.key ? 'selected' : ''}`;
+    dayEl.dataset.day = date.key;
+    dayEl.dataset.date = date.dateStr;
+    dayEl.innerHTML = `
+      <span class="day-name">${date.name}</span>
+      <span class="day-number">${date.number}</span>
+      <span class="day-dot"></span>
+    `;
+    if (bookingsByWeek[date.key] && bookingsByWeek[date.key].length > 0) {
+      dayEl.classList.add('has-jobs');
+    }
+    weekDaysRow.appendChild(dayEl);
+  });
+}
+
+// Render day schedule
+function renderDaySchedule(dayKey, weekDates) {
+  const dayData = weekDates.find(d => d.key === dayKey);
+  if (!dayData) return;
+
+  selectedDayTitle.textContent = dayData.fullDate;
+  const dayBookings = bookingsByWeek[dayKey] || [];
+  jobCount.textContent = dayBookings.length === 1 ? '1 job' : `${dayBookings.length} jobs`;
+
+  jobCards.innerHTML = '';
+
+  if (dayBookings.length === 0) {
+    jobCards.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
+        <p>No jobs scheduled for this day</p>
+      </div>
+    `;
+    return;
+  }
+
+  dayBookings.forEach(booking => {
+    const statusLabel = booking.status === 'completed' ? 'Completed' :
+      booking.status === 'in_progress' ? 'In Progress' :
+      booking.status === 'cancelled' ? 'Cancelled' : 'Scheduled';
+    const statusClass = booking.status === 'completed' ? 'completed' :
+      booking.status === 'in_progress' ? 'in-progress' :
+      booking.status === 'cancelled' ? 'cancelled' : 'scheduled';
+
+    const timeStr = formatTime(booking.start_time);
+    const duration = calcDuration(booking.start_time, booking.end_time);
+
+    const jobCard = document.createElement('div');
+    jobCard.className = `job-card ${statusClass}`;
+    jobCard.dataset.bookingId = booking.id;
+    jobCard.innerHTML = `
+      <div class="job-status-indicator">
+        <span class="status-dot"></span>
+        <span class="status-label">${statusLabel}</span>
+      </div>
+      <div class="job-info">
+        <h4>${booking.service_name || 'Service'}</h4>
+        <p>${booking.customer_name || 'Customer'}</p>
+      </div>
+      <div class="job-time">
+        <span class="time">${timeStr || 'TBD'}</span>
+        ${duration ? `<span class="duration">${duration}</span>` : ''}
+      </div>
+    `;
+
+    jobCard.addEventListener('click', () => showJobDetail(booking));
+    jobCards.appendChild(jobCard);
+  });
+}
+
+function calcDuration(startTime, endTime) {
+  if (!startTime || !endTime) return null;
+  const start = new Date(`1970-01-01T${startTime}`);
+  const end = new Date(`1970-01-01T${endTime}`);
+  const diffMs = end - start;
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  if (hours > 0 && minutes > 0) return `${hours}h ${minutes}m`;
+  if (hours > 0) return `${hours}h`;
+  return `${minutes}m`;
+}
+
+// Show job detail modal
+function showJobDetail(booking) {
+  jobModalTitle.textContent = booking.service_name || 'Job Details';
+
+  const statusLabel = booking.status === 'completed' ? 'Completed' :
+    booking.status === 'in_progress' ? 'In Progress' :
+    booking.status === 'cancelled' ? 'Cancelled' : 'Scheduled';
+
+  const timeStr = formatTime(booking.start_time);
+  const duration = calcDuration(booking.start_time, booking.end_time);
+
+  jobModalBody.innerHTML = `
+    <div class="job-detail-content">
+      <div class="job-detail-row">
+        <span class="job-detail-label">Status</span>
+        <span class="status-badge ${booking.status === 'completed' ? 'paid' : 'pending'}">${statusLabel}</span>
+      </div>
+      <div class="job-detail-row">
+        <span class="job-detail-label">Client</span>
+        <span>${booking.customer_name || 'Unknown'}</span>
+      </div>
+      <div class="job-detail-row">
+        <span class="job-detail-label">Time</span>
+        <span>${timeStr || 'TBD'}${duration ? ` · ${duration}` : ''}</span>
+      </div>
+      <div class="job-detail-row">
+        <span class="job-detail-label">Location</span>
+        <span>${booking.address || 'N/A'}</span>
+      </div>
+      <div class="job-detail-row">
+        <span class="job-detail-label">Price</span>
+        <span class="job-price">৳${booking.price || 0}</span>
+      </div>
+      ${booking.additional_details ? `
+      <div class="job-detail-description">
+        <span class="job-detail-label">Description</span>
+        <p>${booking.additional_details}</p>
+      </div>
+      ` : ''}
+    </div>
+  `;
+
+  jobModalOverlay.classList.remove('hidden');
+}
+
+// Render week overview
+function renderWeekOverview(weekDates) {
+  weekOverviewList.innerHTML = '';
+
+  weekDates.forEach(date => {
+    const dayBookings = bookingsByWeek[date.key] || [];
+    const item = document.createElement('div');
+    item.className = 'overview-item';
+
+    let badgesHtml = '';
+    if (dayBookings.length > 0) {
+      badgesHtml = dayBookings.map(booking => {
+        const timeStr = formatTime(booking.start_time) || 'TBD';
+        return `<span class="overview-badge" data-booking-id="${booking.id}" data-day="${date.key}">${timeStr} · ${booking.service_name}</span>`;
+      }).join('');
+    } else {
+      badgesHtml = `<span class="overview-badge free" data-day="${date.key}">Free</span>`;
+    }
+
+    item.innerHTML = `
+      <span class="overview-day">${date.name} ${date.number}</span>
+      <div class="overview-badges">${badgesHtml}</div>
+    `;
+
+    weekOverviewList.appendChild(item);
+  });
+
+  // Click handlers for overview badges
+  weekOverviewList.querySelectorAll('.overview-badge:not(.free)').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const dayKey = badge.dataset.day;
+      selectDay(dayKey, weekDates);
+    });
+  });
+
+  weekOverviewList.querySelectorAll('.overview-badge.free').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const dayKey = badge.dataset.day;
+      selectDay(dayKey, weekDates);
+    });
+  });
+}
+
+// Render week stats
+function renderWeekStats(weekDates) {
+  let totalJobs = 0, completed = 0, scheduled = 0, freeDays = 0;
+
+  weekDates.forEach(date => {
+    const dayBookings = bookingsByWeek[date.key] || [];
+    totalJobs += dayBookings.length;
+    dayBookings.forEach(b => {
+      if (b.status === 'completed') completed++;
+      else if (b.status === 'upcoming' || b.status === 'scheduled') scheduled++;
+    });
+    if (dayBookings.length === 0) freeDays++;
+  });
+
+  const statsValues = document.querySelectorAll('.week-stat-value');
+  if (statsValues.length >= 4) {
+    statsValues[0].textContent = totalJobs;
+    statsValues[1].textContent = completed;
+    statsValues[2].textContent = scheduled;
+    statsValues[3].textContent = freeDays;
+  }
+}
+
+// Render reminders (from bookings)
+function renderReminders(weekDates) {
+  remindersList.innerHTML = '';
+
+  const upcomingBookings = [];
+  weekDates.forEach(date => {
+    const dayBookings = bookingsByWeek[date.key] || [];
+    dayBookings.forEach(b => {
+      if (b.status !== 'completed' && b.status !== 'cancelled') {
+        const timeStr = formatTime(b.start_time) || 'TBD';
+        upcomingBookings.push({
+          title: b.service_name,
+          client: b.customer_name || 'Unknown',
+          date: date.fullDate,
+          time: timeStr,
+        });
+      }
+    });
+  });
+
+  if (upcomingBookings.length === 0) {
+    remindersList.innerHTML = `
+      <div style="text-align: center; padding: 20px; color: #9ca3af;">
+        <p>No upcoming reminders</p>
+      </div>
+    `;
+    return;
+  }
+
+  upcomingBookings.forEach(reminder => {
+    const item = document.createElement('div');
+    item.className = 'reminder-item';
+    item.innerHTML = `
+      <div class="reminder-icon smart">
+        <i data-lucide="zap"></i>
+      </div>
+      <div class="reminder-info">
+        <h4>${reminder.title}</h4>
+        <p>${reminder.client}</p>
+        <span>${reminder.date}, ${reminder.time}</span>
+      </div>
+    `;
+    remindersList.appendChild(item);
+  });
+}
+
+// Select day
+function selectDay(dayKey, weekDates) {
+  document.querySelectorAll('.week-day').forEach(day => day.classList.remove('selected'));
+  const selectedDay = document.querySelector(`[data-day="${dayKey}"]`);
+  if (selectedDay) selectedDay.classList.add('selected');
+  currentSelectedDay = dayKey;
+  renderDaySchedule(dayKey, weekDates);
+}
+
+// Full week display update
+async function updateWeekDisplay() {
+  const weekDates = getWeekDates(weekOffset);
+  bookingsByWeek = groupBookingsByWeek(allBookings, weekDates);
+
+  // Week range text
+  const firstDate = weekDates[0];
+  const lastDate = weekDates[6];
+  weekRange.textContent = `Week of ${firstDate.dateStr} – ${lastDate.dateStr}, ${lastDate.year}`;
+
+  renderWeekDays(weekDates);
+  renderWeekOverview(weekDates);
+  renderWeekStats(weekDates);
+  renderReminders(weekDates);
+
+  // Select today or first day with jobs
+  const today = new Date();
+  const todayKey = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][today.getDay()];
+  const todayInWeek = weekDates.find(d => d.key === todayKey);
+
+  if (todayInWeek && currentSelectedDay !== todayKey) {
+    selectDay(todayKey, weekDates);
+  } else if (!currentSelectedDay) {
+    const firstWithJobs = weekDates.find(d => bookingsByWeek[d.key] && bookingsByWeek[d.key].length > 0);
+    selectDay(firstWithJobs ? firstWithJobs.key : 'mon', weekDates);
+  } else {
+    renderDaySchedule(currentSelectedDay, weekDates);
+  }
+}
+
+// Toast notification
+function showToast(message, type = 'info') {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <div class="toast-icon ${type}"><i data-lucide="${type === 'success' ? 'check-circle' : 'info'}"></i></div>
+    <div class="toast-content"><p>${message}</p></div>
+  `;
+  container.appendChild(toast);
   lucide.createIcons();
 
-  // DOM Elements
-  const weekDaysRow = document.getElementById("weekDaysRow");
-  const selectedDayTitle = document.getElementById("selectedDayTitle");
-  const jobCount = document.getElementById("jobCount");
-  const jobCards = document.getElementById("jobCards");
-  const weekRange = document.getElementById("weekRange");
-  const prevWeekBtn = document.getElementById("prevWeek");
-  const nextWeekBtn = document.getElementById("nextWeek");
-  const addReminderBtn = document.querySelector(".add-reminder-btn");
-  const reminderModalOverlay = document.getElementById("reminderModalOverlay");
-  const reminderModalClose = document.getElementById("reminderModalClose");
-  const reminderCancel = document.getElementById("reminderCancel");
-  const reminderForm = document.getElementById("reminderForm");
-  const remindersList = document.querySelector(".reminders-list");
-  const statusToggle = document.getElementById("statusToggle");
-  const statusDot = document.getElementById("statusDot");
-  const statusLabel = document.getElementById("statusLabel");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const logoutModalOverlay = document.getElementById("logoutModalOverlay");
-  const logoutModalClose = document.getElementById("logoutModalClose");
-  const logoutCancel = document.getElementById("logoutCancel");
-  const logoutConfirm = document.getElementById("logoutConfirm");
-  const jobModalOverlay = document.getElementById("jobModalOverlay");
-  const jobModalClose = document.getElementById("jobModalClose");
-  const jobModalTitle = document.getElementById("jobModalTitle");
-  const jobModalBody = document.getElementById("jobModalBody");
-  const weekOverviewList = document.getElementById("weekOverviewList");
+  setTimeout(() => {
+    toast.classList.add('toast-exit');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
 
-  // Week data
-  const weekData = {
-    mon: {
-      date: "Apr 8",
-      fullDate: "Mon, Apr 8",
-      jobs: [
-        {
-          id: "full-house-wiring",
-          title: "Full House Wiring Check",
-          client: "Jamal Hossain",
-          time: "10:00 AM",
-          duration: "3h",
-          status: "completed",
-          description: "Complete wiring check for 3-bedroom house in Gulshan. Tested all circuits and replaced faulty switches.",
-          location: "House 45, Road 12, Gulshan, Dhaka",
-          phone: "+880 1712-345678",
-          price: "৳4,500",
-        },
-      ],
-    },
-    tue: {
-      date: "Apr 9",
-      fullDate: "Tue, Apr 9",
-      jobs: [],
-    },
-    wed: {
-      date: "Apr 10",
-      fullDate: "Wed, Apr 10",
-      jobs: [
-        {
-          id: "ac-repair",
-          title: "AC Repair & Servicing",
-          client: "Fatima Begum",
-          time: "10:00 AM",
-          duration: "2h",
-          status: "in-progress",
-          description: "AC unit not cooling properly. Diagnosed refrigerant leak and recharged system.",
-          location: "Flat 3B, Building A, Dhanmondi, Dhaka",
-          phone: "+880 1812-987654",
-          price: "৳1,200",
-        },
-        {
-          id: "fan-installation",
-          title: "Fan Installation",
-          client: "Karim Ahmed",
-          time: "2:00 PM",
-          duration: "1.5h",
-          status: "scheduled",
-          description: "Install 3 ceiling fans in living room and bedrooms.",
-          location: "House 12, Road 5, Banani, Dhaka",
-          phone: "+880 1912-456789",
-          price: "৳1,800",
-        },
-      ],
-    },
-    thu: {
-      date: "Apr 11",
-      fullDate: "Thu, Apr 11",
-      jobs: [
-        {
-          id: "circuit-breaker",
-          title: "Circuit Breaker Replacement",
-          client: "Nasreen Akter",
-          time: "9:00 AM",
-          duration: "2h",
-          status: "scheduled",
-          description: "Replace faulty circuit breaker in main distribution board.",
-          location: "House 78, Road 22, Uttara, Dhaka",
-          phone: "+880 1612-111222",
-          price: "৳2,500",
-        },
-      ],
-    },
-    fri: {
-      date: "Apr 12",
-      fullDate: "Fri, Apr 12",
-      jobs: [
-        {
-          id: "led-lighting",
-          title: "LED Lighting Installation",
-          client: "Rafiq Islam",
-          time: "11:00 AM",
-          duration: "2.5h",
-          status: "scheduled",
-          description: "LED lighting installation for living room and kitchen including dimmer switches.",
-          location: "House 33, Road 8, Mirpur, Dhaka",
-          phone: "+880 1512-333444",
-          price: "৳3,200",
-        },
-      ],
-    },
-    sat: {
-      date: "Apr 13",
-      fullDate: "Sat, Apr 13",
-      jobs: [],
-    },
-    sun: {
-      date: "Apr 14",
-      fullDate: "Sun, Apr 14",
-      jobs: [
-        {
-          id: "smart-home-wiring",
-          title: "Smart Home Wiring",
-          client: "Sumaiya Rahman",
-          time: "10:00 AM",
-          duration: "4h",
-          status: "scheduled",
-          description: "Smart home setup including smart switches, motion sensors, and automated lighting system.",
-          location: "House 56, Road 15, Baridhara, Dhaka",
-          phone: "+880 1412-555666",
-          price: "৳12,000",
-        },
-      ],
-    },
-  };
+// Init
+document.addEventListener('DOMContentLoaded', async () => {
+  if (window.lucide) lucide.createIcons();
 
-  // Reminders data
-  let reminders = [
-    { id: 1, title: "Circuit Breaker Replacement", client: "Nasreen Akter", date: "Apr 11", time: "9:00 AM", icon: "zap", iconClass: "circuit" },
-    { id: 2, title: "LED Lighting Installation", client: "Rafiq Islam", date: "Apr 12", time: "11:00 AM", icon: "zap", iconClass: "led" },
-    { id: 3, title: "Monthly Safety Inspection", client: "Self", date: "Apr 15", time: "8:00 AM", icon: "user", iconClass: "safety" },
-    { id: 4, title: "Smart Home Wiring", client: "Sumaiya Rahman", date: "Apr 14", time: "10:00 AM", icon: "zap", iconClass: "smart" },
-  ];
+  // Get DOM elements
+  weekDaysRow = document.getElementById('weekDaysRow');
+  selectedDayTitle = document.getElementById('selectedDayTitle');
+  jobCount = document.getElementById('jobCount');
+  jobCards = document.getElementById('jobCards');
+  weekRange = document.getElementById('weekRange');
+  prevWeekBtn = document.getElementById('prevWeek');
+  nextWeekBtn = document.getElementById('nextWeek');
+  weekOverviewList = document.getElementById('weekOverviewList');
+  remindersList = document.querySelector('.reminders-list');
+  logoutBtn = document.getElementById('logoutBtn');
+  statusToggle = document.getElementById('statusToggle');
+  statusDot = document.getElementById('statusDot');
+  statusLabel = document.getElementById('statusLabel');
+  addReminderBtn = document.querySelector('.add-reminder-btn');
+  reminderModalOverlay = document.getElementById('reminderModalOverlay');
+  reminderModalClose = document.getElementById('reminderModalClose');
+  reminderCancel = document.getElementById('reminderCancel');
+  reminderForm = document.getElementById('reminderForm');
+  jobModalOverlay = document.getElementById('jobModalOverlay');
+  jobModalClose = document.getElementById('jobModalClose');
+  jobModalTitle = document.getElementById('jobModalTitle');
+  jobModalBody = document.getElementById('jobModalBody');
 
-  let currentSelectedDay = "wed";
-
-  // Week navigation state
-  let weekOffset = 0;
-
-  function getWeekDates(offset) {
-    const now = new Date();
-    const dayOfWeek = now.getDay();
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) + offset * 7);
-
-    const dates = [];
-    const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-    const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      dates.push({
-        key: days[i],
-        name: dayNames[i],
-        number: d.getDate(),
-        month: months[d.getMonth()],
-        fullDate: `${dayNames[i]}, ${months[d.getMonth()]} ${d.getDate()}`,
-        dateStr: `${months[d.getMonth()]} ${d.getDate()}`,
-      });
-    }
-    return dates;
+  // Fetch bookings
+  if (authUser && authUser.email) {
+    allBookings = await fetchBookings(authUser.email);
   }
 
-  function updateWeekDisplay() {
-    const dates = getWeekDates(weekOffset);
-    const firstDate = dates[0];
-    const lastDate = dates[6];
-    weekRange.textContent = `Week of ${firstDate.dateStr} – ${lastDate.dateStr}, ${lastDate.number > firstDate.number || firstDate.month !== lastDate.month ? lastDate.month : ""} ${lastDate.number > 30 ? "" : "2024"}`;
-
-    document.querySelectorAll(".week-day").forEach((dayEl, index) => {
-      const date = dates[index];
-      dayEl.setAttribute("data-day", date.key);
-      dayEl.setAttribute("data-date", date.dateStr);
-      dayEl.querySelector(".day-name").textContent = date.name;
-      dayEl.querySelector(".day-number").textContent = date.number;
-
-      // Mark days with jobs
-      if (weekData[date.key] && weekData[date.key].jobs.length > 0) {
-        dayEl.classList.add("has-jobs");
-      } else {
-        dayEl.classList.remove("has-jobs");
-      }
-    });
-
-    // Update week overview
-    updateWeekOverview(dates);
-  }
-
-  function updateWeekOverview(dates) {
-    weekOverviewList.innerHTML = "";
-
-    dates.forEach((date) => {
-      const dayData = weekData[date.key];
-      const item = document.createElement("div");
-      item.className = "overview-item";
-
-      let badgesHtml = "";
-      if (dayData && dayData.jobs.length > 0) {
-        badgesHtml = dayData.jobs.map((job) =>
-          `<span class="overview-badge" data-job="${job.id}" data-day="${date.key}">${job.time} · ${job.title}</span>`
-        ).join("");
-      } else {
-        badgesHtml = `<span class="overview-badge free" data-day="${date.key}">Free</span>`;
-      }
-
-      item.innerHTML = `
-        <span class="overview-day">${date.name} ${date.number}</span>
-        <div class="overview-badges">${badgesHtml}</div>
-      `;
-
-      weekOverviewList.appendChild(item);
-    });
-
-    // Add click handlers for overview badges
-    weekOverviewList.querySelectorAll(".overview-badge:not(.free)").forEach((badge) => {
-      badge.addEventListener("click", () => {
-        const dayKey = badge.getAttribute("data-day");
-        const jobId = badge.getAttribute("data-job");
-        selectDayAndShowJob(dayKey, jobId);
-      });
-    });
-
-    // Click on free day selects that day
-    weekOverviewList.querySelectorAll(".overview-badge.free").forEach((badge) => {
-      badge.addEventListener("click", () => {
-        const dayKey = badge.getAttribute("data-day");
-        selectDay(dayKey);
-      });
-    });
-  }
-
-  function selectDay(dayKey) {
-    updateDaySelection(dayKey);
-    renderDaySchedule(dayKey);
-  }
-
-  function selectDayAndShowJob(dayKey, jobId) {
-    updateDaySelection(dayKey);
-    renderDaySchedule(dayKey);
-    // Highlight the specific job card
-    setTimeout(() => {
-      const jobCard = document.querySelector(`.job-card[data-job="${jobId}"]`);
-      if (jobCard) {
-        jobCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        jobCard.style.outline = "2px solid #0d9488";
-        jobCard.style.outlineOffset = "2px";
-        setTimeout(() => {
-          jobCard.style.outline = "";
-          jobCard.style.outlineOffset = "";
-        }, 2000);
-      }
-    }, 100);
-  }
-
-  function updateDaySelection(dayKey) {
-    document.querySelectorAll(".week-day").forEach((day) => {
-      day.classList.remove("selected");
-    });
-    const selectedDay = document.querySelector(`[data-day="${dayKey}"]`);
-    if (selectedDay) {
-      selectedDay.classList.add("selected");
-    }
-    currentSelectedDay = dayKey;
-  }
-
-  function renderDaySchedule(dayKey) {
-    const day = weekData[dayKey];
-    if (!day) return;
-
-    selectedDayTitle.textContent = day.fullDate;
-    jobCount.textContent = day.jobs.length === 1 ? "1 job" : `${day.jobs.length} jobs`;
-
-    jobCards.innerHTML = "";
-
-    if (day.jobs.length === 0) {
-      jobCards.innerHTML = `
-        <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
-          <p>No jobs scheduled for this day</p>
-        </div>
-      `;
-      return;
-    }
-
-    day.jobs.forEach((job) => {
-      const jobCard = document.createElement("div");
-      jobCard.className = `job-card ${job.status}`;
-      jobCard.setAttribute("data-job", job.id);
-
-      const statusLabel = job.status === "completed"
-        ? "Completed"
-        : job.status === "in-progress"
-        ? "In Progress"
-        : "Scheduled";
-
-      jobCard.innerHTML = `
-        <div class="job-status-indicator">
-          <span class="status-dot"></span>
-          <span class="status-label">${statusLabel}</span>
-        </div>
-        <div class="job-info">
-          <h4>${job.title}</h4>
-          <p>${job.client}</p>
-        </div>
-        <div class="job-time">
-          <span class="time">${job.time}</span>
-          <span class="duration">${job.duration}</span>
-        </div>
-      `;
-
-      jobCard.addEventListener("click", () => showJobDetail(job));
-      jobCards.appendChild(jobCard);
-    });
-
-    lucide.createIcons();
-  }
-
-  function showJobDetail(job) {
-    jobModalTitle.textContent = job.title;
-
-    const statusLabel = job.status === "completed"
-      ? "Completed"
-      : job.status === "in-progress"
-      ? "In Progress"
-      : "Scheduled";
-
-    const statusClass = job.status === "completed"
-      ? "paid"
-      : job.status === "in-progress"
-      ? "pending"
-      : "pending";
-
-    jobModalBody.innerHTML = `
-      <div class="job-detail-content">
-        <div class="job-detail-row">
-          <span class="job-detail-label">Status</span>
-          <span class="status-badge ${statusClass}">${statusLabel}</span>
-        </div>
-        <div class="job-detail-row">
-          <span class="job-detail-label">Client</span>
-          <span>${job.client}</span>
-        </div>
-        <div class="job-detail-row">
-          <span class="job-detail-label">Time</span>
-          <span>${job.time} · ${job.duration}</span>
-        </div>
-        <div class="job-detail-row">
-          <span class="job-detail-label">Location</span>
-          <span>${job.location || "N/A"}</span>
-        </div>
-        <div class="job-detail-row">
-          <span class="job-detail-label">Phone</span>
-          <span>${job.phone || "N/A"}</span>
-        </div>
-        <div class="job-detail-row">
-          <span class="job-detail-label">Price</span>
-          <span class="job-price">${job.price || "N/A"}</span>
-        </div>
-        ${job.description ? `
-        <div class="job-detail-description">
-          <span class="job-detail-label">Description</span>
-          <p>${job.description}</p>
-        </div>
-        ` : ""}
-      </div>
-    `;
-
-    jobModalOverlay.classList.remove("hidden");
-    lucide.createIcons();
-  }
-
-  function renderReminders() {
-    remindersList.innerHTML = "";
-
-    if (reminders.length === 0) {
-      remindersList.innerHTML = `
-        <div style="text-align: center; padding: 20px; color: #9ca3af;">
-          <p>No reminders yet</p>
-        </div>
-      `;
-      return;
-    }
-
-    reminders.forEach((reminder) => {
-      const item = document.createElement("div");
-      item.className = "reminder-item";
-      item.setAttribute("data-reminder-id", reminder.id);
-
-      item.innerHTML = `
-        <div class="reminder-icon ${reminder.iconClass}">
-          <i data-lucide="${reminder.icon}"></i>
-        </div>
-        <div class="reminder-info">
-          <h4>${reminder.title}</h4>
-          <p>${reminder.client}</p>
-          <span>${reminder.date}, ${reminder.time}</span>
-        </div>
-      `;
-
-      item.addEventListener("click", () => {
-        showToast(`Reminder: ${reminder.title} on ${reminder.date} at ${reminder.time}`, "info");
-      });
-
-      remindersList.appendChild(item);
-    });
-
-    lucide.createIcons();
-  }
-
-  function openReminderModal() {
-    reminderModalOverlay.classList.remove("hidden");
-    document.getElementById("reminderTitle").value = "";
-    document.getElementById("reminderClient").value = "";
-    document.getElementById("reminderDate").value = "";
-    document.getElementById("reminderTime").value = "";
-    document.getElementById("reminderTitle").focus();
-  }
-
-  function closeReminderModal() {
-    reminderModalOverlay.classList.add("hidden");
-  }
-
-  function addReminder(title, client, date, time) {
-    const newReminder = {
-      id: Date.now(),
-      title,
-      client: client || "Self",
-      date,
-      time,
-      icon: "zap",
-      iconClass: "smart",
-    };
-
-    reminders.push(newReminder);
-    renderReminders();
-    closeReminderModal();
-    showToast("Reminder added successfully!", "success");
-  }
-
-  function openLogoutModal() {
-    logoutModalOverlay.classList.remove("hidden");
-  }
-
-  function closeLogoutModal() {
-    logoutModalOverlay.classList.add("hidden");
-  }
-
-  function performLogout() {
-    closeLogoutModal();
-    showToast("Logging out...", "info");
-    setTimeout(() => {
-      window.location.href = "../Html/Login.html";
-    }, 1000);
-  }
-
-  // Toast notification
-  function showToast(message, type = "info") {
-    const toastContainer = document.getElementById("toastContainer") || createToastContainer();
-
-    const toast = document.createElement("div");
-    toast.className = "toast";
-
-    const iconMap = {
-      success: "check-circle",
-      info: "info",
-      warning: "alert-circle",
-    };
-
-    toast.innerHTML = `
-      <div class="toast-icon ${type}">
-        <i data-lucide="${iconMap[type] || "info"}"></i>
-      </div>
-      <div class="toast-content">
-        <p>${message}</p>
-      </div>
-    `;
-
-    toastContainer.appendChild(toast);
-    lucide.createIcons();
-
-    setTimeout(() => {
-      toast.classList.add("toast-exit");
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
-
-  function createToastContainer() {
-    const container = document.createElement("div");
-    container.id = "toastContainer";
-    container.className = "toast-container";
-    document.body.appendChild(container);
-    return container;
-  }
-
-  // Close modals on overlay click
-  function setupModalClose(overlay, closeBtn) {
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) {
-        overlay.classList.add("hidden");
-      }
-    });
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => overlay.classList.add("hidden"));
-    }
-  }
-
-  // Event Listeners
-
-  // Day selection
-  weekDaysRow.addEventListener("click", (e) => {
-    const dayElement = e.target.closest(".week-day");
-    if (!dayElement) return;
-    const dayKey = dayElement.getAttribute("data-day");
-    selectDay(dayKey);
-  });
+  // Initial render
+  await updateWeekDisplay();
 
   // Week navigation
-  prevWeekBtn.addEventListener("click", () => {
-    weekOffset--;
-    updateWeekDisplay();
-    showToast("Showing previous week", "info");
-  });
-
-  nextWeekBtn.addEventListener("click", () => {
-    weekOffset++;
-    updateWeekDisplay();
-    showToast("Showing next week", "info");
-  });
-
-  // Add reminder
-  if (addReminderBtn) {
-    addReminderBtn.addEventListener("click", openReminderModal);
-  }
-
-  // Reminder form
-  if (reminderForm) {
-    reminderForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const title = document.getElementById("reminderTitle").value.trim();
-      const client = document.getElementById("reminderClient").value.trim();
-      const dateVal = document.getElementById("reminderDate").value;
-      const timeVal = document.getElementById("reminderTime").value;
-
-      if (!title || !dateVal || !timeVal) {
-        showToast("Please fill in all required fields", "warning");
-        return;
-      }
-
-      // Format date for display
-      const dateObj = new Date(dateVal);
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const formattedDate = `${months[dateObj.getMonth()]} ${dateObj.getDate()}`;
-
-      // Format time for display
-      const [hours, minutes] = timeVal.split(":");
-      const h = parseInt(hours);
-      const ampm = h >= 12 ? "PM" : "AM";
-      const displayHours = h % 12 || 12;
-      const formattedTime = `${displayHours}:${minutes} ${ampm}`;
-
-      addReminder(title, client, formattedDate, formattedTime);
+  if (prevWeekBtn) {
+    prevWeekBtn.addEventListener('click', () => {
+      weekOffset--;
+      updateWeekDisplay();
+      showToast('Showing previous week', 'info');
     });
   }
 
-  // Reminder modal close
-  setupModalClose(reminderModalOverlay, reminderModalClose);
-  if (reminderCancel) {
-    reminderCancel.addEventListener("click", closeReminderModal);
+  if (nextWeekBtn) {
+    nextWeekBtn.addEventListener('click', () => {
+      weekOffset++;
+      updateWeekDisplay();
+      showToast('Showing next week', 'info');
+    });
+  }
+
+  // Day selection
+  if (weekDaysRow) {
+    weekDaysRow.addEventListener('click', (e) => {
+      const dayElement = e.target.closest('.week-day');
+      if (!dayElement) return;
+      const dayKey = dayElement.dataset.day;
+      const weekDates = getWeekDates(weekOffset);
+      selectDay(dayKey, weekDates);
+    });
   }
 
   // Job modal close
-  setupModalClose(jobModalOverlay, jobModalClose);
-
-  // Logout
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      openLogoutModal();
+  if (jobModalClose) {
+    jobModalClose.addEventListener('click', () => jobModalOverlay.classList.add('hidden'));
+  }
+  if (jobModalOverlay) {
+    jobModalOverlay.addEventListener('click', (e) => {
+      if (e.target === jobModalOverlay) jobModalOverlay.classList.add('hidden');
     });
-  }
-
-  setupModalClose(logoutModalOverlay, logoutModalClose);
-  if (logoutCancel) {
-    logoutCancel.addEventListener("click", closeLogoutModal);
-  }
-  if (logoutConfirm) {
-    logoutConfirm.addEventListener("click", performLogout);
   }
 
   // Status toggle
   if (statusToggle) {
-    statusToggle.addEventListener("change", () => {
+    statusToggle.addEventListener('change', () => {
       if (statusToggle.checked) {
-        statusDot.style.background = "#4ade80";
-        statusLabel.textContent = "Online";
-        showToast("You are now Online", "success");
+        statusDot.style.background = '#4ade80';
+        statusLabel.textContent = 'Online';
+        showToast('You are now Online', 'success');
       } else {
-        statusDot.style.background = "#ef4444";
-        statusLabel.textContent = "Offline";
-        showToast("You are now Offline", "warning");
+        statusDot.style.background = '#ef4444';
+        statusLabel.textContent = 'Offline';
+        showToast('You are now Offline', 'warning');
       }
     });
   }
 
-  // Keyboard support: Escape to close modals
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      reminderModalOverlay.classList.add("hidden");
-      jobModalOverlay.classList.add("hidden");
-      logoutModalOverlay.classList.add("hidden");
+  // Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '../Html/Login.html';
+    });
+  }
+
+  // Keyboard: Escape to close modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      jobModalOverlay?.classList.add('hidden');
     }
   });
-
-  // Initialize
-  updateWeekDisplay();
-  selectDay(currentSelectedDay);
-  renderReminders();
 });

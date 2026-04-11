@@ -1,9 +1,16 @@
 const closeButton = document.querySelector('.close-btn');
 const loginForm = document.querySelector('.login-form');
-const emailInput = loginForm?.querySelector('input[type="email"]');
-const passwordInput = loginForm?.querySelector('input[type="password"]');
+const roleSelect = document.getElementById('roleSelect');
+const emailInput = document.getElementById('emailInput');
+const passwordInput = document.getElementById('passwordInput');
 const passwordToggleButton = loginForm?.querySelector('.icon-button');
 
+// Supabase configuration
+const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Demo users fallback
 const DEMO_USERS = [
   {
     role: 'customer',
@@ -39,37 +46,110 @@ if (loginForm && emailInput && passwordInput) {
   feedback.style.fontSize = '13px';
   feedback.style.fontWeight = '500';
   feedback.style.color = '#666';
-  feedback.textContent = 'Demo login: customer@homeservice.com / customer123 or employee@homeservice.com / employee123';
+  feedback.textContent = 'Enter your credentials to sign in';
   loginForm.append(feedback);
 
-  loginForm.addEventListener('submit', (event) => {
+  loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    const role = roleSelect.value;
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
 
-    const matchedUser = DEMO_USERS.find(
-      (user) => user.email.toLowerCase() === email && user.password === password
-    );
+    // Clear previous feedback
+    feedback.style.color = '#666';
+    feedback.textContent = 'Signing in...';
 
-    if (!matchedUser) {
-      feedback.textContent = 'Invalid email or password. Use one of the demo accounts shown above.';
+    try {
+      // Try Supabase authentication first
+      const { data, error } = await supabase
+        .from('employees')
+        .select('id, name, email, role, status')
+        .eq('email', email)
+        .eq('password', password)
+        .single();
+
+      if (error) {
+        // If Supabase query fails, try demo users
+        console.log('Supabase query failed, trying demo users...');
+        const matchedUser = DEMO_USERS.find(
+          (user) => user.email === email && user.password === password
+        );
+
+        if (!matchedUser) {
+          feedback.textContent = 'Invalid email or password.';
+          feedback.style.color = '#c0392b';
+          return;
+        }
+
+        // Store demo user in localStorage
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            role: matchedUser.role,
+            name: matchedUser.name,
+            email: matchedUser.email,
+          })
+        );
+
+        feedback.textContent = `Signed in as ${matchedUser.role}. Redirecting...`;
+        feedback.style.color = '#0f9f98';
+
+        // Redirect based on role
+        setTimeout(() => {
+          if (matchedUser.role === 'employee') {
+            window.location.href = 'EmployeeProfile.html';
+          } else if (matchedUser.role === 'admin') {
+            window.location.href = 'Admin.html';
+          } else {
+            window.location.href = 'Home.html';
+          }
+        }, 500);
+        
+        return;
+      }
+
+      // Successful Supabase authentication
+      if (data) {
+        // Check if user is active
+        if (data.status === 'inactive') {
+          feedback.textContent = 'Your account is inactive. Please contact support.';
+          feedback.style.color = '#c0392b';
+          return;
+        }
+
+        // Store user info in localStorage
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            id: data.id,
+            role: data.role || role,
+            name: data.name,
+            email: data.email,
+          })
+        );
+
+        feedback.textContent = `Welcome back, ${data.name}! Redirecting...`;
+        feedback.style.color = '#0f9f98';
+
+        // Redirect based on role
+        setTimeout(() => {
+          if (data.role === 'employee' || role === 'employee') {
+            window.location.href = 'EmployeeProfile.html';
+          } else if (data.role === 'admin' || role === 'admin') {
+            window.location.href = 'Admin.html';
+          } else {
+            window.location.href = 'Home.html';
+          }
+        }, 500);
+      } else {
+        feedback.textContent = 'Invalid email or password.';
+        feedback.style.color = '#c0392b';
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      feedback.textContent = 'An error occurred during login. Please try again.';
       feedback.style.color = '#c0392b';
-      return;
     }
-
-    localStorage.setItem(
-      'hsAuthUser',
-      JSON.stringify({
-        role: matchedUser.role,
-        name: matchedUser.name,
-        email: matchedUser.email,
-      })
-    );
-
-    feedback.textContent = `Signed in as ${matchedUser.role}. Redirecting to Home...`;
-    feedback.style.color = '#0f9f98';
-
-    window.location.href = 'Home.html';
   });
 }

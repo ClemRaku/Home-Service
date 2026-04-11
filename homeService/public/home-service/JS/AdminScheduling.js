@@ -270,6 +270,59 @@ const loadBookings = async () => {
   try {
     const rows = await supabaseRequest("/rest/v1/bookings?select=*&order=scheduled_date.asc,start_time.asc", { method: "GET" });
     bookingRows = Array.isArray(rows) ? rows : [];
+
+    // Fetch customer names for bookings where customer_name is missing
+    const missingEmails = [...new Set(
+      bookingRows
+        .filter(row => !row.customer_name && row.customer_email)
+        .map(row => row.customer_email)
+    )];
+
+    if (missingEmails.length > 0) {
+      const emailFilters = missingEmails.map(email => `email=eq.${encodeURIComponent(email)}`).join('&');
+      try {
+        const customers = await supabaseRequest(`/rest/v1/customers?select=full_name,email&${emailFilters}`, { method: "GET" });
+        const customerMap = {};
+        if (Array.isArray(customers)) {
+          customers.forEach(c => { customerMap[c.email] = c.full_name; });
+        }
+        bookingRows = bookingRows.map(row => {
+          if (!row.customer_name && row.customer_email && customerMap[row.customer_email]) {
+            return { ...row, customer_name: customerMap[row.customer_email] };
+          }
+          return row;
+        });
+      } catch (err) {
+        console.warn("Could not fetch customer names:", err);
+      }
+    }
+
+    // Fetch employee names for bookings where employee_name is missing
+    const missingEmployeeEmails = [...new Set(
+      bookingRows
+        .filter(row => !row.employee_name && row.employee_email)
+        .map(row => row.employee_email)
+    )];
+
+    if (missingEmployeeEmails.length > 0) {
+      const empFilters = missingEmployeeEmails.map(email => `email=eq.${encodeURIComponent(email)}`).join('&');
+      try {
+        const employees = await supabaseRequest(`/rest/v1/employees?select=full_name,email&${empFilters}`, { method: "GET" });
+        const employeeMap = {};
+        if (Array.isArray(employees)) {
+          employees.forEach(e => { employeeMap[e.email] = e.full_name; });
+        }
+        bookingRows = bookingRows.map(row => {
+          if (!row.employee_name && row.employee_email && employeeMap[row.employee_email]) {
+            return { ...row, employee_name: employeeMap[row.employee_email] };
+          }
+          return row;
+        });
+      } catch (err) {
+        console.warn("Could not fetch employee names:", err);
+      }
+    }
+
     renderBookingRows(bookingRows);
   } catch (error) {
     console.error("Failed to load bookings:", error);

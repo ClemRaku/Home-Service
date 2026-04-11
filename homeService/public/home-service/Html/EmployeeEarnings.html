@@ -123,8 +123,8 @@
                 <span class="icon stat-icon icon-teal"><i data-lucide="dollar-sign"></i></span>
               </div>
             </div>
-            <h2>৳1,24,500</h2>
-            <span>342 jobs total</span>
+            <h2 id="totalEarnings">৳1,24,500</h2>
+            <span id="totalEarningsJobs">342 jobs total</span>
           </article>
           <article class="stat-card clickable" data-modal="month-earnings" tabindex="0">
             <div class="stat-header">
@@ -133,8 +133,8 @@
                 <span class="icon stat-icon icon-green"><i data-lucide="calendar"></i></span>
               </div>
             </div>
-            <h2>৳32,400</h2>
-            <span>vs ৳28,750 last month</span>
+            <h2 id="monthEarnings">৳32,400</h2>
+            <span id="monthEarningsSub">vs ৳28,750 last month</span>
           </article>
           <article class="stat-card clickable" data-modal="week-earnings" tabindex="0">
             <div class="stat-header">
@@ -143,8 +143,8 @@
                 <span class="icon stat-icon icon-orange"><i data-lucide="bar-chart-2"></i></span>
               </div>
             </div>
-            <h2>৳8,900</h2>
-            <span>4 jobs completed</span>
+            <h2 id="weekEarnings">৳8,900</h2>
+            <span id="weekEarningsSub">4 jobs completed</span>
           </article>
           <article class="stat-card clickable" data-modal="pending-payout" tabindex="0">
             <div class="stat-header">
@@ -153,8 +153,8 @@
                 <span class="icon stat-icon icon-yellow"><i data-lucide="clock"></i></span>
               </div>
             </div>
-            <h2>৳6,200</h2>
-            <span>3 jobs pending</span>
+            <h2 id="pendingPayout">৳6,200</h2>
+            <span id="pendingPayoutJobs">3 jobs pending</span>
           </article>
         </section>
 
@@ -314,70 +314,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="clickable-row" data-job="full-house-wiring" data-client="Jamal Hossain" data-category="Wiring" data-date="Apr 8, 2024" data-amount="৳4,500" data-status="Paid" data-description="Complete house wiring for 3-bedroom apartment in Gulshan including main line, switches, and distribution board.">
-                  <td class="job-name">Full House Wiring – Gulshan</td>
-                  <td>Jamal Hossain</td>
-                  <td><span class="category-badge">Wiring</span></td>
-                  <td>Apr 8, 2024</td>
-                  <td class="amount">৳4,500</td>
-                  <td><span class="status-badge paid">Paid</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="generator-maintenance" data-client="Dhaka Medical Center" data-category="Generator" data-date="Apr 7, 2024" data-amount="৳2,800" data-status="Paid" data-description="Annual generator maintenance including oil change, filter replacement, and load testing.">
-                  <td class="job-name">Generator Maintenance</td>
-                  <td>Dhaka Medical Center</td>
-                  <td><span class="category-badge">Generator</span></td>
-                  <td>Apr 7, 2024</td>
-                  <td class="amount">৳2,800</td>
-                  <td><span class="status-badge paid">Paid</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="ac-repair" data-client="Fatima Begum" data-category="AC Repair" data-date="Apr 10, 2024" data-amount="৳1,200" data-status="Pending" data-description="AC unit not cooling properly. Diagnosed refrigerant leak and recharged system.">
-                  <td class="job-name">AC Repair & Servicing</td>
-                  <td>Fatima Begum</td>
-                  <td><span class="category-badge">AC Repair</span></td>
-                  <td>Apr 10, 2024</td>
-                  <td class="amount">৳1,200</td>
-                  <td><span class="status-badge pending">Pending</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="led-lighting" data-client="Rafiq Islam" data-category="LED Installation" data-date="Apr 12, 2024" data-amount="৳3,200" data-status="Pending" data-description="LED lighting installation for living room and kitchen including dimmer switches.">
-                  <td class="job-name">LED Lighting Installation</td>
-                  <td>Rafiq Islam</td>
-                  <td><span class="category-badge">LED Installation</span></td>
-                  <td>Apr 12, 2024</td>
-                  <td class="amount">৳3,200</td>
-                  <td><span class="status-badge pending">Pending</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="circuit-breaker" data-client="Nasreen Akter" data-category="Circuit Breaker" data-date="Apr 11, 2024" data-amount="৳2,500" data-status="Pending" data-description="Replaced faulty circuit breaker in main distribution board.">
-                  <td class="job-name">Circuit Breaker Replacement</td>
-                  <td>Nasreen Akter</td>
-                  <td><span class="category-badge">Circuit Breaker</span></td>
-                  <td>Apr 11, 2024</td>
-                  <td class="amount">৳2,500</td>
-                  <td><span class="status-badge pending">Pending</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="office-ac" data-client="TechHub Dhaka" data-category="AC Installation" data-date="Mar 28, 2024" data-amount="৳8,500" data-status="Paid" data-description="Installed 2-ton split AC unit in office conference room with dedicated circuit.">
-                  <td class="job-name">Office AC Installation</td>
-                  <td>TechHub Dhaka</td>
-                  <td><span class="category-badge">AC Installation</span></td>
-                  <td>Mar 28, 2024</td>
-                  <td class="amount">৳8,500</td>
-                  <td><span class="status-badge paid">Paid</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="smart-home" data-client="Rafiq Islam" data-category="Smart Home" data-date="Mar 22, 2024" data-amount="৳12,000" data-status="Paid" data-description="Smart home setup including smart switches, motion sensors, and automated lighting system.">
-                  <td class="job-name">Smart Home Setup</td>
-                  <td>Rafiq Islam</td>
-                  <td><span class="category-badge">Smart Home</span></td>
-                  <td>Mar 22, 2024</td>
-                  <td class="amount">৳12,000</td>
-                  <td><span class="status-badge paid">Paid</span></td>
-                </tr>
-                <tr class="clickable-row" data-job="industrial-panel" data-client="Dhaka Garments Ltd." data-category="Industrial" data-date="Mar 15, 2024" data-amount="৳5,400" data-status="Paid" data-description="Upgraded industrial electrical panel for new production line installation.">
-                  <td class="job-name">Industrial Panel Upgrade</td>
-                  <td>Dhaka Garments Ltd.</td>
-                  <td><span class="category-badge">Industrial</span></td>
-                  <td>Mar 15, 2024</td>
-                  <td class="amount">৳5,400</td>
-                  <td><span class="status-badge paid">Paid</span></td>
-                </tr>
+                <!-- Transactions loaded dynamically from bookings -->
               </tbody>
             </table>
           </article>
