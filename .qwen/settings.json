@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcopy *)",
+      "Bash(do *)",
+      "Bash(fc *)"
+    ]
+  },
+  "$version": 3
+}
