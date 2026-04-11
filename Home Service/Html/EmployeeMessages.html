@@ -334,6 +334,40 @@
       </button>
     </div>
 
+    <!-- View Profile Modal -->
+    <div class="modal-overlay hidden" id="profileModalOverlay">
+      <div class="modal modal-sm" id="profileModal">
+        <div class="modal-header">
+          <h3>User Profile</h3>
+          <button class="modal-close" id="profileModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="profileModalBody">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Mute Notifications Modal -->
+    <div class="modal-overlay hidden" id="muteModalOverlay">
+      <div class="modal modal-sm" id="muteModal">
+        <div class="modal-header">
+          <h3 id="muteModalTitle">Mute Notifications</h3>
+          <button class="modal-close" id="muteModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="muteModalText">You will no longer receive notification alerts from this conversation.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="muteCancel">Cancel</button>
+          <button class="btn btn-primary" id="muteConfirm">Mute</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Clear Chat Confirmation Modal -->
     <div class="modal-overlay hidden" id="clearChatModalOverlay">
       <div class="modal modal-sm" id="clearChatModal">

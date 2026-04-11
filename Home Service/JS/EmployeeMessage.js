@@ -41,6 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const blockUserBtn = document.getElementById("blockUserBtn");
   const deleteChatBtn = document.getElementById("deleteChatBtn");
 
+  const profileModalOverlay = document.getElementById("profileModalOverlay");
+  const profileModalClose = document.getElementById("profileModalClose");
+  const profileModalBody = document.getElementById("profileModalBody");
+
+  const muteModalOverlay = document.getElementById("muteModalOverlay");
+  const muteModalClose = document.getElementById("muteModalClose");
+  const muteModalTitle = document.getElementById("muteModalTitle");
+  const muteModalText = document.getElementById("muteModalText");
+  const muteCancel = document.getElementById("muteCancel");
+  const muteConfirm = document.getElementById("muteConfirm");
+
   const clearChatModalOverlay = document.getElementById("clearChatModalOverlay");
   const clearChatModalClose = document.getElementById("clearChatModalClose");
   const clearChatCancel = document.getElementById("clearChatCancel");
@@ -501,25 +512,59 @@ document.addEventListener("DOMContentLoaded", () => {
   // View Profile
   viewProfileBtn.addEventListener("click", () => {
     const conv = conversations[currentConversation];
-    showToast(`Opening ${conv.name}'s profile...`, "info");
+    const onlineStatus = conv.online ? "Online" : "Last seen recently";
+    profileModalBody.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#6b7280;font-size:13px;">Name</span>
+          <span style="font-weight:500;font-size:14px;">${conv.name}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#6b7280;font-size:13px;">Status</span>
+          <span style="font-weight:500;font-size:14px;">${onlineStatus}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#6b7280;font-size:13px;">Service</span>
+          <span style="font-weight:500;font-size:14px;">${conv.category}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#6b7280;font-size:13px;">Messages</span>
+          <span style="font-weight:500;font-size:14px;">${conv.messages.length}</span>
+        </div>
+      </div>
+    `;
+    profileModalOverlay.classList.remove("hidden");
     closeMoreDropdown();
   });
 
   // Mute Notifications
   muteNotifBtn.addEventListener("click", () => {
     const conv = conversations[currentConversation];
+    if (conv.muted) {
+      muteModalTitle.textContent = "Unmute Notifications";
+      muteModalText.textContent = "You will start receiving notification alerts from this conversation again.";
+      muteConfirm.textContent = "Unmute";
+    } else {
+      muteModalTitle.textContent = "Mute Notifications";
+      muteModalText.textContent = "You will no longer receive notification alerts from this conversation.";
+      muteConfirm.textContent = "Mute";
+    }
+    muteModalOverlay.classList.remove("hidden");
+    closeMoreDropdown();
+  });
+
+  muteConfirm.addEventListener("click", () => {
+    const conv = conversations[currentConversation];
     conv.muted = !conv.muted;
     const item = document.querySelector(`[data-conversation="${currentConversation}"]`);
     if (conv.muted) {
       item.classList.add("muted");
       showToast(`Notifications muted for ${conv.name}`, "success");
-      muteNotifBtn.querySelector("span").textContent = "Unmute Notifications";
     } else {
       item.classList.remove("muted");
       showToast(`Notifications unmuted for ${conv.name}`, "success");
-      muteNotifBtn.querySelector("span").textContent = "Mute Notifications";
     }
-    closeMoreDropdown();
+    muteModalOverlay.classList.add("hidden");
   });
 
   // Clear Chat
@@ -577,9 +622,14 @@ document.addEventListener("DOMContentLoaded", () => {
       closeBtn.addEventListener("click", () => overlay.classList.add("hidden"));
     }
   }
+
+  setupModalClose(profileModalOverlay, profileModalClose);
+  setupModalClose(muteModalOverlay, muteModalClose);
   setupModalClose(clearChatModalOverlay, clearChatModalClose);
   setupModalClose(deleteChatModalOverlay, deleteChatModalClose);
   setupModalClose(blockModalOverlay, blockModalClose);
+
+  muteCancel.addEventListener("click", () => muteModalOverlay.classList.add("hidden"));
 
   clearChatCancel.addEventListener("click", () => clearChatModalOverlay.classList.add("hidden"));
   deleteChatCancel.addEventListener("click", () => deleteChatModalOverlay.classList.add("hidden"));
@@ -650,6 +700,8 @@ document.addEventListener("DOMContentLoaded", () => {
       closeEmojiPicker();
       closeMoreDropdown();
       endCall();
+      profileModalOverlay.classList.add("hidden");
+      muteModalOverlay.classList.add("hidden");
       clearChatModalOverlay.classList.add("hidden");
       deleteChatModalOverlay.classList.add("hidden");
       blockModalOverlay.classList.add("hidden");
