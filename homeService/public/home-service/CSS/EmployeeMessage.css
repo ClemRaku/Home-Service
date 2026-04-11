@@ -161,8 +161,14 @@ body {
 
 .sidebar-metrics {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 10px;
+}
+
+.metric-card.centered {
+  justify-self: center;
+  width: 100%;
+  max-width: 160px;
 }
 
 .metric-card {
@@ -525,6 +531,23 @@ body {
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.loading-msgs {
+  text-align: center;
+  color: #9ca3af;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+.chat-avatar-placeholder {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
 }
 
 .chat-header h3 {

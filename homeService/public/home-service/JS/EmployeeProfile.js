@@ -35,8 +35,30 @@ async function fetchEmployeeData(email) {
   }
 }
 
+// Fetch bookings for this employee
+async function fetchEmployeeBookings(email) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
+      {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error('Failed to fetch bookings');
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('Error fetching bookings:', err);
+    return [];
+  }
+}
+
 // Update profile page with employee data
-function updateProfile(employee) {
+function updateProfile(employee, bookings = []) {
   // Update sidebar
   const sidebarAvatar = document.getElementById('sidebarAvatar');
   const sidebarRole = document.getElementById('sidebarRole');
@@ -50,14 +72,23 @@ function updateProfile(employee) {
 
   // Update sidebar metrics
   const sidebarMonthlyEarnings = document.getElementById('sidebarMonthlyEarnings');
-  const sidebarRating = document.getElementById('sidebarRating');
+  if (sidebarMonthlyEarnings) {
+    // Calculate this month's earnings from bookings
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const completedBookings = bookings.filter(b => b.status === 'completed');
+    const thisMonthBookings = completedBookings.filter(b => {
+      const d = new Date(b.completed_at || b.created_at || b.scheduled_date);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    });
+    const monthEarnings = thisMonthBookings.reduce((sum, b) => sum + (b.price || 0), 0);
 
-  if (sidebarMonthlyEarnings && employee.monthly_earnings) {
-    const earnings = employee.monthly_earnings;
-    sidebarMonthlyEarnings.textContent = earnings >= 1000 ? `৳${(earnings / 1000).toFixed(0)}k` : `৳${earnings}`;
-  }
-  if (sidebarRating && employee.performance_score) {
-    sidebarRating.textContent = employee.performance_score;
+    if (monthEarnings >= 1000) {
+      sidebarMonthlyEarnings.textContent = `৳${(monthEarnings / 1000).toFixed(0)}k`;
+    } else {
+      sidebarMonthlyEarnings.textContent = `৳${monthEarnings}`;
+    }
   }
 
   // Update main profile card
@@ -156,11 +187,13 @@ function updateProfile(employee) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   // Fetch and display employee data
+  let bookings = [];
   if (authUser && authUser.email) {
     const employee = await fetchEmployeeData(authUser.email);
+    bookings = await fetchEmployeeBookings(authUser.email);
     
     if (employee) {
-      updateProfile(employee);
+      updateProfile(employee, bookings);
       console.log('Employee data loaded:', employee);
     } else {
       console.error('Employee not found in database');
@@ -256,8 +289,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         // Refresh profile data
         const updatedEmployee = await fetchEmployeeData(authUser.email);
+        const updatedBookings = await fetchEmployeeBookings(authUser.email);
         if (updatedEmployee) {
-          updateProfile(updatedEmployee);
+          updateProfile(updatedEmployee, updatedBookings);
         }
       } catch (error) {
         console.error('Error updating profile:', error);

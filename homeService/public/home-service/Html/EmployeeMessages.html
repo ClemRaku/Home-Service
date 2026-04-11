@@ -51,10 +51,6 @@
               <i data-lucide="message-square"></i>
               <span>Messages</span>
             </a>
-            <a href="../Html/EmployeeExperience.html">
-              <i data-lucide="activity"></i>
-              <span>Experience</span>
-            </a>
             <a href="../Html/EmployeeSetting.html">
               <i data-lucide="settings"></i>
               <span>Settings</span>
@@ -63,13 +59,9 @@
 
           <div class="sidebar-bottom">
             <div class="sidebar-metrics">
-              <div class="metric-card">
-                <p>৳32k</p>
+              <div class="metric-card centered">
+                <p id="sidebarMonthlyEarnings">৳32k</p>
                 <span>This Month</span>
-              </div>
-              <div class="metric-card">
-                <p>4.9</p>
-                <span>Rating</span>
               </div>
             </div>
 
@@ -110,80 +102,7 @@
             </div>
 
             <div class="conversation-items" id="conversationItems">
-              <div class="conversation-item active" data-conversation="fatima">
-                <div class="conv-avatar">
-                  <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80" alt="Fatima Begum" />
-                  <span class="online-dot"></span>
-                </div>
-                <div class="conv-content">
-                  <div class="conv-header">
-                    <h4>Fatima Begum</h4>
-                    <span class="conv-time">10:32 AM</span>
-                  </div>
-                  <p class="conv-preview">Thank you so much! The AC is wor...</p>
-                  <span class="conv-category">AC Repair & Servicing</span>
-                </div>
-                <span class="unread-badge">2</span>
-              </div>
-
-              <div class="conversation-item" data-conversation="karim">
-                <div class="conv-avatar">
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt="Karim Ahmed" />
-                  <span class="online-dot"></span>
-                </div>
-                <div class="conv-content">
-                  <div class="conv-header">
-                    <h4>Karim Ahmed</h4>
-                    <span class="conv-time">9:45 AM</span>
-                  </div>
-                  <p class="conv-preview">Can you come at 2 PM today for th...</p>
-                  <span class="conv-category">Fan Installation</span>
-                </div>
-                <span class="unread-badge">1</span>
-              </div>
-
-              <div class="conversation-item" data-conversation="nasreen">
-                <div class="conv-avatar">
-                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="Nasreen Akter" />
-                </div>
-                <div class="conv-content">
-                  <div class="conv-header">
-                    <h4>Nasreen Akter</h4>
-                    <span class="conv-time">Yesterday</span>
-                  </div>
-                  <p class="conv-preview">Please bring the right circuit breaker for ...</p>
-                  <span class="conv-category">Circuit Breaker Replacement</span>
-                </div>
-              </div>
-
-              <div class="conversation-item" data-conversation="rafiq">
-                <div class="conv-avatar">
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80" alt="Rafiq Islam" />
-                </div>
-                <div class="conv-content">
-                  <div class="conv-header">
-                    <h4>Rafiq Islam</h4>
-                    <span class="conv-time">Apr 8</span>
-                  </div>
-                  <p class="conv-preview">Great! See you on Friday then.</p>
-                  <span class="conv-category">LED Lighting Installation</span>
-                </div>
-              </div>
-
-              <div class="conversation-item" data-conversation="support">
-                <div class="conv-avatar support">
-                  <i data-lucide="headphones"></i>
-                  <span class="online-dot"></span>
-                </div>
-                <div class="conv-content">
-                  <div class="conv-header">
-                    <h4>HomeServe Support</h4>
-                    <span class="conv-time">Apr 7</span>
-                  </div>
-                  <p class="conv-preview">Your profile has been verified successfully!</p>
-                  <span class="conv-category">Support</span>
-                </div>
-              </div>
+              <p class="loading-msgs">Loading conversations...</p>
             </div>
           </aside>
 
@@ -192,12 +111,13 @@
             <div class="chat-header">
               <div class="chat-header-left">
                 <div class="chat-avatar">
-                  <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80" alt="Fatima Begum" />
-                  <span class="online-dot"></span>
+                  <div class="chat-avatar-placeholder" id="chatAvatarPlaceholder">
+                    <i data-lucide="user"></i>
+                  </div>
                 </div>
                 <div>
-                  <h3 id="chatName">Fatima Begum</h3>
-                  <span id="chatStatus">Online · AC Repair & Servicing</span>
+                  <h3 id="chatName">Select a conversation</h3>
+                  <span id="chatStatus">Choose a chat to start messaging</span>
                 </div>
               </div>
               <div class="chat-header-actions">
@@ -211,43 +131,7 @@
             </div>
 
             <div class="chat-messages" id="chatMessages">
-              <div class="message received">
-                <img class="msg-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=60&q=80" alt="Fatima" />
-                <div class="msg-bubble">
-                  <p>Hello, is the AC repair done?</p>
-                  <span class="msg-time">10:15 AM</span>
-                </div>
-              </div>
-
-              <div class="message sent">
-                <div class="msg-bubble">
-                  <p>Yes, I just finished the servicing. The AC is running perfectly now.</p>
-                  <span class="msg-time">10:20 AM</span>
-                </div>
-              </div>
-
-              <div class="message received">
-                <img class="msg-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=60&q=80" alt="Fatima" />
-                <div class="msg-bubble">
-                  <p>That was so fast! How much do I owe you?</p>
-                  <span class="msg-time">10:25 AM</span>
-                </div>
-              </div>
-
-              <div class="message sent">
-                <div class="msg-bubble">
-                  <p>The total is ৳1,200 as agreed. You can pay via bKash or cash.</p>
-                  <span class="msg-time">10:28 AM</span>
-                </div>
-              </div>
-
-              <div class="message received">
-                <img class="msg-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=60&q=80" alt="Fatima" />
-                <div class="msg-bubble">
-                  <p>Thank you so much! The AC is working perfectly now.</p>
-                  <span class="msg-time">10:32 AM</span>
-                </div>
-              </div>
+              <p class="no-messages">Select a conversation to view messages.</p>
             </div>
 
             <div class="chat-input">

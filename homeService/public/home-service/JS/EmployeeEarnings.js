@@ -9,6 +9,52 @@ if (!authUser || authUser.role !== 'employee') {
   window.location.href = 'Login.html';
 }
 
+// Fetch bookings for this employee
+async function fetchEmployeeBookings(email) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
+      {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error('Failed to fetch bookings');
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('Error fetching bookings:', err);
+    return [];
+  }
+}
+
+// Update sidebar monthly earnings
+async function updateSidebarMonthlyEarnings() {
+  if (!authUser || !authUser.email) return;
+  const bookings = await fetchEmployeeBookings(authUser.email);
+  const sidebarMonthlyEarnings = document.getElementById('sidebarMonthlyEarnings');
+  if (!sidebarMonthlyEarnings) return;
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const completedBookings = bookings.filter(b => b.status === 'completed');
+  const thisMonthBookings = completedBookings.filter(b => {
+    const d = new Date(b.completed_at || b.created_at || b.scheduled_date);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+  const monthEarnings = thisMonthBookings.reduce((sum, b) => sum + (b.price || 0), 0);
+
+  if (monthEarnings >= 1000) {
+    sidebarMonthlyEarnings.textContent = `৳${(monthEarnings / 1000).toFixed(0)}k`;
+  } else {
+    sidebarMonthlyEarnings.textContent = `৳${monthEarnings}`;
+  }
+}
+
 // Format currency
 function formatCurrency(amount) {
   if (!amount) return '৳0';
@@ -503,6 +549,9 @@ async function updateStatGrid() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Update sidebar monthly earnings
+  await updateSidebarMonthlyEarnings();
+
   // Update stat-grid with dynamic data
   await updateStatGrid();
   

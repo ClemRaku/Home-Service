@@ -125,8 +125,14 @@ body {
 .sidebar-metrics {
   margin-top: auto;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
+}
+
+.metric-card.centered {
+  justify-self: center;
+  width: 100%;
+  max-width: 160px;
 }
 
 .metric-card {

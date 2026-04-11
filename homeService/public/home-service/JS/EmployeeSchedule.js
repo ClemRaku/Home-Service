@@ -77,6 +77,42 @@ function getWeekDates(offset) {
   return dates;
 }
 
+// Fetch bookings for this employee
+async function fetchBookings(email) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
+      {
+        method: 'GET',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error('Failed to fetch bookings');
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('Error fetching bookings:', err);
+    return [];
+  }
+}
+
+// Update sidebar monthly earnings
+const updateSidebarMonthlyEarnings = async () => {
+  if (!authUser || !authUser.email) return;
+  const bookings = await fetchBookings(authUser.email);
+  const el = document.getElementById('sidebarMonthlyEarnings');
+  if (!el) return;
+  const now = new Date();
+  const cm = now.getMonth(), cy = now.getFullYear();
+  const completed = bookings.filter(b => b.status === 'completed');
+  const thisMonth = completed.filter(b => { const d = new Date(b.completed_at || b.created_at || b.scheduled_date); return d.getMonth() === cm && d.getFullYear() === cy; });
+  const total = thisMonth.reduce((s, b) => s + (b.price || 0), 0);
+  el.textContent = total >= 1000 ? `৳${(total / 1000).toFixed(0)}k` : `৳${total}`;
+};
+
 // Group bookings by date within a week range
 function groupBookingsByWeek(bookings, weekDates) {
   const grouped = {};
@@ -430,6 +466,9 @@ function showToast(message, type = 'info') {
 // Init
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.lucide) lucide.createIcons();
+
+  // Update sidebar monthly earnings
+  await updateSidebarMonthlyEarnings();
 
   // Get DOM elements
   weekDaysRow = document.getElementById('weekDaysRow');

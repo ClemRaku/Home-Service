@@ -1,758 +1,432 @@
-document.addEventListener("DOMContentLoaded", () => {
-  lucide.createIcons();
+const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
 
-  // DOM Elements
-  const conversationItems = document.querySelectorAll(".conversation-item");
-  const conversationList = document.getElementById("conversationItems");
-  const searchInput = document.getElementById("searchInput");
-  const chatArea = document.getElementById("chatArea");
-  const chatName = document.getElementById("chatName");
-  const chatStatus = document.getElementById("chatStatus");
-  const chatMessages = document.getElementById("chatMessages");
-  const messageInput = document.getElementById("messageInput");
-  const sendBtn = document.getElementById("sendBtn");
-  const attachBtn = document.getElementById("attachBtn");
-  const emojiBtn = document.getElementById("emojiBtn");
-  const callBtn = document.getElementById("callBtn");
-  const moreBtn = document.getElementById("moreBtn");
-  const fileInput = document.getElementById("fileInput");
-  const emojiPicker = document.getElementById("emojiPicker");
-  const emojiGrid = document.getElementById("emojiGrid");
-  const statusToggle = document.getElementById("statusToggle");
-  const statusDot = document.getElementById("statusDot");
-  const statusLabel = document.getElementById("statusLabel");
-  const logoutBtn = document.getElementById("logoutBtn");
+// Get logged-in employee
+let authUser = null;
+try {
+  const raw = localStorage.getItem('hsAuthUser');
+  authUser = raw ? JSON.parse(raw) : null;
+} catch (e) { /* ignore parse errors */ }
 
-  // Call popup elements
-  const callPopup = document.getElementById("callPopup");
-  const callPopupAvatarImg = document.getElementById("callPopupAvatarImg");
-  const callPopupName = document.getElementById("callPopupName");
-  const callPopupCategory = document.getElementById("callPopupCategory");
-  const callPopupStatus = document.getElementById("callPopupStatus");
-  const callPopupTimer = document.getElementById("callPopupTimer");
-  const callPopupMute = document.getElementById("callPopupMute");
-  const callPopupSpeaker = document.getElementById("callPopupSpeaker");
-  const callPopupEnd = document.getElementById("callPopupEnd");
+if (!authUser || authUser.role !== 'employee') {
+  window.location.href = '../Html/Login.html';
+}
 
-  const moreDropdown = document.getElementById("moreDropdown");
-  const viewProfileBtn = document.getElementById("viewProfileBtn");
-  const muteNotifBtn = document.getElementById("muteNotifBtn");
-  const clearChatBtn = document.getElementById("clearChatBtn");
-  const blockUserBtn = document.getElementById("blockUserBtn");
-  const deleteChatBtn = document.getElementById("deleteChatBtn");
+// Fetch bookings for this employee
+async function fetchEmployeeBookings(email) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) { return []; }
+}
 
-  const profileModalOverlay = document.getElementById("profileModalOverlay");
-  const profileModalClose = document.getElementById("profileModalClose");
-  const profileModalBody = document.getElementById("profileModalBody");
+// Update sidebar monthly earnings
+const updateSidebarMonthlyEarnings = async () => {
+  if (!authUser || !authUser.email) return;
+  const bookings = await fetchEmployeeBookings(authUser.email);
+  const el = document.getElementById('sidebarMonthlyEarnings');
+  if (!el) return;
+  const now = new Date();
+  const cm = now.getMonth(), cy = now.getFullYear();
+  const completed = bookings.filter(b => b.status === 'completed');
+  const thisMonth = completed.filter(b => { const d = new Date(b.completed_at || b.created_at || b.scheduled_date); return d.getMonth() === cm && d.getFullYear() === cy; });
+  const total = thisMonth.reduce((s, b) => s + (b.price || 0), 0);
+  el.textContent = total >= 1000 ? `৳${(total / 1000).toFixed(0)}k` : `৳${total}`;
+};
 
-  const muteModalOverlay = document.getElementById("muteModalOverlay");
-  const muteModalClose = document.getElementById("muteModalClose");
-  const muteModalTitle = document.getElementById("muteModalTitle");
-  const muteModalText = document.getElementById("muteModalText");
-  const muteCancel = document.getElementById("muteCancel");
-  const muteConfirm = document.getElementById("muteConfirm");
+// DOM Elements
+const conversationList = document.getElementById('conversationList');
+const conversationItems = document.getElementById('conversationItems');
+const searchInput = document.getElementById('searchInput');
+const chatName = document.getElementById('chatName');
+const chatStatus = document.getElementById('chatStatus');
+const chatMessages = document.getElementById('chatMessages');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const attachBtn = document.getElementById('attachBtn');
+const emojiBtn = document.getElementById('emojiBtn');
+const emojiPicker = document.getElementById('emojiPicker');
+const emojiGrid = document.getElementById('emojiGrid');
+const fileInput = document.getElementById('fileInput');
 
-  const clearChatModalOverlay = document.getElementById("clearChatModalOverlay");
-  const clearChatModalClose = document.getElementById("clearChatModalClose");
-  const clearChatCancel = document.getElementById("clearChatCancel");
-  const clearChatConfirm = document.getElementById("clearChatConfirm");
+let conversations = [];
+let customerNames = {};
+let activeConversationId = null;
 
-  const deleteChatModalOverlay = document.getElementById("deleteChatModalOverlay");
-  const deleteChatModalClose = document.getElementById("deleteChatModalClose");
-  const deleteChatCancel = document.getElementById("deleteChatCancel");
-  const deleteChatConfirm = document.getElementById("deleteChatConfirm");
+// Helpers
+const timeAgo = (dateStr) => {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diff = Math.floor((now - date) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return `${Math.floor(diff / 604800)}w ago`;
+};
 
-  const blockModalOverlay = document.getElementById("blockModalOverlay");
-  const blockModalClose = document.getElementById("blockModalClose");
-  const blockCancel = document.getElementById("blockCancel");
-  const blockConfirm = document.getElementById("blockConfirm");
-  const blockUserText = document.getElementById("blockUserText");
+const formatTime12 = (dateStr) => {
+  const d = new Date(dateStr);
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const period = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${m} ${period}`;
+};
 
-  const logoutModalOverlay = document.getElementById("logoutModalOverlay");
-  const logoutModalClose = document.getElementById("logoutModalClose");
-  const logoutCancel = document.getElementById("logoutCancel");
-  const logoutConfirm = document.getElementById("logoutConfirm");
+const initials = (name) => {
+  if (!name) return '?';
+  return name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+};
 
-  // Emoji data
-  const emojis = [
-    "😀","😂","","😎","","👍","","🙏",
-    "❤️","🔥","⭐","🎉","✅","❌","💡","📌",
-    "😊","😄","🥳","😇","🤝","💪","","🙌",
-    "😍","","😋","🤩","💯","","📎","📞",
-  ];
+const avatarColors = ['#16b8ad', '#f59e0b', '#8b5cf6', '#ef4444', '#3b82f6', '#10b981'];
+const getColorForEmail = (email) => {
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) hash = email.charCodeAt(i) + ((hash << 5) - hash);
+  return avatarColors[Math.abs(hash) % avatarColors.length];
+};
 
-  // Conversation data
-  const conversations = {
-    fatima: {
-      name: "Fatima Begum",
-      status: "Online · AC Repair & Servicing",
-      online: true,
-      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80",
-      category: "AC Repair & Servicing",
-      muted: false,
-      blocked: false,
-      messages: [
-        { from: "them", text: "Hello, is the AC repair done?", time: "10:15 AM" },
-        { from: "me", text: "Yes, I just finished the servicing. The AC is running perfectly now.", time: "10:20 AM" },
-        { from: "them", text: "That was so fast! How much do I owe you?", time: "10:25 AM" },
-        { from: "me", text: "The total is ৳1,200 as agreed. You can pay via bKash or cash.", time: "10:28 AM" },
-        { from: "them", text: "Thank you so much! The AC is working perfectly now.", time: "10:32 AM" },
-      ],
-    },
-    karim: {
-      name: "Karim Ahmed",
-      status: "Online · Fan Installation",
-      online: true,
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80",
-      category: "Fan Installation",
-      muted: false,
-      blocked: false,
-      messages: [
-        { from: "them", text: "Hi, I need 3 ceiling fans installed in my new apartment.", time: "9:30 AM" },
-        { from: "me", text: "Sure! I can help with that. When would you like me to come?", time: "9:35 AM" },
-        { from: "them", text: "Can you come at 2 PM today for the installation?", time: "9:45 AM" },
-      ],
-    },
-    nasreen: {
-      name: "Nasreen Akter",
-      status: "Last seen yesterday · Circuit Breaker Replacement",
-      online: false,
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80",
-      category: "Circuit Breaker Replacement",
-      muted: false,
-      blocked: false,
-      messages: [
-        { from: "them", text: "The main circuit breaker keeps tripping. Can you fix it?", time: "Yesterday, 3:00 PM" },
-        { from: "me", text: "Yes, I can replace it. Do you have the right circuit breaker?", time: "Yesterday, 3:15 PM" },
-        { from: "them", text: "Please bring the right circuit breaker for a 3-phase system.", time: "Yesterday, 3:20 PM" },
-        { from: "me", text: "No problem, I'll bring one. I'll come tomorrow morning.", time: "Yesterday, 3:30 PM" },
-      ],
-    },
-    rafiq: {
-      name: "Rafiq Islam",
-      status: "Last seen Apr 8 · LED Lighting Installation",
-      online: false,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80",
-      category: "LED Lighting Installation",
-      muted: false,
-      blocked: false,
-      messages: [
-        { from: "them", text: "I want to install LED lights throughout my house.", time: "Apr 8, 10:00 AM" },
-        { from: "me", text: "Great! I can help with LED installation. Let me know when you're available.", time: "Apr 8, 10:30 AM" },
-        { from: "them", text: "Great! See you on Friday then.", time: "Apr 8, 11:00 AM" },
-      ],
-    },
-    support: {
-      name: "HomeServe Support",
-      status: "Online · Support",
-      online: true,
-      avatar: null,
-      isSupport: true,
-      category: "Support",
-      muted: false,
-      blocked: false,
-      messages: [
-        { from: "them", text: "Welcome to HomeServe! Your profile has been verified successfully!", time: "Apr 7, 9:00 AM" },
-        { from: "me", text: "Thank you! I'm excited to start working.", time: "Apr 7, 9:15 AM" },
-        { from: "them", text: "You're all set! You'll start receiving job requests soon. Good luck!", time: "Apr 7, 9:20 AM" },
-      ],
-    },
-  };
+const getCurrentTime = () => {
+  const now = new Date();
+  let h = now.getHours();
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const period = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${m} ${period}`;
+};
 
-  let currentConversation = "fatima";
-  let callInterval = null;
-  let callSeconds = 0;
-  let isMuted = false;
-  let isSpeaker = true;
+// Load customer names
+const loadCustomerNames = async () => {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/customers?select=email,full_name,phone_number`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (res.ok) {
+      const customers = await res.json();
+      customers.forEach((c) => { customerNames[c.email] = { name: c.full_name, phone: c.phone_number }; });
+    }
+  } catch (err) { console.warn('Could not load customer names:', err); }
+};
 
-  // Build emoji picker
+// Load conversations for this employee
+const loadConversations = async () => {
+  if (!authUser || !authUser.email) {
+    if (conversationItems) {
+      conversationItems.innerHTML = '<p style="text-align:center;color:#5a6675;padding:20px;">Please sign in to view messages.</p>';
+    }
+    return;
+  }
+
+  try {
+    await loadCustomerNames();
+
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/conversations?employee_email=eq.${encodeURIComponent(authUser.email)}&order=last_message_at.desc`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) throw new Error(`Failed (${res.status})`);
+    conversations = await res.json();
+    renderConversations(conversations);
+  } catch (err) {
+    console.error('Error loading conversations:', err);
+    if (conversationItems) {
+      conversationItems.innerHTML = '<p style="text-align:center;color:#5a6675;padding:20px;">Could not load conversations.</p>';
+    }
+  }
+};
+
+// Get category from booking_id
+const getCategoryForConversation = async (bookingId) => {
+  if (!bookingId) return '';
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}&select=service_name`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      return data.length > 0 ? data[0].service_name : '';
+    }
+  } catch (err) { /* ignore */ }
+  return '';
+};
+
+const renderConversations = async (convs) => {
+  if (!conversationItems) return;
+  conversationItems.innerHTML = '';
+
+  if (!convs.length) {
+    conversationItems.innerHTML = '<p style="text-align:center;color:#5a6675;padding:20px;">No conversations found.</p>';
+    return;
+  }
+
+  for (const conv of convs) {
+    const cust = customerNames[conv.customer_email] || {};
+    const custName = cust.name || conv.customer_email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    const color = getColorForEmail(conv.customer_email);
+    const isActive = conv.id === activeConversationId;
+
+    // Get category from booking
+    const category = await getCategoryForConversation(conv.booking_id);
+
+    const card = document.createElement('div');
+    card.className = `conversation-item${isActive ? ' active' : ''}`;
+    card.dataset.conversationId = conv.id;
+    card.innerHTML = `
+      <div class="conv-avatar">
+        <div style="width:44px;height:44px;border-radius:50%;background:${color};display:grid;place-items:center;color:#fff;font-size:14px;font-weight:600;">${initials(custName)}</div>
+      </div>
+      <div class="conv-content">
+        <div class="conv-header">
+          <h4>${custName}</h4>
+          <span class="conv-time">${timeAgo(conv.last_message_at)}</span>
+        </div>
+        <p class="conv-preview">${conv.last_message || 'No messages yet'}</p>
+        ${category ? `<span class="conv-category">${category}</span>` : ''}
+      </div>
+    `;
+
+    card.addEventListener('click', () => switchConversation(conv.id));
+    conversationItems.appendChild(card);
+  }
+};
+
+// Load messages for a conversation
+const loadMessages = async (convId) => {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/messages?conversation_id=eq.${convId}&order=created_at.asc`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) throw new Error(`Failed (${res.status})`);
+    const msgs = await res.json();
+    renderMessages(msgs);
+
+    // Update header
+    const conv = conversations.find((c) => c.id === convId);
+    if (conv) {
+      const cust = customerNames[conv.customer_email] || {};
+      const custName = cust.name || conv.customer_email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      const category = await getCategoryForConversation(conv.booking_id);
+
+      if (chatName) chatName.textContent = custName;
+      if (chatStatus) chatStatus.textContent = `Online${category ? ` · ${category}` : ''}`;
+    }
+  } catch (err) {
+    console.error('Error loading messages:', err);
+    if (chatMessages) chatMessages.innerHTML = '<p class="no-messages">Could not load messages.</p>';
+  }
+};
+
+const renderMessages = (msgs) => {
+  if (!chatMessages) return;
+
+  if (!msgs.length) {
+    chatMessages.innerHTML = '<p class="no-messages">No messages yet. Start the conversation!</p>';
+    return;
+  }
+
+  chatMessages.innerHTML = msgs.map((msg) => {
+    const isSent = msg.sender_type === 'employee';
+    return `
+      <div class="message ${isSent ? 'sent' : 'received'}">
+        <div class="msg-bubble">
+          <p>${msg.content}</p>
+          <span class="msg-time">${formatTime12(msg.created_at)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+};
+
+const switchConversation = (convId) => {
+  activeConversationId = convId;
+
+  document.querySelectorAll('.conversation-item').forEach((item) => {
+    item.classList.toggle('active', item.dataset.conversationId === convId);
+  });
+
+  loadMessages(convId);
+};
+
+// Search filter
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const filtered = conversations.filter((conv) => {
+      const cust = customerNames[conv.customer_email] || {};
+      const custName = (cust.name || '').toLowerCase();
+      const lastMsg = (conv.last_message || '').toLowerCase();
+      return custName.includes(query) || lastMsg.includes(query);
+    });
+    renderConversations(filtered);
+  });
+}
+
+// Send message
+const sendMessage = async () => {
+  if (!messageInput) return;
+  const content = messageInput.value.trim();
+  if (!content || !activeConversationId) return;
+
+  try {
+    const insertRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/messages`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify({
+          conversation_id: activeConversationId,
+          sender_email: authUser.email,
+          sender_type: 'employee',
+          content,
+        }),
+      }
+    );
+
+    if (!insertRes.ok) throw new Error(`Failed to send (${insertRes.status})`);
+
+    messageInput.value = '';
+    messageInput.focus();
+
+    // Update conversation last_message
+    await fetch(
+      `${SUPABASE_URL}/rest/v1/conversations?id=eq.${activeConversationId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({
+          last_message: content,
+          last_message_at: new Date().toISOString(),
+        }),
+      }
+    );
+
+    loadMessages(activeConversationId);
+    loadConversations();
+  } catch (err) {
+    console.error('Error sending message:', err);
+    window.alert('Failed to send message. Please try again.');
+  }
+};
+
+if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+if (messageInput) {
+  messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+}
+
+// Emoji picker
+const emojis = ['😀','😂','🥰','😎','👍','🙏','❤️','🔥','⭐','🎉','✅','💡','😊','😄','🤝','💪','😍','😋','💯','📎'];
+if (emojiGrid && emojis.length) {
   emojis.forEach((emoji) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "emoji-item";
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'emoji-item';
     btn.textContent = emoji;
-    btn.addEventListener("click", () => {
-      messageInput.value += emoji;
-      messageInput.focus();
+    btn.addEventListener('click', () => {
+      if (messageInput) {
+        messageInput.value += emoji;
+        messageInput.focus();
+      }
     });
     emojiGrid.appendChild(btn);
   });
+}
 
-  function getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
-    const displayHours = hours % 12 || 12;
-    return `${displayHours}:${minutes} ${ampm}`;
-  }
-
-  function renderChat(convKey) {
-    const conv = conversations[convKey];
-    if (!conv) return;
-
-    currentConversation = convKey;
-
-    // Update header
-    chatName.textContent = conv.name;
-    chatStatus.textContent = conv.status;
-
-    // Update chat avatar
-    const chatAvatarImg = document.querySelector(".chat-avatar img");
-    const chatAvatarDot = document.querySelector(".chat-avatar .online-dot");
-    if (conv.avatar) {
-      chatAvatarImg.src = conv.avatar;
-      chatAvatarImg.style.display = "";
-      chatAvatarImg.parentElement.querySelector(".support-icon")?.remove();
-    } else {
-      chatAvatarImg.style.display = "none";
-    }
-    chatAvatarDot.style.display = conv.online ? "" : "none";
-
-    // Update messages
-    chatMessages.innerHTML = "";
-
-    conv.messages.forEach((msg) => {
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${msg.from === "me" ? "sent" : "received"}`;
-
-        let avatarHtml = "";
-        if (msg.from === "them") {
-          if (conv.isSupport) {
-            avatarHtml = `<div class="msg-avatar" style="width:32px;height:32px;border-radius:50%;background:#0d9488;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:4px;"><i data-lucide="headphones" style="width:16px;height:16px;color:#fff;"></i></div>`;
-          } else {
-            avatarHtml = `<img class="msg-avatar" src="${conv.avatar}" alt="${conv.name}" />`;
-          }
-        }
-
-        let contentHtml = "";
-        if (msg.file) {
-          if (msg.file.type && msg.file.type.startsWith("image/")) {
-            contentHtml = `<img class="file-preview-img" src="${msg.file.url}" alt="${msg.file.name}" /><span class="msg-time">${msg.time}</span>`;
-          } else {
-            contentHtml = `
-              <div class="file-attachment">
-                <i data-lucide="file"></i>
-                <div class="file-info">
-                  <span class="file-name">${msg.file.name}</span>
-                  <span class="file-size">${msg.file.size}</span>
-                </div>
-              </div>
-              <span class="msg-time">${msg.time}</span>
-            `;
-          }
-        } else {
-          contentHtml = `<p>${msg.text}</p><span class="msg-time">${msg.time}</span>`;
-        }
-
-        msgDiv.innerHTML = `
-          ${avatarHtml}
-          <div class="msg-bubble">
-            ${contentHtml}
-          </div>
-        `;
-
-        chatMessages.appendChild(msgDiv);
-      });
-
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    lucide.createIcons();
-  }
-
-  function selectConversation(convKey) {
-    const conv = conversations[convKey];
-    if (!conv) return;
-
-    // Update active state
-    document.querySelectorAll(".conversation-item").forEach((item) => {
-      item.classList.remove("active");
-    });
-    const activeItem = document.querySelector(`[data-conversation="${convKey}"]`);
-    if (activeItem) {
-      activeItem.classList.add("active");
-      const badge = activeItem.querySelector(".unread-badge");
-      if (badge) badge.remove();
-    }
-
-    renderChat(convKey);
-    closeMoreDropdown();
-  }
-
-  function sendMessage(text, fileData) {
-    const conv = conversations[currentConversation];
-    if (!conv) return;
-
-    const timeStr = getCurrentTime();
-
-    const msg = {
-      from: "me",
-      text: text.trim(),
-      time: timeStr,
-    };
-
-    if (fileData) {
-      msg.file = fileData;
-      if (!msg.text) msg.text = "";
-    }
-
-    if (!msg.text && !msg.file) return;
-
-    conv.messages.push(msg);
-    updateConversationPreview(currentConversation, msg.text || (msg.file ? `📎 ${msg.file.name}` : ""), timeStr);
-    renderChat(currentConversation);
-    messageInput.value = "";
-    closeEmojiPicker();
-
-    if (!conv.blocked) {
-      setTimeout(() => simulateReply(), 1000 + Math.random() * 1500);
-    }
-  }
-
-  function sendFile(file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const fileData = {
-        name: file.name,
-        size: formatFileSize(file.size),
-        type: file.type,
-        url: e.target.result,
-      };
-      sendMessage("", fileData);
-      showToast(`Sent ${file.name}`, "success");
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function formatFileSize(bytes) {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / 1048576).toFixed(1) + " MB";
-  }
-
-  function updateConversationPreview(convKey, text, time) {
-    const item = document.querySelector(`[data-conversation="${convKey}"]`);
-    if (!item) return;
-
-    item.querySelector(".conv-preview").textContent = text.length > 40 ? text.substring(0, 40) + "..." : text;
-    item.querySelector(".conv-time").textContent = time;
-  }
-
-  const replies = [
-    "That sounds great, thank you!",
-    "Perfect, I'll be waiting.",
-    "Okay, see you then!",
-    "Thanks for the update!",
-    "Got it, I appreciate your help.",
-    "That works for me!",
-    "Thank you so much!",
-    "Sure, no problem!",
-    "I'll take a look at that.",
-  ];
-
-  function simulateReply() {
-    const conv = conversations[currentConversation];
-    if (!conv) return;
-
-    const timeStr = getCurrentTime();
-    const reply = replies[Math.floor(Math.random() * replies.length)];
-
-    conv.messages.push({ from: "them", text: reply, time: timeStr });
-    updateConversationPreview(currentConversation, reply, timeStr);
-    renderChat(currentConversation);
-
-    if (!conv.muted) {
-      showToast(`New message from ${conv.name}`, "info");
-    }
-  }
-
-  function closeEmojiPicker() {
-    emojiPicker.classList.add("hidden");
-  }
-
-  function closeMoreDropdown() {
-    moreDropdown.classList.add("hidden");
-  }
-
-  function closeModal(overlay) {
-    overlay.classList.add("hidden");
-    endCall();
-  }
-
-  function startCall() {
-    const conv = conversations[currentConversation];
-    if (!conv) return;
-
-    callPopupName.textContent = conv.name;
-    callPopupCategory.textContent = conv.category || "";
-    callPopupAvatarImg.src = conv.avatar || "";
-    callPopupStatus.textContent = "Ringing...";
-    callPopupTimer.textContent = "00:00";
-    callPopup.classList.remove("hidden");
-    isMuted = false;
-    isSpeaker = true;
-    callSeconds = 0;
-    callPopupMute.classList.remove("active");
-    callPopupSpeaker.classList.add("active");
-    lucide.createIcons();
-
-    setTimeout(() => {
-      if (!callPopup.classList.contains("hidden")) {
-        callPopupStatus.textContent = "Connected";
-        callInterval = setInterval(() => {
-          callSeconds++;
-          const m = Math.floor(callSeconds / 60).toString().padStart(2, "0");
-          const s = (callSeconds % 60).toString().padStart(2, "0");
-          callPopupTimer.textContent = `${m}:${s}`;
-        }, 1000);
-      }
-    }, 2000);
-  }
-
-  function endCall() {
-    if (callInterval) {
-      clearInterval(callInterval);
-      callInterval = null;
-    }
-    callPopup.classList.add("hidden");
-    if (callSeconds > 0) {
-      showToast(`Call ended · ${callPopupTimer.textContent}`, "info");
-    }
-  }
-
-  // Event Listeners
-
-  // Conversation selection
-  conversationItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      const convKey = item.getAttribute("data-conversation");
-      const conv = conversations[convKey];
-      if (conv && conv.blocked) {
-        showToast("This user is blocked. Unblock them to chat.", "warning");
-        return;
-      }
-      selectConversation(convKey);
-    });
-  });
-
-  // Search
-  searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase().trim();
-    conversationItems.forEach((item) => {
-      const name = item.querySelector("h4").textContent.toLowerCase();
-      const preview = item.querySelector(".conv-preview").textContent.toLowerCase();
-      const category = item.querySelector(".conv-category").textContent.toLowerCase();
-      const match = name.includes(query) || preview.includes(query) || category.includes(query);
-      item.style.display = match ? "" : "none";
-    });
-  });
-
-  // Send message
-  sendBtn.addEventListener("click", () => {
-    sendMessage(messageInput.value);
-  });
-
-  messageInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage(messageInput.value);
-    }
-  });
-
-  // Emoji picker
-  emojiBtn.addEventListener("click", (e) => {
+if (emojiBtn) {
+  emojiBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    emojiPicker.classList.toggle("hidden");
-    closeMoreDropdown();
+    emojiPicker.classList.toggle('hidden');
   });
+}
 
-  // Attach file
-  attachBtn.addEventListener("click", () => {
-    fileInput.click();
-  });
+// File attach (UI only for now)
+if (attachBtn && fileInput) {
+  attachBtn.addEventListener('click', () => fileInput.click());
+}
 
-  fileInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        showToast("File size must be less than 10MB", "warning");
-        fileInput.value = "";
-        return;
-      }
-      sendFile(file);
-      fileInput.value = "";
-    }
-  });
-
-  // Call button
-  callBtn.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    if (conv && conv.blocked) {
-      showToast("Cannot call a blocked user", "warning");
-      return;
-    }
-    startCall();
-  });
-
-  // More options button
-  moreBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    moreDropdown.classList.toggle("hidden");
-    closeEmojiPicker();
-  });
-
-  // View Profile
-  viewProfileBtn.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    const onlineStatus = conv.online ? "Online" : "Last seen recently";
-    profileModalBody.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="color:#6b7280;font-size:13px;">Name</span>
-          <span style="font-weight:500;font-size:14px;">${conv.name}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="color:#6b7280;font-size:13px;">Status</span>
-          <span style="font-weight:500;font-size:14px;">${onlineStatus}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="color:#6b7280;font-size:13px;">Service</span>
-          <span style="font-weight:500;font-size:14px;">${conv.category}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="color:#6b7280;font-size:13px;">Messages</span>
-          <span style="font-weight:500;font-size:14px;">${conv.messages.length}</span>
-        </div>
-      </div>
-    `;
-    profileModalOverlay.classList.remove("hidden");
-    closeMoreDropdown();
-  });
-
-  // Mute Notifications
-  muteNotifBtn.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    if (conv.muted) {
-      muteModalTitle.textContent = "Unmute Notifications";
-      muteModalText.textContent = "You will start receiving notification alerts from this conversation again.";
-      muteConfirm.textContent = "Unmute";
+// Status toggle
+const statusToggle = document.getElementById('statusToggle');
+const statusDot = document.getElementById('statusDot');
+const statusLabel = document.getElementById('statusLabel');
+if (statusToggle) {
+  statusToggle.addEventListener('change', () => {
+    if (statusToggle.checked) {
+      statusDot.style.background = '#4ade80';
+      statusLabel.textContent = 'Online';
     } else {
-      muteModalTitle.textContent = "Mute Notifications";
-      muteModalText.textContent = "You will no longer receive notification alerts from this conversation.";
-      muteConfirm.textContent = "Mute";
+      statusDot.style.background = '#ef4444';
+      statusLabel.textContent = 'Offline';
     }
-    muteModalOverlay.classList.remove("hidden");
-    closeMoreDropdown();
   });
+}
 
-  muteConfirm.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    conv.muted = !conv.muted;
-    const item = document.querySelector(`[data-conversation="${currentConversation}"]`);
-    if (conv.muted) {
-      item.classList.add("muted");
-      showToast(`Notifications muted for ${conv.name}`, "success");
-    } else {
-      item.classList.remove("muted");
-      showToast(`Notifications unmuted for ${conv.name}`, "success");
-    }
-    muteModalOverlay.classList.add("hidden");
+// Logout
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '../Html/Login.html';
   });
+}
 
-  // Clear Chat
-  clearChatBtn.addEventListener("click", () => {
-    clearChatModalOverlay.classList.remove("hidden");
-    closeMoreDropdown();
-  });
-
-  clearChatConfirm.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    conv.messages = [];
-    updateConversationPreview(currentConversation, "Chat cleared", getCurrentTime());
-    renderChat(currentConversation);
-    clearChatModalOverlay.classList.add("hidden");
-    showToast("Chat cleared", "success");
-  });
-
-  // Delete Chat
-  deleteChatBtn.addEventListener("click", () => {
-    deleteChatModalOverlay.classList.remove("hidden");
-    closeMoreDropdown();
-  });
-
-  deleteChatConfirm.addEventListener("click", () => {
-    deleteConversation(currentConversation);
-    deleteChatModalOverlay.classList.add("hidden");
-    showToast("Conversation deleted", "success");
-  });
-
-  // Block User
-  blockUserBtn.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    blockUserText.textContent = `Are you sure you want to block ${conv.name}? They won't be able to message you.`;
-    blockModalOverlay.classList.remove("hidden");
-    closeMoreDropdown();
-  });
-
-  blockConfirm.addEventListener("click", () => {
-    const conv = conversations[currentConversation];
-    conv.blocked = true;
-    const item = document.querySelector(`[data-conversation="${currentConversation}"]`);
-    item.classList.add("blocked");
-    blockModalOverlay.classList.add("hidden");
-    showToast(`${conv.name} has been blocked`, "warning");
-  });
-
-  // Close modals via close buttons
-  function setupModalClose(overlay, closeBtn) {
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) {
-        overlay.classList.add("hidden");
-      }
-    });
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => overlay.classList.add("hidden"));
-    }
+// Keyboard: Escape to close modals/pickers
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    emojiPicker?.classList.add('hidden');
   }
+});
 
-  setupModalClose(profileModalOverlay, profileModalClose);
-  setupModalClose(muteModalOverlay, muteModalClose);
-  setupModalClose(clearChatModalOverlay, clearChatModalClose);
-  setupModalClose(deleteChatModalOverlay, deleteChatModalClose);
-  setupModalClose(blockModalOverlay, blockModalClose);
-
-  muteCancel.addEventListener("click", () => muteModalOverlay.classList.add("hidden"));
-
-  clearChatCancel.addEventListener("click", () => clearChatModalOverlay.classList.add("hidden"));
-  deleteChatCancel.addEventListener("click", () => deleteChatModalOverlay.classList.add("hidden"));
-  blockCancel.addEventListener("click", () => blockModalOverlay.classList.add("hidden"));
-
-  // Mute/Speaker/End Call
-  callPopupMute.addEventListener("click", () => {
-    isMuted = !isMuted;
-    callPopupMute.classList.toggle("active", isMuted);
-    const icon = callPopupMute.querySelector("i");
-    icon.setAttribute("data-lucide", isMuted ? "mic-off" : "mic");
-    lucide.createIcons();
-    showToast(isMuted ? "Microphone muted" : "Microphone unmuted", "info");
-  });
-
-  callPopupSpeaker.addEventListener("click", () => {
-    isSpeaker = !isSpeaker;
-    callPopupSpeaker.classList.toggle("active", isSpeaker);
-    showToast(isSpeaker ? "Speaker on" : "Speaker off", "info");
-  });
-
-  callPopupEnd.addEventListener("click", endCall);
-
-  // Status toggle
-  if (statusToggle) {
-    statusToggle.addEventListener("change", () => {
-      if (statusToggle.checked) {
-        statusDot.style.background = "#4ade80";
-        statusLabel.textContent = "Online";
-        showToast("You are now Online", "success");
-      } else {
-        statusDot.style.background = "#ef4444";
-        statusLabel.textContent = "Offline";
-        showToast("You are now Offline", "warning");
-      }
-    });
+document.addEventListener('click', (e) => {
+  if (emojiPicker && !emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+    emojiPicker.classList.add('hidden');
   }
+});
 
-  // Logout
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      logoutModalOverlay.classList.remove("hidden");
-    });
-  }
-
-  setupModalClose(logoutModalOverlay, logoutModalClose);
-  logoutCancel.addEventListener("click", () => logoutModalOverlay.classList.add("hidden"));
-  logoutConfirm.addEventListener("click", () => {
-    logoutModalOverlay.classList.add("hidden");
-    showToast("Logging out...", "info");
-    setTimeout(() => { window.location.href = "../Html/Login.html"; }, 1000);
-  });
-
-  // Close dropdowns/emoji on outside click
-  document.addEventListener("click", (e) => {
-    if (!emojiPicker.contains(e.target) && e.target !== emojiBtn && !emojiBtn.contains(e.target)) {
-      closeEmojiPicker();
-    }
-    if (!moreDropdown.contains(e.target) && e.target !== moreBtn && !moreBtn.contains(e.target)) {
-      closeMoreDropdown();
-    }
-  });
-
-  // Keyboard support
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeEmojiPicker();
-      closeMoreDropdown();
-      endCall();
-      profileModalOverlay.classList.add("hidden");
-      muteModalOverlay.classList.add("hidden");
-      clearChatModalOverlay.classList.add("hidden");
-      deleteChatModalOverlay.classList.add("hidden");
-      blockModalOverlay.classList.add("hidden");
-      logoutModalOverlay.classList.add("hidden");
-    }
-  });
-
-  // Helper: delete conversation
-  function deleteConversation(convKey) {
-    delete conversations[convKey];
-    const item = document.querySelector(`[data-conversation="${convKey}"]`);
-    if (item) {
-      item.style.transition = "all 0.3s ease";
-      item.style.opacity = "0";
-      item.style.transform = "translateX(-20px)";
-      setTimeout(() => item.remove(), 300);
-    }
-
-    // Select another conversation
-    const remainingKeys = Object.keys(conversations);
-    if (remainingKeys.length > 0) {
-      selectConversation(remainingKeys[0]);
-    } else {
-      chatMessages.innerHTML = "";
-      chatName.textContent = "";
-      chatStatus.textContent = "";
-    }
-    lucide.createIcons();
-  }
-
-  // Toast notification
-  function showToast(message, type = "info") {
-    const toastContainer = document.getElementById("toastContainer") || createToastContainer();
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    const iconMap = { success: "check-circle", info: "info", warning: "alert-circle" };
-    toast.innerHTML = `
-      <div class="toast-icon ${type}">
-        <i data-lucide="${iconMap[type] || "info"}"></i>
-      </div>
-      <div class="toast-content">
-        <p>${message}</p>
-      </div>
-    `;
-    toastContainer.appendChild(toast);
-    lucide.createIcons();
-    setTimeout(() => {
-      toast.classList.add("toast-exit");
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
-
-  function createToastContainer() {
-    const container = document.createElement("div");
-    container.id = "toastContainer";
-    container.className = "toast-container";
+// Toast notification
+function showToast(message, type = 'info') {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
     document.body.appendChild(container);
-    return container;
   }
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<div class="toast-icon ${type}"><i data-lucide="${type === 'success' ? 'check-circle' : 'info'}"></i></div><div class="toast-content"><p>${message}</p></div>`;
+  container.appendChild(toast);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+  setTimeout(() => { toast.classList.add('toast-exit'); setTimeout(() => toast.remove(), 300); }, 3000);
+}
 
-  // Initialize
-  selectConversation(currentConversation);
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+  updateSidebarMonthlyEarnings();
+  loadConversations();
 });

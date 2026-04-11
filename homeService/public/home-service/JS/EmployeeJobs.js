@@ -58,7 +58,7 @@ async function fetchEmployeeBookings(email) {
 }
 
 // Update sidebar with employee info
-function updateSidebar(employee) {
+function updateSidebar(employee, bookings = []) {
   const workerAvatar = document.querySelector('.worker-avatar');
   const workerRole = document.querySelector('.worker-card h2');
 
@@ -69,14 +69,23 @@ function updateSidebar(employee) {
     workerRole.textContent = employee.role;
   }
 
-  const metrics = document.querySelectorAll('.metric-card p');
-  if (metrics.length >= 2) {
-    if (employee.monthly_earnings) {
-      const earnings = employee.monthly_earnings;
-      metrics[0].textContent = earnings >= 1000 ? `৳${(earnings / 1000).toFixed(0)}k` : `৳${earnings}`;
-    }
-    if (employee.performance_score) {
-      metrics[1].textContent = employee.performance_score;
+  // Update monthly earnings in sidebar
+  const sidebarMonthlyEarnings = document.getElementById('sidebarMonthlyEarnings');
+  if (sidebarMonthlyEarnings) {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const completedBookings = bookings.filter(b => b.status === 'completed');
+    const thisMonthBookings = completedBookings.filter(b => {
+      const d = new Date(b.completed_at || b.created_at || b.scheduled_date);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    });
+    const monthEarnings = thisMonthBookings.reduce((sum, b) => sum + (b.price || 0), 0);
+
+    if (monthEarnings >= 1000) {
+      sidebarMonthlyEarnings.textContent = `৳${(monthEarnings / 1000).toFixed(0)}k`;
+    } else {
+      sidebarMonthlyEarnings.textContent = `৳${monthEarnings}`;
     }
   }
 }
@@ -538,17 +547,18 @@ function attachJobEvents() {
 // Main init
 document.addEventListener("DOMContentLoaded", async () => {
   // Fetch and display employee data
+  let bookings = [];
   if (authUser && authUser.email) {
     const employee = await fetchEmployeeData(authUser.email);
+    bookings = await fetchEmployeeBookings(authUser.email);
     if (employee) {
-      updateSidebar(employee);
+      updateSidebar(employee, bookings);
       console.log('Employee data loaded:', employee);
     } else {
       console.error('Employee not found in database');
     }
 
     // Fetch and render bookings
-    const bookings = await fetchEmployeeBookings(authUser.email);
     renderJobCards(bookings);
     console.log('Bookings loaded:', bookings);
   }
