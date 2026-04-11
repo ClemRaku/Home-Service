@@ -11,34 +11,37 @@ const getStoredAuthUser = () => {
   }
 };
 
-// ── DOM refs ──
-const profileName = document.getElementById('profileName');
-const profilePoints = document.getElementById('profilePoints');
-const profileWallet = document.getElementById('profileWallet');
-const fieldFullName = document.getElementById('fieldFullName');
-const fieldLocation = document.getElementById('fieldLocation');
-const fieldPhone = document.getElementById('fieldPhone');
-const fieldEmail = document.getElementById('fieldEmail');
-const fieldAddress = document.getElementById('fieldAddress');
-const profileAvatar = document.getElementById('profileAvatar');
-const avatarInput = document.getElementById('avatarInput');
-const cameraButton = document.querySelector('.camera-btn');
-const editProfileBtn = document.getElementById('editProfileBtn');
-const secondaryActionBtn = document.getElementById('secondaryActionBtn');
-const profileActions = document.getElementById('profileActions');
-const profileFields = Array.from(
-  document.querySelectorAll('.form-grid input, .form-grid textarea')
-);
-const passwordModalOverlay = document.getElementById('passwordModalOverlay');
-const passwordSaveBtn = document.getElementById('passwordSaveBtn');
-const passwordCancelBtn = document.getElementById('passwordCancelBtn');
-const currentPasswordInput = document.getElementById('currentPasswordInput');
-const newPasswordInput = document.getElementById('newPasswordInput');
-const confirmPasswordInput = document.getElementById('confirmPasswordInput');
-const navLinks = document.querySelectorAll('.profile-nav a');
-
 let isEditing = false;
 let previousValues = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  // ── DOM refs ──
+  const profileName = document.getElementById('profileName');
+  const profilePoints = document.getElementById('profilePoints');
+  const profileWallet = document.getElementById('profileWallet');
+  const fieldFullName = document.getElementById('fieldFullName');
+  const fieldLocation = document.getElementById('fieldLocation');
+  const fieldPhone = document.getElementById('fieldPhone');
+  const fieldEmail = document.getElementById('fieldEmail');
+  const fieldAddress = document.getElementById('fieldAddress');
+  const profileAvatar = document.getElementById('profileAvatar');
+  const avatarInput = document.getElementById('avatarInput');
+  const cameraButton = document.querySelector('.camera-btn');
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  const secondaryActionBtn = document.getElementById('secondaryActionBtn');
+  const profileActions = document.getElementById('profileActions');
+  const profileFields = Array.from(
+    document.querySelectorAll('.form-grid input, .form-grid textarea')
+  );
+  const passwordModalOverlay = document.getElementById('passwordModalOverlay');
+  const passwordSaveBtn = document.getElementById('passwordSaveBtn');
+  const passwordCancelBtn = document.getElementById('passwordCancelBtn');
+  const currentPasswordInput = document.getElementById('currentPasswordInput');
+  const newPasswordInput = document.getElementById('newPasswordInput');
+  const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+  const navLinks = document.querySelectorAll('.profile-nav a');
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 
 // ── Navigation active state ──
 navLinks.forEach((link) => {
@@ -348,8 +351,9 @@ passwordSaveBtn?.addEventListener('click', async () => {
   }
 });
 
-window.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && passwordModalOverlay?.classList.contains('active')) {
-    closePasswordModal();
-  }
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && passwordModalOverlay?.classList.contains('active')) {
+      closePasswordModal();
+    }
+  });
 });
