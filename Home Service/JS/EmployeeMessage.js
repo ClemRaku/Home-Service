@@ -201,7 +201,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update messages
     chatMessages.innerHTML = "";
 
-    conv.messages.forEach((msg) => {
+    if (conv.messages.length === 0) {
+      chatMessages.innerHTML = `
+        <div class="no-conversation">
+          <i data-lucide="message-circle"></i>
+          <p>No messages yet. Say hello!</p>
+        </div>
+      `;
+    } else {
+      conv.messages.forEach((msg) => {
         const msgDiv = document.createElement("div");
         msgDiv.className = `message ${msg.from === "me" ? "sent" : "received"}`;
 
@@ -243,6 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chatMessages.appendChild(msgDiv);
       });
+    }
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
     lucide.createIcons();
@@ -664,7 +673,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (remainingKeys.length > 0) {
       selectConversation(remainingKeys[0]);
     } else {
-      chatMessages.innerHTML = "";
+      chatMessages.innerHTML = `
+        <div class="no-conversation">
+          <i data-lucide="message-circle"></i>
+          <p>No conversations left</p>
+        </div>
+      `;
       chatName.textContent = "";
       chatStatus.textContent = "";
     }
