@@ -41,53 +41,47 @@ const updateSidebarMonthlyEarnings = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 
   // Update sidebar monthly earnings
   updateSidebarMonthlyEarnings();
 
-  // DOM Elements
+  // DOM Elements with null checks
   const statusToggle = document.getElementById("statusToggle");
   const statusDot = document.getElementById("statusDot");
   const statusLabel = document.getElementById("statusLabel");
   const logoutBtn = document.getElementById("logoutBtn");
   const sidebarStatusDot = document.querySelector(".status-card .dot");
   const sidebarStatusLabel = document.querySelector(".status-card #statusLabel");
-
-  // Availability
   const statusButtons = document.querySelectorAll(".status-btn");
   const dayButtons = document.querySelectorAll(".day-btn");
   const saveAvailability = document.getElementById("saveAvailability");
   const startTimeInput = document.getElementById("startTime");
   const endTimeInput = document.getElementById("endTime");
-
-  // Notifications
   const saveNotifications = document.getElementById("saveNotifications");
-
-  // Payment
   const addPaymentBtn = document.querySelector(".add-payment-btn");
   const setPrimaryBtns = document.querySelectorAll(".set-primary-btn");
-
-  // Security
   const changePasswordBtn = document.getElementById("changePasswordBtn");
   const signOutAllBtn = document.getElementById("signOutAllBtn");
   const signOutDeviceBtn = document.getElementById("signOutDevice");
-
-  // Modals
   const passwordModalOverlay = document.getElementById("passwordModalOverlay");
   const passwordModalClose = document.getElementById("passwordModalClose");
   const passwordCancel = document.getElementById("passwordCancel");
   const passwordForm = document.getElementById("passwordForm");
-
   const paymentModalOverlay = document.getElementById("paymentModalOverlay");
   const paymentModalClose = document.getElementById("paymentModalClose");
   const paymentCancel = document.getElementById("paymentCancel");
   const paymentForm = document.getElementById("paymentForm");
-
   const logoutModalOverlay = document.getElementById("logoutModalOverlay");
   const logoutModalClose = document.getElementById("logoutModalClose");
   const logoutCancel = document.getElementById("logoutCancel");
   const logoutConfirm = document.getElementById("logoutConfirm");
+
+  // Guard: ensure critical elements exist before proceeding
+  if (!statusButtons.length || !dayButtons.length || !startTimeInput || !endTimeInput) {
+    console.warn('EmployeeSettings: Critical DOM elements missing');
+    return;
+  }
 
   // ── Helpers ──
 
@@ -100,9 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentMinute = now.getMinutes();
     const currentTimeMinutes = currentHour * 60 + currentMinute;
 
-    // Parse working hours
-    const [startH, startM] = (startTimeInput.value || '08:00').split(':').map(Number);
-    const [endH, endM] = (endTimeInput.value || '20:00').split(':').map(Number);
+    // Parse working hours safely
+    const startVal = startTimeInput?.value || '08:00';
+    const endVal = endTimeInput?.value || '20:00';
+    const [startH, startM] = startVal.split(':').map(Number);
+    const [endH, endM] = endVal.split(':').map(Number);
     const startMinutes = startH * 60 + startM;
     const endMinutes = endH * 60 + endM;
 
