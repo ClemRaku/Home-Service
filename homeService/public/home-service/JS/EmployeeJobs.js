@@ -57,6 +57,27 @@ async function fetchEmployeeBookings(email) {
   }
 }
 
+// Sync sidebar status from availability database column
+async function syncSidebarStatus(email) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/employees?select=availability&email=eq.${encodeURIComponent(email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.length) return;
+    const availability = data[0].availability || 'available';
+    const isOnline = availability === 'available';
+    const dot = document.getElementById('statusDot');
+    const label = document.getElementById('statusLabel');
+    const toggle = document.getElementById('statusToggle');
+    if (dot) dot.style.background = isOnline ? '#4ade80' : '#ef4444';
+    if (label) label.textContent = isOnline ? 'Online' : 'Offline';
+    if (toggle) toggle.checked = isOnline;
+  } catch (err) { console.warn('Could not sync sidebar status:', err); }
+}
+
 // Update sidebar with employee info
 function updateSidebar(employee, bookings = []) {
   const workerAvatar = document.querySelector('.worker-avatar');
@@ -546,9 +567,9 @@ function attachJobEvents() {
 
 // Main init
 document.addEventListener("DOMContentLoaded", async () => {
-  // Fetch and display employee data
   let bookings = [];
   if (authUser && authUser.email) {
+    await syncSidebarStatus(authUser.email);
     const employee = await fetchEmployeeData(authUser.email);
     bookings = await fetchEmployeeBookings(authUser.email);
     if (employee) {

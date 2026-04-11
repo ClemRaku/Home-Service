@@ -55,6 +55,27 @@ async function updateSidebarMonthlyEarnings() {
   }
 }
 
+// Sync sidebar status from availability database column
+async function syncSidebarStatus(email) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/employees?select=availability&email=eq.${encodeURIComponent(email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.length) return;
+    const availability = data[0].availability || 'available';
+    const isOnline = availability === 'available';
+    const dot = document.getElementById('statusDot');
+    const label = document.getElementById('statusLabel');
+    const toggle = document.getElementById('statusToggle');
+    if (dot) dot.style.background = isOnline ? '#4ade80' : '#ef4444';
+    if (label) label.textContent = isOnline ? 'Online' : 'Offline';
+    if (toggle) toggle.checked = isOnline;
+  } catch (err) { console.warn('Could not sync sidebar status:', err); }
+}
+
 // Format currency
 function formatCurrency(amount) {
   if (!amount) return '৳0';
@@ -549,6 +570,9 @@ async function updateStatGrid() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Sync sidebar status from database
+  await syncSidebarStatus(authUser?.email);
+
   // Update sidebar monthly earnings
   await updateSidebarMonthlyEarnings();
 

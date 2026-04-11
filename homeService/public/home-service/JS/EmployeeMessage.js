@@ -40,6 +40,28 @@ const updateSidebarMonthlyEarnings = async () => {
   el.textContent = total >= 1000 ? `৳${(total / 1000).toFixed(0)}k` : `৳${total}`;
 };
 
+// Sync sidebar status from availability database column
+const syncSidebarStatus = async () => {
+  if (!authUser || !authUser.email) return;
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/employees?select=availability&email=eq.${encodeURIComponent(authUser.email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.length) return;
+    const availability = data[0].availability || 'available';
+    const isOnline = availability === 'available';
+    const dot = document.getElementById('statusDot');
+    const label = document.getElementById('statusLabel');
+    const toggle = document.getElementById('statusToggle');
+    if (dot) dot.style.background = isOnline ? '#4ade80' : '#ef4444';
+    if (label) label.textContent = isOnline ? 'Online' : 'Offline';
+    if (toggle) toggle.checked = isOnline;
+  } catch (err) { console.warn('Could not sync sidebar status:', err); }
+};
+
 // DOM Elements
 const conversationList = document.getElementById('conversationList');
 const conversationItems = document.getElementById('conversationItems');
@@ -427,6 +449,7 @@ function showToast(message, type = 'info') {
 // Init
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof lucide !== 'undefined') lucide.createIcons();
+  syncSidebarStatus();
   updateSidebarMonthlyEarnings();
   loadConversations();
 });
