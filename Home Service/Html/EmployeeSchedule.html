@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Schedule | HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/EmployeeSchedule.css" />
+  </head>
+  <body>
+    <div class="schedule-layout">
+      <aside class="schedule-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="schedule-nav" aria-label="Employee Navigation">
+            <a href="../Html/EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              <span>Jobs</span>
+            </a>
+            <a href="../Html/EmployeeEarnings.html">
+              <i data-lucide="wallet"></i>
+              <span>Earnings</span>
+            </a>
+            <a class="active" href="../Html/EmployeeSchedule.html">
+              <i data-lucide="calendar"></i>
+              <span>Schedule</span>
+            </a>
+            <a href="#">
+              <i data-lucide="message-square"></i>
+              <span>Messages</span>
+            </a>
+            <a href="#">
+              <i data-lucide="activity"></i>
+              <span>Experience</span>
+            </a>
+            <a href="#">
+              <i data-lucide="clipboard-list"></i>
+              <span>Projects</span>
+            </a>
+            <a href="#">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <div class="sidebar-metrics">
+              <div class="metric-card">
+                <p>৳32k</p>
+                <span>This Month</span>
+              </div>
+              <div class="metric-card">
+                <p>4.9</p>
+                <span>Rating</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <a class="logout" id="logoutBtn" href="../Html/Login.html">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+              </a>
+              <div class="status-card">
+                <div class="status-info">
+                  <p>Status</p>
+                  <span id="statusText"><span class="dot" id="statusDot"></span><span id="statusLabel">Online</span></span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="statusToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="schedule-content">
+        <header class="page-header">
+          <div>
+            <h1>Schedule</h1>
+            <p id="weekRange">Week of Apr 8 – Apr 14, 2024</p>
+          </div>
+          <div class="week-controls">
+            <button type="button" id="prevWeek">
+              <i data-lucide="chevron-left"></i>
+              Prev Week
+            </button>
+            <button type="button" id="nextWeek">
+              Next Week
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+        </header>
+
+        <div class="week-days-row" id="weekDaysRow">
+          <div class="week-day" data-day="mon" data-date="Apr 8">
+            <span class="day-name">Mon</span>
+            <span class="day-number">8</span>
+            <span class="day-dot"></span>
+          </div>
+          <div class="week-day" data-day="tue" data-date="Apr 9">
+            <span class="day-name">Tue</span>
+            <span class="day-number">9</span>
+            <span class="day-dot"></span>
+          </div>
+          <div class="week-day selected" data-day="wed" data-date="Apr 10">
+            <span class="day-name">Wed</span>
+            <span class="day-number">10</span>
+            <span class="day-dot"></span>
+          </div>
+          <div class="week-day" data-day="thu" data-date="Apr 11">
+            <span class="day-name">Thu</span>
+            <span class="day-number">11</span>
+            <span class="day-dot"></span>
+          </div>
+          <div class="week-day" data-day="fri" data-date="Apr 12">
+            <span class="day-name">Fri</span>
+            <span class="day-number">12</span>
+            <span class="day-dot"></span>
+          </div>
+          <div class="week-day" data-day="sat" data-date="Apr 13">
+            <span class="day-name">Sat</span>
+            <span class="day-number">13</span>
+            <span class="day-dot"></span>
+          </div>
+          <div class="week-day" data-day="sun" data-date="Apr 14">
+            <span class="day-name">Sun</span>
+            <span class="day-number">14</span>
+            <span class="day-dot"></span>
+          </div>
+        </div>
+
+        <div class="schedule-main-content">
+          <div class="schedule-left">
+            <section class="day-schedule">
+              <div class="day-schedule-header">
+                <h3 id="selectedDayTitle">Wed, Apr 10</h3>
+                <span id="jobCount">2 jobs</span>
+              </div>
+
+              <div class="job-cards" id="jobCards">
+                <div class="job-card in-progress" data-job="ac-repair">
+                  <div class="job-status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-label">In Progress</span>
+                  </div>
+                  <div class="job-info">
+                    <h4>AC Repair & Servicing</h4>
+                    <p>Fatima Begum</p>
+                  </div>
+                  <div class="job-time">
+                    <span class="time">10:00 AM</span>
+                    <span class="duration">2h</span>
+                  </div>
+                </div>
+                <div class="job-card scheduled" data-job="fan-installation">
+                  <div class="job-status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Scheduled</span>
+                  </div>
+                  <div class="job-info">
+                    <h4>Fan Installation</h4>
+                    <p>Karim Ahmed</p>
+                  </div>
+                  <div class="job-time">
+                    <span class="time">2:00 PM</span>
+                    <span class="duration">1.5h</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="week-overview">
+              <h3>Week Overview</h3>
+              <div class="week-overview-list" id="weekOverviewList">
+                <div class="overview-item">
+                  <span class="overview-day">Mon 8</span>
+                  <span class="overview-badge">10:00 AM · Full House Wiring Check</span>
+                </div>
+                <div class="overview-item">
+                  <span class="overview-day">Tue 9</span>
+                  <span class="overview-badge free">Free</span>
+                </div>
+                <div class="overview-item">
+                  <span class="overview-day">Wed 10</span>
+                  <div class="overview-badges">
+                    <span class="overview-badge">10:00 AM · AC Repair & Servicing</span>
+                    <span class="overview-badge">2:00 PM · Fan Installation</span>
+                  </div>
+                </div>
+                <div class="overview-item">
+                  <span class="overview-day">Thu 11</span>
+                  <span class="overview-badge">9:00 AM · Circuit Breaker Replacement</span>
+                </div>
+                <div class="overview-item">
+                  <span class="overview-day">Fri 12</span>
+                  <span class="overview-badge">11:00 AM · LED Lighting Installation</span>
+                </div>
+                <div class="overview-item">
+                  <span class="overview-day">Sat 13</span>
+                  <span class="overview-badge free">Free</span>
+                </div>
+                <div class="overview-item">
+                  <span class="overview-day">Sun 14</span>
+                  <span class="overview-badge">10:00 AM · Smart Home Wiring</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="schedule-right">
+            <section class="reminders-card">
+              <div class="reminders-header">
+                <h3>Upcoming Reminders</h3>
+                <button class="add-reminder-btn" type="button">
+                  <i data-lucide="plus"></i>
+                </button>
+              </div>
+              <div class="reminders-list">
+                <div class="reminder-item">
+                  <div class="reminder-icon circuit">
+                    <i data-lucide="zap"></i>
+                  </div>
+                  <div class="reminder-info">
+                    <h4>Circuit Breaker Replacement</h4>
+                    <p>Nasreen Akter</p>
+                    <span>Tomorrow, 9:00 AM</span>
+                  </div>
+                </div>
+                <div class="reminder-item">
+                  <div class="reminder-icon led">
+                    <i data-lucide="zap"></i>
+                  </div>
+                  <div class="reminder-info">
+                    <h4>LED Lighting Installation</h4>
+                    <p>Rafiq Islam</p>
+                    <span>Apr 12, 11:00 AM</span>
+                  </div>
+                </div>
+                <div class="reminder-item">
+                  <div class="reminder-icon safety">
+                    <i data-lucide="user"></i>
+                  </div>
+                  <div class="reminder-info">
+                    <h4>Monthly Safety Inspection</h4>
+                    <p>Self</p>
+                    <span>Apr 15, 8:00 AM</span>
+                  </div>
+                </div>
+                <div class="reminder-item">
+                  <div class="reminder-icon smart">
+                    <i data-lucide="zap"></i>
+                  </div>
+                  <div class="reminder-info">
+                    <h4>Smart Home Wiring</h4>
+                    <p>Sumaiya Rahman</p>
+                    <span>Apr 14, 10:00 AM</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="week-stats-card">
+              <h3>This Week</h3>
+              <div class="week-stats-list">
+                <div class="week-stat">
+                  <div class="week-stat-left">
+                    <i data-lucide="briefcase"></i>
+                    <span>Total Jobs</span>
+                  </div>
+                  <span class="week-stat-value">6</span>
+                </div>
+                <div class="week-stat">
+                  <div class="week-stat-left">
+                    <i data-lucide="check"></i>
+                    <span>Completed</span>
+                  </div>
+                  <span class="week-stat-value">1</span>
+                </div>
+                <div class="week-stat">
+                  <div class="week-stat-left">
+                    <i data-lucide="calendar"></i>
+                    <span>Scheduled</span>
+                  </div>
+                  <span class="week-stat-value">4</span>
+                </div>
+                <div class="week-stat">
+                  <div class="week-stat-left">
+                    <i data-lucide="sun"></i>
+                    <span>Free Days</span>
+                  </div>
+                  <span class="week-stat-value">2</span>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Reminder Modal -->
+    <div class="modal-overlay hidden" id="reminderModalOverlay">
+      <div class="modal modal-sm" id="reminderModal">
+        <div class="modal-header">
+          <h3>Add Reminder</h3>
+          <button class="modal-close" id="reminderModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="reminderForm">
+            <div class="form-group">
+              <label for="reminderTitle">Title</label>
+              <input type="text" id="reminderTitle" placeholder="Reminder title" required />
+            </div>
+            <div class="form-group">
+              <label for="reminderClient">Client</label>
+              <input type="text" id="reminderClient" placeholder="Client name or Self" />
+            </div>
+            <div class="form-group">
+              <label for="reminderDate">Date</label>
+              <input type="date" id="reminderDate" required />
+            </div>
+            <div class="form-group">
+              <label for="reminderTime">Time</label>
+              <input type="time" id="reminderTime" required />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="reminderCancel">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add Reminder</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div class="modal-overlay hidden" id="jobModalOverlay">
+      <div class="modal" id="jobModal">
+        <div class="modal-header">
+          <h3 id="jobModalTitle">Job Details</h3>
+          <button class="modal-close" id="jobModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="jobModalBody">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay hidden" id="logoutModalOverlay">
+      <div class="modal modal-sm" id="logoutModal">
+        <div class="modal-header">
+          <h3>Confirm Logout</h3>
+          <button class="modal-close" id="logoutModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="logoutCancel">Cancel</button>
+          <button class="btn btn-danger" id="logoutConfirm">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="../JS/EmployeeSchedule.js"></script>
+  </body>
+</html>
