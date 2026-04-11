@@ -1000,6 +1000,18 @@ body.modal-open {
   box-shadow: 0 0 0 3px rgba(17, 197, 187, 0.12);
 }
 
+.booking-readonly {
+  background: #e9ecef !important;
+  color: #555 !important;
+  cursor: not-allowed !important;
+  border-color: #d0d2d6 !important;
+}
+
+.booking-readonly:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .booking-form-actions {
   display: flex;
   justify-content: flex-end;

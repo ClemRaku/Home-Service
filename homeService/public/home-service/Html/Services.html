@@ -105,44 +105,31 @@
         <button class="booking-close-btn" id="bookingCloseBtn" type="button" aria-label="Close booking form">×</button>
       </div>
 
-      <form class="booking-form">
+      <form class="booking-form" id="bookingForm">
         <div class="booking-field-grid">
           <label>
-            Full Name <span>*</span>
-            <input type="text" placeholder="John Doe" required />
+            Full Name
+            <input type="text" id="bookingFullName" readonly class="booking-readonly" />
           </label>
           <label>
-            Email Address <span>*</span>
-            <input type="email" placeholder="john@example.com" required />
+            Email Address
+            <input type="email" id="bookingEmail" readonly class="booking-readonly" />
           </label>
           <label>
-            Phone Number <span>*</span>
-            <input type="tel" placeholder="+1 (555) 123-4567" required />
+            Phone Number
+            <input type="tel" id="bookingPhone" readonly class="booking-readonly" />
           </label>
           <label>
-            Service Type <span>*</span>
-            <select id="bookingServiceType" required>
-              <option value="">Select service type</option>
-              <option>Cleaning Services</option>
-              <option>Plumbing Services</option>
-              <option>Electrical Services</option>
-              <option>Painting & Renovation Services</option>
-              <option>Appliance Repair Services</option>
-              <option>Pest Control Services</option>
-              <option>Home Improvement & Maintenance Services</option>
-              <option>Gardening & Landscaping Services</option>
-              <option>Moving & Logistics Services</option>
-              <option>Home Security Services</option>
-              <option>Healthcare Services</option>
-            </select>
+            Service Address
+            <input type="text" id="bookingAddress" readonly class="booking-readonly" />
           </label>
           <label>
             Preferred Date <span>*</span>
-            <input type="date" required />
+            <input type="date" id="bookingDate" required />
           </label>
           <label>
             Preferred Time <span>*</span>
-            <select required>
+            <select id="bookingTime" required>
               <option value="">Select time</option>
               <option>08:00 AM - 10:00 AM</option>
               <option>10:00 AM - 12:00 PM</option>
@@ -154,13 +141,8 @@
         </div>
 
         <label>
-          Service Address <span>*</span>
-          <input type="text" placeholder="123 Main Street, City, State, ZIP" required />
-        </label>
-
-        <label>
           Additional Details
-          <textarea rows="4"></textarea>
+          <textarea id="bookingDetails" rows="4" placeholder="Any special requirements or notes..."></textarea>
         </label>
 
         <div class="booking-form-actions">

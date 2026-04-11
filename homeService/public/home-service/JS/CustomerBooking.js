@@ -90,12 +90,29 @@ const modalWorker = document.getElementById('modalWorker');
 const modalDate = document.getElementById('modalDate');
 const modalTime = document.getElementById('modalTime');
 const modalLocation = document.getElementById('modalLocation');
+const modalDetails = document.getElementById('modalDetails');
 const modalPrice = document.getElementById('modalPrice');
 const modalIcon = document.getElementById('modalIcon');
 const modalIconSymbol = document.getElementById('modalIconSymbol');
 
 let allBookings = [];
 let employeeNames = {};
+let servicePrices = {};
+
+const loadServicePrices = async () => {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/services?select=service_name,price`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (res.ok) {
+      const services = await res.json();
+      services.forEach((s) => {
+        servicePrices[s.service_name] = Number(s.price) || 0;
+      });
+    }
+  } catch (err) { console.warn('Could not load service prices:', err); }
+};
 
 const loadEmployeeNames = async () => {
   try {
@@ -128,9 +145,10 @@ const loadBookings = async () => {
 
   try {
     await loadEmployeeNames();
+    await loadServicePrices();
 
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/bookings?customer_email=eq.${encodeURIComponent(authUser.email)}&order=scheduled_date.desc`,
+      `${SUPABASE_URL}/rest/v1/bookings?select=*&customer_email=eq.${encodeURIComponent(authUser.email)}&order=scheduled_date.desc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -164,6 +182,7 @@ const renderBookings = (bookings) => {
       const statusLabel = statusLabels[booking.status] || booking.status;
       const timeRange = `${formatTime12(booking.start_time)} - ${formatTime12(booking.end_time)}`;
       const workerName = employeeNames[booking.employee_email] || booking.employee_email?.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) || 'Unassigned';
+      const servicePrice = servicePrices[booking.service_name] || 0;
 
       return `
         <article class="booking-card" data-status="${booking.status}" data-booking-id="${booking.id}">
@@ -184,10 +203,11 @@ const renderBookings = (bookings) => {
             <p><i data-lucide="map-pin"></i><strong>Location:</strong> ${booking.address}</p>
           </div>
           <div class="card-bottom">
-            <div class="price">$${Number(booking.price).toFixed(2)}</div>
+            <div class="price">$${servicePrice.toFixed(2)}</div>
             <div class="actions">
               <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
               <button class="details-btn">View Details</button>
+              ${booking.status === 'upcoming' ? `<button class="delete-btn" data-delete-id="${booking.id}" aria-label="Delete booking"><i data-lucide="trash-2"></i></button>` : ''}
             </div>
           </div>
         </article>
@@ -206,10 +226,13 @@ const attachCardEvents = () => {
   const cards = document.querySelectorAll('.booking-card');
 
   cards.forEach((card) => {
+    const bookingId = card.dataset.bookingId;
+    const booking = allBookings.find((b) => b.id === bookingId);
+
     const detailsBtn = card.querySelector('.details-btn');
     detailsBtn?.addEventListener('click', () => {
       const serviceName = card.querySelector('.service-meta h3')?.textContent?.trim() || '';
-      const bookingId = card.querySelector('.service-meta p')?.textContent?.trim() || '';
+      const bookingLabel = card.querySelector('.service-meta p')?.textContent?.trim() || '';
       const statusText = card.querySelector('.status-pill')?.textContent?.trim() || '';
       const workerText = card.querySelector('.details p:nth-child(1)')?.textContent || '';
       const dateText = card.querySelector('.details p:nth-child(2)')?.textContent || '';
@@ -220,7 +243,7 @@ const attachCardEvents = () => {
       const cardIcon = card.querySelector('.service-icon')?.classList[1] || 'yellow';
       const iconSymbol = card.querySelector('.service-icon i')?.getAttribute('data-lucide') || 'briefcase';
 
-      if (modalBookingId) modalBookingId.textContent = bookingId;
+      if (modalBookingId) modalBookingId.textContent = bookingLabel;
       if (modalServiceName) modalServiceName.textContent = serviceName;
       if (modalStatus) {
         modalStatus.textContent = statusText;
@@ -230,13 +253,50 @@ const attachCardEvents = () => {
       if (modalDate) modalDate.textContent = dateText.replace('Date:', '').trim();
       if (modalTime) modalTime.textContent = timeText.replace('Time:', '').trim();
       if (modalLocation) modalLocation.textContent = locationText.replace('Location:', '').trim();
-      if (modalPrice) modalPrice.textContent = priceText;
+      if (modalDetails) modalDetails.textContent = (booking && booking.additional_details) || 'No additional details provided.';
+      if (modalPrice) modalPrice.textContent = `$${((booking && servicePrices[booking.service_name]) || 0).toFixed(2)}`;
       if (modalIcon) modalIcon.className = `modal-icon ${cardIcon}`;
       if (modalIconSymbol) modalIconSymbol.setAttribute('data-lucide', iconSymbol);
 
       openModal();
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
+      }
+    });
+
+    // Delete button handler (only for upcoming bookings)
+    const deleteBtn = card.querySelector('.delete-btn');
+    deleteBtn?.addEventListener('click', async () => {
+      const bookingId = deleteBtn.dataset.deleteId;
+      if (!bookingId) return;
+
+      const serviceName = card.querySelector('.service-meta h3')?.textContent?.trim() || 'this booking';
+      if (!confirm(`Delete booking "${serviceName}"?`)) return;
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              Prefer: 'return=minimal',
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error(`Failed (${res.status})`);
+
+        card.remove();
+        allBookings = allBookings.filter((b) => b.id !== bookingId);
+
+        if (!document.querySelectorAll('.booking-card').length) {
+          if (bookingsGrid) bookingsGrid.innerHTML = '<p class="no-bookings">No bookings found.</p>';
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+        window.alert('Failed to delete booking.');
       }
     });
   });

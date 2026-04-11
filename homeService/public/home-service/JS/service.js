@@ -8,7 +8,54 @@ const serviceGrid = document.querySelector('#serviceGrid');
 const bookingModalOverlay = document.querySelector('#bookingModalOverlay');
 const bookingCloseBtn = document.querySelector('#bookingCloseBtn');
 const bookingCancelBtn = document.querySelector('#bookingCancelBtn');
-const bookingServiceType = document.querySelector('#bookingServiceType');
+const bookingForm = document.querySelector('#bookingForm');
+
+// Booking form fields
+const bookingFullName = document.querySelector('#bookingFullName');
+const bookingEmail = document.querySelector('#bookingEmail');
+const bookingPhone = document.querySelector('#bookingPhone');
+const bookingAddress = document.querySelector('#bookingAddress');
+const bookingDate = document.querySelector('#bookingDate');
+const bookingTime = document.querySelector('#bookingTime');
+const bookingDetails = document.querySelector('#bookingDetails');
+
+const getStoredAuthUser = () => {
+  try {
+    const raw = localStorage.getItem('hsAuthUser');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const fillBookingFormFromCustomer = async () => {
+  const authUser = getStoredAuthUser();
+  if (!authUser || !authUser.email) return;
+
+  // Fill what we know from localStorage
+  if (bookingFullName) bookingFullName.value = authUser.name || '';
+  if (bookingEmail) bookingEmail.value = authUser.email || '';
+
+  // Fetch full customer record from Supabase
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/customers?select=full_name,email,phone_number,address&email=eq.${encodeURIComponent(authUser.email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (res.ok) {
+      const rows = await res.json();
+      if (rows.length) {
+        const c = rows[0];
+        if (bookingFullName) bookingFullName.value = c.full_name || '';
+        if (bookingEmail) bookingEmail.value = c.email || '';
+        if (bookingPhone) bookingPhone.value = c.phone_number || '';
+        if (bookingAddress) bookingAddress.value = c.address || '';
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch customer details for booking form:', err);
+  }
+};
 
 const iconByCategory = {
   'cleaning services': 'brush-cleaning',
@@ -124,20 +171,24 @@ const matchesPoints = (points, selected) => {
   return true;
 };
 
-const openBookingModal = (serviceTypeText = '') => {
+let selectedServiceName = '';
+
+const openBookingModal = async (serviceName = '') => {
   if (!bookingModalOverlay) return;
+
+  selectedServiceName = serviceName;
+
+  // Auto-fill from customer data
+  await fillBookingFormFromCustomer();
+
+  // Reset editable fields
+  if (bookingDate) bookingDate.value = '';
+  if (bookingTime) bookingTime.value = '';
+  if (bookingDetails) bookingDetails.value = '';
 
   bookingModalOverlay.classList.add('active');
   bookingModalOverlay.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
-
-  if (bookingServiceType && serviceTypeText) {
-    const hasOption = Array.from(bookingServiceType.options).some(
-      (option) => option.textContent.trim() === serviceTypeText,
-    );
-
-    bookingServiceType.value = hasOption ? serviceTypeText : '';
-  }
 };
 
 const closeBookingModal = () => {
@@ -160,6 +211,97 @@ bookingModalOverlay?.addEventListener('click', (event) => {
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && bookingModalOverlay?.classList.contains('active')) {
     closeBookingModal();
+  }
+});
+
+// ── Booking form submission ──
+bookingForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const authUser = getStoredAuthUser();
+  if (!authUser || !authUser.email) {
+    alert('Please sign in to book a service.');
+    closeBookingModal();
+    return;
+  }
+
+  const date = bookingDate?.value || '';
+  const time = bookingTime?.value || '';
+  const details = bookingDetails?.value || '';
+
+  console.log('Booking attempt:', {
+    authUser: authUser.email,
+    serviceName: selectedServiceName,
+    date,
+    time,
+    address: bookingAddress?.value,
+  });
+
+  if (!date || !time) {
+    alert('Please select date and time.');
+    return;
+  }
+
+  if (!selectedServiceName) {
+    alert('Please click "Book Now" on a service first.');
+    return;
+  }
+
+  // Parse start/end time from the time slot (e.g. "08:00 AM - 10:00 AM")
+  const timeMatch = time.match(/(\d{2}):(\d{2})\s*(AM|PM)\s*-\s*(\d{2}):(\d{2})\s*(AM|PM)/i);
+  let startTime = null;
+  let endTime = null;
+  if (timeMatch) {
+    const to24h = (h, m, period) => {
+      let hour = parseInt(h);
+      const min = m || '00';
+      if (period.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (period.toUpperCase() === 'AM' && hour === 12) hour = 0;
+      return `${String(hour).padStart(2, '0')}:${min}:00`;
+    };
+    startTime = to24h(timeMatch[1], timeMatch[2], timeMatch[3]);
+    endTime = to24h(timeMatch[4], timeMatch[5], timeMatch[6]);
+  }
+
+  const payload = {
+    customer_email: authUser.email,
+    service_name: selectedServiceName,
+    scheduled_date: date,
+    start_time: startTime,
+    end_time: endTime,
+    address: bookingAddress?.value || '',
+    price: 0,
+    status: 'upcoming',
+    additional_details: details,
+  };
+
+  console.log('Sending payload:', JSON.stringify(payload, null, 2));
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    console.log('Response status:', res.status);
+
+    if (!res.ok) {
+      const txt = await res.text();
+      console.error('Supabase error:', txt);
+      throw new Error(txt);
+    }
+
+    alert('Booking request submitted successfully!');
+    closeBookingModal();
+  } catch (err) {
+    console.error('Booking error:', err);
+    alert(`Failed to submit booking: ${err.message}`);
   }
 });
 
@@ -212,8 +354,8 @@ const renderCards = (services) => {
   serviceGrid.querySelectorAll('.book-btn').forEach((button) => {
     button.addEventListener('click', () => {
       const card = button.closest('.card');
-      const serviceTypeText = card?.querySelector('p')?.textContent.trim() || '';
-      openBookingModal(serviceTypeText);
+      const serviceName = card?.querySelector('h3')?.textContent.trim() || '';
+      openBookingModal(serviceName);
     });
   });
 

@@ -288,6 +288,29 @@ body {
     cursor: pointer;
 }
 
+.delete-btn {
+    border: 0;
+    background: transparent;
+    color: #e45757;
+    cursor: pointer;
+    font-size: 16px;
+    display: grid;
+    place-items: center;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: rgba(228, 87, 87, 0.1);
+}
+
+.delete-btn .lucide {
+    width: 18px;
+    height: 18px;
+}
+
+
 .booking-card.hidden {
     display: none;
 }
@@ -424,6 +447,22 @@ body {
 
 .modal-item.full {
     grid-column: 1 / -1;
+}
+
+.modal-details-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-height: 60px;
+}
+
+.modal-details-box p {
+    margin: 0;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.5;
+    white-space: pre-wrap;
 }
 
 .modal-footer {
