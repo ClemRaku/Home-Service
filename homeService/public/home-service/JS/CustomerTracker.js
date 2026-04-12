@@ -1,6 +1,6 @@
-const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+// Supabase config (use window globals from config.js)
+const SUPABASE_URL = window.SUPABASE_URL;
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
 
 // Leaflet map instance (reused)
 let leafletMap = null;
@@ -65,6 +65,28 @@ const fetchBookings = async (email) => {
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (err) { console.error('Error fetching bookings:', err); return []; }
+};
+
+// Fetch customer's location from database
+const fetchCustomerLocation = async (email) => {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/customers?select=latitude,longitude&email=eq.${encodeURIComponent(email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (!res.ok) return { lat: null, lng: null };
+    const data = await res.json();
+    if (data?.[0]) {
+      return {
+        lat: data[0].latitude,
+        lng: data[0].longitude
+      };
+    }
+    return { lat: null, lng: null };
+  } catch (err) {
+    console.warn('Error fetching customer location:', err);
+    return { lat: null, lng: null };
+  }
 };
 
 // Get initials
@@ -255,6 +277,8 @@ const renderLeafletMap = (custLat, custLng, empLat, empLng, empName) => {
     employeeMarker = null;
   }
 
+  console.log('📍 Rendering map - Customer:', custLat, custLng, '| Employee:', empLat, empLng);
+
   // Create map
   leafletMap = L.map(mapEl, { zoomControl: true, attributionControl: false }).setView([custLat, custLng], 14);
 
@@ -265,7 +289,7 @@ const renderLeafletMap = (custLat, custLng, empLat, empLng, empName) => {
 
   // Customer marker (blue dot)
   customerMarker = L.marker([custLat, custLng], { icon: customerIcon })
-    .bindPopup('<b>You</b><br>Customer Location')
+    .bindPopup(`<b>${authUser?.name || 'You'}</b><br>Customer Location`)
     .addTo(leafletMap);
 
   // Employee marker (orange dot)
@@ -317,10 +341,19 @@ const bindModalHandlers = () => {
       if (modalAddress) modalAddress.innerHTML = `<i data-lucide="map-pin"></i> ${location}`;
       if (modalAvatar) modalAvatar.textContent = initials(name);
 
-      // ── Render Leaflet map ──
-      // Customer location (from localStorage or DB)
-      const custLat = parseFloat(localStorage.getItem('customer_latitude')) || 23.8103;
-      const custLng = parseFloat(localStorage.getItem('customer_longitude')) || 90.4125;
+      // ── Fetch customer location from database ──
+      let custLat = null, custLng = null;
+      if (authUser?.email) {
+        const customerLoc = await fetchCustomerLocation(authUser.email);
+        custLat = customerLoc.lat;
+        custLng = customerLoc.lng;
+      }
+
+      // Fallback to localStorage if DB doesn't have coordinates
+      if (!custLat || !custLng) {
+        custLat = parseFloat(localStorage.getItem('customer_latitude')) || 23.8103;
+        custLng = parseFloat(localStorage.getItem('customer_longitude')) || 90.4125;
+      }
 
       // Employee location (from DB if available, otherwise use booking address or default)
       let empLat = null, empLng = null;
