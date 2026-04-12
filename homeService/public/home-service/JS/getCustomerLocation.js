@@ -4,10 +4,6 @@
  * Uses the browser's built-in Geolocation API — no API key needed.
  */
 
-const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
-
 const GEO_OPTIONS = { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 };
 
 const getAuthEmail = () => {
@@ -34,13 +30,13 @@ const captureLocation = async () => {
 
       try {
         await fetch(
-          `${SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(email)}`,
+          `${window.SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(email)}`,
           {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              apikey: window.SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
               Prefer: 'return=minimal',
             },
             body: JSON.stringify({

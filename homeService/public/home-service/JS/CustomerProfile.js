@@ -1,7 +1,3 @@
-const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
-
 const getStoredAuthUser = () => {
   try {
     const raw = localStorage.getItem('hsAuthUser');
@@ -71,27 +67,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Fetch & populate customer data ──
   const loadProfile = async () => {
     const authUser = getStoredAuthUser();
+    console.log('Auth user from localStorage:', authUser);
+    
     if (!authUser || !authUser.email) {
       if (profileName) profileName.textContent = 'Not signed in';
+      console.warn('No authenticated user found in localStorage');
       return;
     }
 
     try {
-      const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/customers?select=*&email=eq.${encodeURIComponent(authUser.email)}`,
-        {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        }
-      );
+      const url = `${window.SUPABASE_URL}/rest/v1/customers?select=*&email=eq.${encodeURIComponent(authUser.email)}`;
+      console.log('Fetching profile from:', url);
 
-      if (!response.ok) throw new Error(`Failed to fetch profile (${response.status})`);
+      const response = await fetch(url, {
+        headers: {
+          apikey: window.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
+        },
+      });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch profile (${response.status}): ${errorText}`);
+      }
 
       const rows = await response.json();
+      console.log('Customer data received:', rows);
+      
       if (!Array.isArray(rows) || rows.length === 0) {
         if (profileName) profileName.textContent = 'Profile not found';
+        console.warn('No customer found with email:', authUser.email);
         return;
       }
 
@@ -124,7 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  loadProfile();
+  loadProfile().catch(error => {
+    console.error('Unhandled error in loadProfile:', error);
+    if (profileName) profileName.textContent = 'Error loading profile';
+  });
 
   // ── Avatar update ──
   if (cameraButton && avatarInput) {
@@ -180,13 +190,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(authUser.email)}`,
+        `${window.SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(authUser.email)}`,
         {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            apikey: window.SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
             Prefer: 'return=minimal',
           },
           body: JSON.stringify({
@@ -284,8 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const verifyResponse = await fetch(
-        `${SUPABASE_URL}/rest/v1/customers?select=password_hash&email=eq.${encodeURIComponent(authUser.email)}`,
-        { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+        `${window.SUPABASE_URL}/rest/v1/customers?select=password_hash&email=eq.${encodeURIComponent(authUser.email)}`,
+        { headers: { apikey: window.SUPABASE_ANON_KEY, Authorization: `Bearer ${window.SUPABASE_ANON_KEY}` } }
       );
 
       if (!verifyResponse.ok) throw new Error('Verification failed');
@@ -297,13 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const updateResponse = await fetch(
-        `${SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(authUser.email)}`,
+        `${window.SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(authUser.email)}`,
         {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            apikey: window.SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
             Prefer: 'return=minimal',
           },
           body: JSON.stringify({ password_hash: newPassword }),
