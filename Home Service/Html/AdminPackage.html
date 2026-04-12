@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Package</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../CSS/AdminPackage.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar" id="sidebar">
+        <div class="logo-block">
+          <div class="logo">
+            <img src="../Image/logo.png" alt="Home Service" />
+          </div>
+          <div class="logo-text">
+            <h2>Admin Panel</h2>
+            <span>Home Service</span>
+          </div>
+          <button class="menu-btn sidebar-toggle" id="menuToggle">
+            <i data-lucide="table-of-contents"></i>
+          </button>
+        </div>
+        <nav class="nav">
+          <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+          <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+          <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+          <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+          <a class="active" href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+          <a href="AdminOffers.html"><i data-lucide="gift"></i><span>Offers</span></a>
+          <a href="#"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+          <a href="#"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+          <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <h1>Home Service Admin</h1>
+          </div>
+          <div class="topbar-right">
+            <button class="icon-btn" aria-label="Notifications">
+              <i data-lucide="bell"></i>
+              <span class="dot">3</span>
+            </button>
+            <div class="admin-info">
+              <img
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+                alt="Admin"
+              />
+              <div>
+                <h4>Admin User</h4>
+                <span>Super Admin</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="page-header">
+          <div>
+            <h1>Package Management</h1>
+            <p>Create and manage service packages</p>
+          </div>
+          <button class="primary-btn" id="openAddPackage">
+            <i data-lucide="plus"></i>
+            Add Package
+          </button>
+        </section>
+
+        <section class="package-section">
+          <div class="section-heading">
+            <h2>Home Care Packages</h2>
+            <p>Subscribe to our monthly packages and enjoy hassle-free home maintenance.</p>
+          </div>
+          <div class="package-grid">
+            <article class="package-card">
+              <div class="card-header">
+                <div>
+                  <h3>Basic Home Care</h3>
+                  <p class="card-subtitle">Essential home maintenance services for small homes</p>
+                  <span class="status">active</span>
+                </div>
+                <div class="price">
+                  <strong>$199</strong>
+                  <small>/month</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="label">Included Services:</p>
+                <ul>
+                  <li><i data-lucide="check"></i> 2 Home Cleaning Sessions</li>
+                  <li><i data-lucide="check"></i> 1 Plumbing Inspection</li>
+                  <li><i data-lucide="check"></i> 1 Electrical Check</li>
+                  <li><i data-lucide="check"></i> Basic Pest Control</li>
+                  <li><i data-lucide="check"></i> 24/7 Emergency Support</li>
+                  <li><i data-lucide="check"></i> Priority Booking</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <span>Total Sales</span>
+                  <strong>45 packages</strong>
+                </div>
+                <div class="actions">
+                  <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
+                  <button class="muted"><i data-lucide="pause"></i> Disable</button>
+                  <button class="danger"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <article class="package-card">
+              <div class="card-header">
+                <div>
+                  <h3>Premium Home Care</h3>
+                  <p class="card-subtitle">Comprehensive home services for medium to large homes</p>
+                  <span class="status">active</span>
+                </div>
+                <div class="price">
+                  <strong>$399</strong>
+                  <small>/month</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="label">Included Services:</p>
+                <ul>
+                  <li><i data-lucide="check"></i> 4 Home Cleaning Sessions</li>
+                  <li><i data-lucide="check"></i> 2 Deep Cleaning Sessions</li>
+                  <li><i data-lucide="check"></i> 2 Plumbing Services</li>
+                  <li><i data-lucide="check"></i> 2 Electrical Services</li>
+                  <li><i data-lucide="check"></i> Monthly Pest Control</li>
+                  <li><i data-lucide="check"></i> AC Maintenance</li>
+                  <li><i data-lucide="check"></i> Appliance Check-up</li>
+                  <li><i data-lucide="check"></i> 24/7 Emergency Support</li>
+                  <li><i data-lucide="check"></i> 10% Discount on Additional Services</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <span>Total Sales</span>
+                  <strong>32 packages</strong>
+                </div>
+                <div class="actions">
+                  <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
+                  <button class="muted"><i data-lucide="pause"></i> Disable</button>
+                  <button class="danger"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <article class="package-card">
+              <div class="card-header">
+                <div>
+                  <h3>Elite Home Care</h3>
+                  <p class="card-subtitle">Complete home care solution with unlimited services</p>
+                  <span class="status">active</span>
+                </div>
+                <div class="price">
+                  <strong>$699</strong>
+                  <small>/month</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="label">Included Services:</p>
+                <ul>
+                  <li><i data-lucide="check"></i> Unlimited Home Cleaning</li>
+                  <li><i data-lucide="check"></i> Weekly Deep Cleaning</li>
+                  <li><i data-lucide="check"></i> Unlimited Plumbing Services</li>
+                  <li><i data-lucide="check"></i> Unlimited Electrical Services</li>
+                  <li><i data-lucide="check"></i> Bi-weekly Pest Control</li>
+                  <li><i data-lucide="check"></i> Monthly AC Maintenance</li>
+                  <li><i data-lucide="check"></i> Gardening & Landscaping</li>
+                  <li><i data-lucide="check"></i> Home Security Check</li>
+                  <li><i data-lucide="check"></i> 24/7 Dedicated Support</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <span>Total Sales</span>
+                  <strong>28 packages</strong>
+                </div>
+                <div class="actions">
+                  <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
+                  <button class="muted"><i data-lucide="pause"></i> Disable</button>
+                  <button class="danger"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="package-section">
+          <div class="section-heading">
+            <h2>Helping Hand Packages</h2>
+            <p>Get a dedicated professional helper for flexible home assistance.</p>
+          </div>
+          <div class="package-grid">
+            <article class="package-card">
+              <div class="card-header">
+                <div>
+                  <h3>Basic Helping Hand</h3>
+                  <p class="card-subtitle">Part-time helping hand for essential home assistance</p>
+                  <span class="status">active</span>
+                </div>
+                <div class="price">
+                  <strong>$299</strong>
+                  <small>/month</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="label">Included Services:</p>
+                <ul>
+                  <li><i data-lucide="check"></i> 500 Points</li>
+                  <li><i data-lucide="check"></i> 2 Sessions per Week</li>
+                  <li><i data-lucide="check"></i> Sweeping & Mopping</li>
+                  <li><i data-lucide="check"></i> Dishwashing</li>
+                  <li><i data-lucide="check"></i> Basic Laundry (wash & dry)</li>
+                  <li><i data-lucide="check"></i> Bed Making</li>
+                  <li><i data-lucide="check"></i> Dusting</li>
+                  <li><i data-lucide="check"></i> Grocery Shopping</li>
+                  <li><i data-lucide="check"></i> Medicine Pickup</li>
+                  <li><i data-lucide="check"></i> Bill Payments</li>
+                  <li><i data-lucide="check"></i> Garbage Disposal</li>
+                  <li><i data-lucide="check"></i> Basic Plant Watering</li>
+                  <li><i data-lucide="check"></i> Pet Feeding</li>
+                  <li><i data-lucide="check"></i> Basic Dog Walking</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <span>Total Sales</span>
+                  <strong>18 packages</strong>
+                </div>
+                <div class="actions">
+                  <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
+                  <button class="muted"><i data-lucide="pause"></i> Disable</button>
+                  <button class="danger"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <article class="package-card">
+              <div class="card-header">
+                <div>
+                  <h3>Premium Helping Hand</h3>
+                  <p class="card-subtitle">Full-time helping hand for comprehensive home support</p>
+                  <span class="status">active</span>
+                </div>
+                <div class="price">
+                  <strong>$599</strong>
+                  <small>/month</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="label">Included Services:</p>
+                <ul>
+                  <li><i data-lucide="check"></i> 1000 Points</li>
+                  <li><i data-lucide="check"></i> 5 Sessions per Week</li>
+                  <li><i data-lucide="check"></i> Deep Cleaning (kitchen, bathroom)</li>
+                  <li><i data-lucide="check"></i> Laundry with Ironing & Folding</li>
+                  <li><i data-lucide="check"></i> Home Organization / Decluttering</li>
+                  <li><i data-lucide="check"></i> Cooking / Meal Preparation</li>
+                  <li><i data-lucide="check"></i> Babysitting</li>
+                  <li><i data-lucide="check"></i> Elderly Companionship</li>
+                  <li><i data-lucide="check"></i> Patient Care (non-medical)</li>
+                  <li><i data-lucide="check"></i> Basic Plumbing</li>
+                  <li><i data-lucide="check"></i> Electrical Fixes</li>
+                  <li><i data-lucide="check"></i> Appliance Servicing</li>
+                  <li><i data-lucide="check"></i> Furniture Assembly</li>
+                  <li><i data-lucide="check"></i> Packing & Unpacking</li>
+                  <li><i data-lucide="check"></i> Delivery Services</li>
+                  <li><i data-lucide="check"></i> Data Entry</li>
+                  <li><i data-lucide="check"></i> Online Form Fill-up</li>
+                  <li><i data-lucide="check"></i> Basic Tech Support</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <span>Total Sales</span>
+                  <strong>24 packages</strong>
+                </div>
+                <div class="actions">
+                  <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
+                  <button class="muted"><i data-lucide="pause"></i> Disable</button>
+                  <button class="danger"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <article class="package-card">
+              <div class="card-header">
+                <div>
+                  <h3>Elite Helping Hand</h3>
+                  <p class="card-subtitle">Premium full-time helping hand with extended services</p>
+                  <span class="status">active</span>
+                </div>
+                <div class="price">
+                  <strong>$999</strong>
+                  <small>/month</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="label">Included Services:</p>
+                <ul>
+                  <li><i data-lucide="check"></i> 2500 Points</li>
+                  <li><i data-lucide="check"></i> 7 Sessions per Week</li>
+                  <li><i data-lucide="check"></i> 24/7 Elderly or Patient Care</li>
+                  <li><i data-lucide="check"></i> Live-in Maid / Full-time Helper</li>
+                  <li><i data-lucide="check"></i> Personal Assistant (Daily Management)</li>
+                  <li><i data-lucide="check"></i> Personal Chef / Customized Meal Plans</li>
+                  <li><i data-lucide="check"></i> Event Cooking & Hosting Support</li>
+                  <li><i data-lucide="check"></i> Premium Home Management</li>
+                  <li><i data-lucide="check"></i> Advanced Electrical / Plumbing Work</li>
+                  <li><i data-lucide="check"></i> Renovation & Interior Setup</li>
+                  <li><i data-lucide="check"></i> AC Installation & Full Servicing</li>
+                  <li><i data-lucide="check"></i> House Shifting End-to-End (packing → setup)</li>
+                  <li><i data-lucide="check"></i> Travel Assistance & Personal Escort</li>
+                  <li><i data-lucide="check"></i> Pet Grooming</li>
+                  <li><i data-lucide="check"></i> Pet Sitting (Long Duration)</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <span>Total Sales</span>
+                  <strong>12 packages</strong>
+                </div>
+                <div class="actions">
+                  <button class="edit-btn"><i data-lucide="pencil"></i> Edit</button>
+                  <button class="muted"><i data-lucide="pause"></i> Disable</button>
+                  <button class="danger"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-overlay" id="addPackageModal" aria-hidden="true">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Add New Package</h3>
+          <button class="modal-close" type="button" id="closeAddPackage">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>
+            <span>Package Name</span>
+            <input type="text" id="addPackageName" placeholder="Basic Home Care" />
+          </label>
+          <div class="modal-grid">
+            <label>
+              <span>Price ($)</span>
+              <input type="number" id="addPackagePrice" placeholder="250" />
+            </label>
+            <label>
+              <span>Discount (%)</span>
+              <input type="number" id="addPackageDiscount" placeholder="10" />
+            </label>
+            <label>
+              <span>Points</span>
+              <input type="number" id="addPackagePoints" placeholder="500" />
+            </label>
+          </div>
+          <div class="modal-services">
+            <span>Select Services</span>
+            <div class="service-list">
+              <div class="selected-services" id="selectedServices">
+                <label><input type="checkbox" checked /> Plumbing Repair</label>
+                <label><input type="checkbox" checked /> Electrical Installation</label>
+                <label><input type="checkbox" checked /> HVAC Maintenance</label>
+                <label><input type="checkbox" checked /> Deep Cleaning</label>
+                <label><input type="checkbox" checked /> Carpentry Work</label>
+                <label><input type="checkbox" checked /> Painting Service</label>
+              </div>
+              <button class="link-btn" type="button" id="toggleServiceList">
+                <i data-lucide="plus"></i>
+                Add Service
+              </button>
+              <div class="service-picker hidden" id="servicePicker">
+                <h4>All Services</h4>
+                <div class="service-add">
+                  <input
+                    type="text"
+                    id="customServiceInput"
+                    placeholder="Add a new service"
+                  />
+                  <button class="link-btn" type="button" id="addCustomService">
+                    <i data-lucide="plus"></i>
+                    Add
+                  </button>
+                </div>
+                <div class="service-picker-grid" id="servicePickerGrid">
+                  <label><input type="checkbox" /> Home Cleaning</label>
+                  <label><input type="checkbox" /> Carpet & Upholstery Cleaning</label>
+                  <label><input type="checkbox" /> Window Cleaning</label>
+                  <label><input type="checkbox" /> Deep Cleaning</label>
+                  <label><input type="checkbox" /> Sofa Cleaning</label>
+                  <label><input type="checkbox" /> Mattress Cleaning</label>
+                  <label><input type="checkbox" /> Kitchen & Bathroom Cleaning</label>
+                  <label><input type="checkbox" /> Leak Repair</label>
+                  <label><input type="checkbox" /> Pipe Installation & Maintenance</label>
+                  <label><input type="checkbox" /> Drain Cleaning</label>
+                  <label><input type="checkbox" /> Water Heater Repair</label>
+                  <label><input type="checkbox" /> Faucet & Shower Repair</label>
+                  <label><input type="checkbox" /> Bathroom & Toilet Installation</label>
+                  <label><input type="checkbox" /> Electrical Repair</label>
+                  <label><input type="checkbox" /> Wiring & Rewiring</label>
+                  <label><input type="checkbox" /> Lighting Installation</label>
+                  <label><input type="checkbox" /> Appliance installation</label>
+                  <label><input type="checkbox" /> Generator Installation</label>
+                  <label><input type="checkbox" /> Solar Panel Installation</label>
+                  <label><input type="checkbox" /> Interior Painting</label>
+                  <label><input type="checkbox" /> Exterior Painting</label>
+                  <label><input type="checkbox" /> Wall Repair & Finishing</label>
+                  <label><input type="checkbox" /> Home Remodelling</label>
+                  <label><input type="checkbox" /> Tile Installation & Repair</label>
+                  <label><input type="checkbox" /> False Celling Installation</label>
+                  <label><input type="checkbox" /> AC Repair & Maintenance</label>
+                  <label><input type="checkbox" /> Refrigerator Repair</label>
+                  <label><input type="checkbox" /> Washing Machine Repair</label>
+                  <label><input type="checkbox" /> Microwave & Oven Repair</label>
+                  <label><input type="checkbox" /> Tv & Entertainment System Repair</label>
+                  <label><input type="checkbox" /> Gysers/Water Heater Repairs</label>
+                  <label><input type="checkbox" /> Termite Control</label>
+                  <label><input type="checkbox" /> Mosquito & Insect Control</label>
+                  <label><input type="checkbox" /> Rodent Control</label>
+                  <label><input type="checkbox" /> Spider & Ant Treatment</label>
+                  <label><input type="checkbox" /> Bee & Wasp Removal</label>
+                  <label><input type="checkbox" /> Carpentry</label>
+                  <label><input type="checkbox" /> Flooring Installation</label>
+                  <label><input type="checkbox" /> Furniture Assembly</label>
+                  <label><input type="checkbox" /> Handyman Service</label>
+                  <label><input type="checkbox" /> Door & window Repair</label>
+                  <label><input type="checkbox" /> Lock & Key Service</label>
+                  <label><input type="checkbox" /> Lawn Mowing</label>
+                  <label><input type="checkbox" /> Tree Trimming</label>
+                  <label><input type="checkbox" /> Garden Design & Maintenance</label>
+                  <label><input type="checkbox" /> Irrigation System Installation</label>
+                  <label><input type="checkbox" /> Indoor Plant Care</label>
+                  <label><input type="checkbox" /> Packing & Moving Service</label>
+                  <label><input type="checkbox" /> Furniture Relocation</label>
+                  <label><input type="checkbox" /> Office Shifting</label>
+                  <label><input type="checkbox" /> Heavy Item Transportation</label>
+                  <label><input type="checkbox" /> CCTV Installation</label>
+                  <label><input type="checkbox" /> Indoor Plant Care (Alarm System Setup)</label>
+                  <label><input type="checkbox" /> Smart Lock Installation</label>
+                  <label><input type="checkbox" /> Home Automation & Sensors Setup</label>
+                  <label><input type="checkbox" /> Elderly Care/Home Nursing</label>
+                  <label><input type="checkbox" /> Physiotherapy at Home</label>
+                  <label><input type="checkbox" /> Medical Equipment Setup</label>
+                  <label><input type="checkbox" /> Sanitation & Hygiene Service</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" id="cancelAddPackage">Cancel</button>
+          <button class="primary-btn" type="button" id="submitAddPackage">Add package</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="editPackageModal" aria-hidden="true">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Edit Package</h3>
+          <button class="modal-close" type="button" id="closeEditPackage">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>
+            <span>Package Name</span>
+            <input type="text" id="editPackageName" value="Basic Home Care" />
+          </label>
+          <div class="modal-grid">
+            <label>
+              <span>Price ($)</span>
+              <input type="number" id="editPackagePrice" value="250" />
+            </label>
+            <label>
+              <span>Discount (%)</span>
+              <input type="number" id="editPackageDiscount" value="10" />
+            </label>
+            <label>
+              <span>Points</span>
+              <input type="number" id="editPackagePoints" value="500" />
+            </label>
+          </div>
+          <div class="modal-services">
+            <span>Select Services</span>
+            <div class="service-list">
+              <div class="selected-services" id="selectedServicesEdit">
+                <label><input type="checkbox" checked /> Plumbing Repair</label>
+                <label><input type="checkbox" checked /> Electrical Installation</label>
+                <label><input type="checkbox" checked /> HVAC Maintenance</label>
+                <label><input type="checkbox" checked /> Deep Cleaning</label>
+                <label><input type="checkbox" checked /> Carpentry Work</label>
+                <label><input type="checkbox" checked /> Painting Service</label>
+              </div>
+              <button class="link-btn" type="button" id="toggleServiceListEdit">
+                <i data-lucide="plus"></i>
+                Add Service
+              </button>
+              <div class="service-picker hidden" id="servicePickerEdit">
+                <h4>All Services</h4>
+                <div class="service-add">
+                  <input
+                    type="text"
+                    id="customServiceInputEdit"
+                    placeholder="Add a new service"
+                  />
+                  <button class="link-btn" type="button" id="addCustomServiceEdit">
+                    <i data-lucide="plus"></i>
+                    Add
+                  </button>
+                </div>
+                <div class="service-picker-grid" id="servicePickerGridEdit">
+                  <label><input type="checkbox" /> Home Cleaning</label>
+                  <label><input type="checkbox" /> Carpet & Upholstery Cleaning</label>
+                  <label><input type="checkbox" /> Window Cleaning</label>
+                  <label><input type="checkbox" /> Deep Cleaning</label>
+                  <label><input type="checkbox" /> Sofa Cleaning</label>
+                  <label><input type="checkbox" /> Mattress Cleaning</label>
+                  <label><input type="checkbox" /> Kitchen & Bathroom Cleaning</label>
+                  <label><input type="checkbox" /> Leak Repair</label>
+                  <label><input type="checkbox" /> Pipe Installation & Maintenance</label>
+                  <label><input type="checkbox" /> Drain Cleaning</label>
+                  <label><input type="checkbox" /> Water Heater Repair</label>
+                  <label><input type="checkbox" /> Faucet & Shower Repair</label>
+                  <label><input type="checkbox" /> Bathroom & Toilet Installation</label>
+                  <label><input type="checkbox" /> Electrical Repair</label>
+                  <label><input type="checkbox" /> Wiring & Rewiring</label>
+                  <label><input type="checkbox" /> Lighting Installation</label>
+                  <label><input type="checkbox" /> Appliance installation</label>
+                  <label><input type="checkbox" /> Generator Installation</label>
+                  <label><input type="checkbox" /> Solar Panel Installation</label>
+                  <label><input type="checkbox" /> Interior Painting</label>
+                  <label><input type="checkbox" /> Exterior Painting</label>
+                  <label><input type="checkbox" /> Wall Repair & Finishing</label>
+                  <label><input type="checkbox" /> Home Remodelling</label>
+                  <label><input type="checkbox" /> Tile Installation & Repair</label>
+                  <label><input type="checkbox" /> False Celling Installation</label>
+                  <label><input type="checkbox" /> AC Repair & Maintenance</label>
+                  <label><input type="checkbox" /> Refrigerator Repair</label>
+                  <label><input type="checkbox" /> Washing Machine Repair</label>
+                  <label><input type="checkbox" /> Microwave & Oven Repair</label>
+                  <label><input type="checkbox" /> Tv & Entertainment System Repair</label>
+                  <label><input type="checkbox" /> Gysers/Water Heater Repairs</label>
+                  <label><input type="checkbox" /> Termite Control</label>
+                  <label><input type="checkbox" /> Mosquito & Insect Control</label>
+                  <label><input type="checkbox" /> Rodent Control</label>
+                  <label><input type="checkbox" /> Spider & Ant Treatment</label>
+                  <label><input type="checkbox" /> Bee & Wasp Removal</label>
+                  <label><input type="checkbox" /> Carpentry</label>
+                  <label><input type="checkbox" /> Flooring Installation</label>
+                  <label><input type="checkbox" /> Furniture Assembly</label>
+                  <label><input type="checkbox" /> Handyman Service</label>
+                  <label><input type="checkbox" /> Door & window Repair</label>
+                  <label><input type="checkbox" /> Lock & Key Service</label>
+                  <label><input type="checkbox" /> Lawn Mowing</label>
+                  <label><input type="checkbox" /> Tree Trimming</label>
+                  <label><input type="checkbox" /> Garden Design & Maintenance</label>
+                  <label><input type="checkbox" /> Irrigation System Installation</label>
+                  <label><input type="checkbox" /> Indoor Plant Care</label>
+                  <label><input type="checkbox" /> Packing & Moving Service</label>
+                  <label><input type="checkbox" /> Furniture Relocation</label>
+                  <label><input type="checkbox" /> Office Shifting</label>
+                  <label><input type="checkbox" /> Heavy Item Transportation</label>
+                  <label><input type="checkbox" /> CCTV Installation</label>
+                  <label><input type="checkbox" /> Indoor Plant Care (Alarm System Setup)</label>
+                  <label><input type="checkbox" /> Smart Lock Installation</label>
+                  <label><input type="checkbox" /> Home Automation & Sensors Setup</label>
+                  <label><input type="checkbox" /> Elderly Care/Home Nursing</label>
+                  <label><input type="checkbox" /> Physiotherapy at Home</label>
+                  <label><input type="checkbox" /> Medical Equipment Setup</label>
+                  <label><input type="checkbox" /> Sanitation & Hygiene Service</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" id="cancelEditPackage">Cancel</button>
+          <button class="primary-btn" type="button" id="submitEditPackage">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../JS/admin.js"></script>
+    <script src="../JS/AdminPackage.js"></script>
+  </body>
+</html>

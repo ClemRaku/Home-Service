@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Earnings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <link rel="stylesheet" href="../CSS/EmployeeEarnings.css" />
+  </head>
+  <body>
+    <div class="earnings-layout">
+      <aside class="earnings-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="earnings-nav" aria-label="Employee Navigation">
+            <a href="../Html/EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              <span>Jobs</span>
+            </a>
+            <a class="active" href="../Html/EmployeeEarnings.html">
+              <i data-lucide="dollar-sign"></i>
+              <span>Earnings</span>
+            </a>
+            <a href="../Html/EmployeeSchedule.html">
+              <i data-lucide="calendar"></i>
+              <span>Schedule</span>
+            </a>
+            <a href="../Html/EmployeeMessages.html">
+              <i data-lucide="message-square"></i>
+              <span>Messages</span>
+            </a>
+            <a href="../Html/EmployeeExperience.html">
+              <i data-lucide="history"></i>
+              <span>Experience</span>
+            </a>
+            <a href="../Html/EmployeeSetting.html">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <div class="sidebar-metrics">
+              <div class="metric-card">
+                <p>৳32k</p>
+                <span>This Month</span>
+              </div>
+              <div class="metric-card">
+                <p>4.9</p>
+                <span>Rating</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <a class="logout" id="logoutBtn" href="../Html/Login.html">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+              </a>
+              <div class="status-card">
+                <div class="status-info">
+                  <p>Status</p>
+                  <span id="statusText"><span class="dot" id="statusDot"></span><span id="statusLabel">Online</span></span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="statusToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="earnings-content">
+        <header class="page-header">
+          <div>
+            <h1>Earnings</h1>
+            <p>Track your income and payment history</p>
+          </div>
+          <button class="export-btn" type="button" id="exportBtn">
+            <i data-lucide="download"></i>
+            Export Report
+          </button>
+          <div class="export-dropdown hidden" id="exportDropdown">
+            <button type="button" data-format="pdf">
+              <i data-lucide="file-text"></i>
+              Export as PDF
+            </button>
+            <button type="button" data-format="csv">
+              <i data-lucide="file-spreadsheet"></i>
+              Export as CSV
+            </button>
+          </div>
+        </header>
+
+        <section class="stat-grid">
+          <article class="stat-card clickable" data-modal="total-earnings" tabindex="0">
+            <div class="stat-header">
+              <div class="stat-label">
+                <p>Total Earnings</p>
+                <span class="icon stat-icon icon-teal"><i data-lucide="dollar-sign"></i></span>
+              </div>
+            </div>
+            <h2>৳1,24,500</h2>
+            <span>342 jobs total</span>
+          </article>
+          <article class="stat-card clickable" data-modal="month-earnings" tabindex="0">
+            <div class="stat-header">
+              <div class="stat-label">
+                <p>This Month</p>
+                <span class="icon stat-icon icon-green"><i data-lucide="calendar"></i></span>
+              </div>
+            </div>
+            <h2>৳32,400</h2>
+            <span>vs ৳28,750 last month</span>
+          </article>
+          <article class="stat-card clickable" data-modal="week-earnings" tabindex="0">
+            <div class="stat-header">
+              <div class="stat-label">
+                <p>This Week</p>
+                <span class="icon stat-icon icon-orange"><i data-lucide="bar-chart-2"></i></span>
+              </div>
+            </div>
+            <h2>৳8,900</h2>
+            <span>4 jobs completed</span>
+          </article>
+          <article class="stat-card clickable" data-modal="pending-payout" tabindex="0">
+            <div class="stat-header">
+              <div class="stat-label">
+                <p>Pending Payout</p>
+                <span class="icon stat-icon icon-yellow"><i data-lucide="clock"></i></span>
+              </div>
+            </div>
+            <h2>৳6,200</h2>
+            <span>3 jobs pending</span>
+          </article>
+        </section>
+
+        <div class="tab-row">
+          <button class="tab active" type="button">Overview</button>
+          <button class="tab" type="button">Transactions</button>
+        </div>
+
+        <section class="tab-content" id="overview-tab">
+          <section class="analytics-grid">
+            <article class="chart-card">
+              <div class="card-header">
+                <h3>Monthly Earnings</h3>
+                <span>Last 6 months</span>
+              </div>
+              <div class="chart-container">
+                <div class="chart-labels">
+                  <span>৳22k</span>
+                  <span>৳26k</span>
+                  <span>৳20k</span>
+                  <span>৳31k</span>
+                  <span>৳29k</span>
+                  <span>৳32k</span>
+                </div>
+                <div class="chart-bars">
+                  <div class="bar" style="--value: 0.52" data-tooltip="৳22,000" data-month="Oct 2023"><span>Oct</span></div>
+                  <div class="bar" style="--value: 0.63" data-tooltip="৳26,000" data-month="Nov 2023"><span>Nov</span></div>
+                  <div class="bar" style="--value: 0.48" data-tooltip="৳20,000" data-month="Dec 2023"><span>Dec</span></div>
+                  <div class="bar" style="--value: 0.8" data-tooltip="৳31,000" data-month="Jan 2024"><span>Jan</span></div>
+                  <div class="bar" style="--value: 0.7" data-tooltip="৳29,000" data-month="Feb 2024"><span>Feb</span></div>
+                  <div class="bar" style="--value: 0.86" data-tooltip="৳32,000" data-month="Mar 2024"><span>Mar</span></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="category-card">
+              <div class="card-header">
+                <h3>By Category</h3>
+              </div>
+              <div class="category-list">
+                <div class="category-item clickable" data-category="AC Repair">
+                  <div class="category-top">
+                    <p>AC Repair</p>
+                    <span>31%</span>
+                  </div>
+                  <div class="progress">
+                    <span style="--width: 31%; --color: #0d9488"></span>
+                  </div>
+                  <small>৳38,500</small>
+                </div>
+                <div class="category-item clickable" data-category="Wiring">
+                  <div class="category-top">
+                    <p>Wiring</p>
+                    <span>23%</span>
+                  </div>
+                  <div class="progress">
+                    <span style="--width: 23%; --color: #f97316"></span>
+                  </div>
+                  <small>৳29,200</small>
+                </div>
+                <div class="category-item clickable" data-category="LED Installation">
+                  <div class="category-top">
+                    <p>LED Installation</p>
+                    <span>15%</span>
+                  </div>
+                  <div class="progress">
+                    <span style="--width: 15%; --color: #eab308"></span>
+                  </div>
+                  <small>৳18,700</small>
+                </div>
+                <div class="category-item clickable" data-category="Circuit Breaker">
+                  <div class="category-top">
+                    <p>Circuit Breaker</p>
+                    <span>13%</span>
+                  </div>
+                  <div class="progress">
+                    <span style="--width: 13%; --color: #22c55e"></span>
+                  </div>
+                  <small>৳15,600</small>
+                </div>
+                <div class="category-item clickable" data-category="Smart Home">
+                  <div class="category-top">
+                    <p>Smart Home</p>
+                    <span>11%</span>
+                  </div>
+                  <div class="progress">
+                    <span style="--width: 11%; --color: #a855f7"></span>
+                  </div>
+                  <small>৳13,500</small>
+                </div>
+                <div class="category-item clickable" data-category="Generator">
+                  <div class="category-top">
+                    <p>Generator</p>
+                    <span>7%</span>
+                  </div>
+                  <div class="progress">
+                    <span style="--width: 7%; --color: #ef4444"></span>
+                  </div>
+                  <small>৳9,000</small>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section class="bottom-cards">
+            <article class="mini-card clickable" data-modal="avg-per-job" tabindex="0">
+              <span class="mini-icon icon-teal"><i data-lucide="smile"></i></span>
+              <div>
+                <h4>৳1,450</h4>
+                <p>Average Per Job</p>
+                <span>Based on all completed jobs</span>
+              </div>
+            </article>
+            <article class="mini-card clickable" data-modal="best-month" tabindex="0">
+              <span class="mini-icon icon-teal"><i data-lucide="trophy"></i></span>
+              <div>
+                <h4>৳32,400</h4>
+                <p>Best Month</p>
+                <span>March 2024</span>
+              </div>
+            </article>
+            <article class="mini-card clickable" data-modal="total-jobs" tabindex="0">
+              <span class="mini-icon icon-teal"><i data-lucide="check-circle-2"></i></span>
+              <div>
+                <h4>342</h4>
+                <p>Total Jobs Done</p>
+                <span>Since January 2022</span>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section class="tab-content hidden" id="transactions-tab">
+          <article class="transaction-card">
+            <div class="transaction-header">
+              <h3>Transaction History</h3>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="filter-indicator" id="filterIndicator">
+                  <i data-lucide="filter"></i>
+                  <span id="filterText"></span>
+                  <button type="button" id="clearFilter">
+                    <i data-lucide="x"></i>
+                  </button>
+                </span>
+                <span id="transactionCount">8 transactions</span>
+              </div>
+            </div>
+            <table class="transaction-table">
+              <thead>
+                <tr>
+                  <th>Job</th>
+                  <th>Client</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="clickable-row" data-job="full-house-wiring" data-client="Jamal Hossain" data-category="Wiring" data-date="Apr 8, 2024" data-amount="৳4,500" data-status="Paid" data-description="Complete house wiring for 3-bedroom apartment in Gulshan including main line, switches, and distribution board.">
+                  <td class="job-name">Full House Wiring – Gulshan</td>
+                  <td>Jamal Hossain</td>
+                  <td><span class="category-badge">Wiring</span></td>
+                  <td>Apr 8, 2024</td>
+                  <td class="amount">৳4,500</td>
+                  <td><span class="status-badge paid">Paid</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="generator-maintenance" data-client="Dhaka Medical Center" data-category="Generator" data-date="Apr 7, 2024" data-amount="৳2,800" data-status="Paid" data-description="Annual generator maintenance including oil change, filter replacement, and load testing.">
+                  <td class="job-name">Generator Maintenance</td>
+                  <td>Dhaka Medical Center</td>
+                  <td><span class="category-badge">Generator</span></td>
+                  <td>Apr 7, 2024</td>
+                  <td class="amount">৳2,800</td>
+                  <td><span class="status-badge paid">Paid</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="ac-repair" data-client="Fatima Begum" data-category="AC Repair" data-date="Apr 10, 2024" data-amount="৳1,200" data-status="Pending" data-description="AC unit not cooling properly. Diagnosed refrigerant leak and recharged system.">
+                  <td class="job-name">AC Repair & Servicing</td>
+                  <td>Fatima Begum</td>
+                  <td><span class="category-badge">AC Repair</span></td>
+                  <td>Apr 10, 2024</td>
+                  <td class="amount">৳1,200</td>
+                  <td><span class="status-badge pending">Pending</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="led-lighting" data-client="Rafiq Islam" data-category="LED Installation" data-date="Apr 12, 2024" data-amount="৳3,200" data-status="Pending" data-description="LED lighting installation for living room and kitchen including dimmer switches.">
+                  <td class="job-name">LED Lighting Installation</td>
+                  <td>Rafiq Islam</td>
+                  <td><span class="category-badge">LED Installation</span></td>
+                  <td>Apr 12, 2024</td>
+                  <td class="amount">৳3,200</td>
+                  <td><span class="status-badge pending">Pending</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="circuit-breaker" data-client="Nasreen Akter" data-category="Circuit Breaker" data-date="Apr 11, 2024" data-amount="৳2,500" data-status="Pending" data-description="Replaced faulty circuit breaker in main distribution board.">
+                  <td class="job-name">Circuit Breaker Replacement</td>
+                  <td>Nasreen Akter</td>
+                  <td><span class="category-badge">Circuit Breaker</span></td>
+                  <td>Apr 11, 2024</td>
+                  <td class="amount">৳2,500</td>
+                  <td><span class="status-badge pending">Pending</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="office-ac" data-client="TechHub Dhaka" data-category="AC Installation" data-date="Mar 28, 2024" data-amount="৳8,500" data-status="Paid" data-description="Installed 2-ton split AC unit in office conference room with dedicated circuit.">
+                  <td class="job-name">Office AC Installation</td>
+                  <td>TechHub Dhaka</td>
+                  <td><span class="category-badge">AC Installation</span></td>
+                  <td>Mar 28, 2024</td>
+                  <td class="amount">৳8,500</td>
+                  <td><span class="status-badge paid">Paid</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="smart-home" data-client="Rafiq Islam" data-category="Smart Home" data-date="Mar 22, 2024" data-amount="৳12,000" data-status="Paid" data-description="Smart home setup including smart switches, motion sensors, and automated lighting system.">
+                  <td class="job-name">Smart Home Setup</td>
+                  <td>Rafiq Islam</td>
+                  <td><span class="category-badge">Smart Home</span></td>
+                  <td>Mar 22, 2024</td>
+                  <td class="amount">৳12,000</td>
+                  <td><span class="status-badge paid">Paid</span></td>
+                </tr>
+                <tr class="clickable-row" data-job="industrial-panel" data-client="Dhaka Garments Ltd." data-category="Industrial" data-date="Mar 15, 2024" data-amount="৳5,400" data-status="Paid" data-description="Upgraded industrial electrical panel for new production line installation.">
+                  <td class="job-name">Industrial Panel Upgrade</td>
+                  <td>Dhaka Garments Ltd.</td>
+                  <td><span class="category-badge">Industrial</span></td>
+                  <td>Mar 15, 2024</td>
+                  <td class="amount">৳5,400</td>
+                  <td><span class="status-badge paid">Paid</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <!-- Tooltip Element -->
+    <div class="chart-tooltip" id="chartTooltip">
+      <span class="tooltip-month" id="tooltipMonth"></span>
+      <span class="tooltip-value" id="tooltipValue"></span>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Stat Detail Modal -->
+    <div class="modal-overlay hidden" id="modalOverlay">
+      <div class="modal" id="detailModal">
+        <div class="modal-header">
+          <h3 id="modalTitle">Detail</h3>
+          <button class="modal-close" id="modalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div class="modal-overlay hidden" id="jobModalOverlay">
+      <div class="modal" id="jobModal">
+        <div class="modal-header">
+          <h3 id="jobModalTitle">Job Details</h3>
+          <button class="modal-close" id="jobModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="jobModalBody">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay hidden" id="logoutModalOverlay">
+      <div class="modal modal-sm" id="logoutModal">
+        <div class="modal-header">
+          <h3>Confirm Logout</h3>
+          <button class="modal-close" id="logoutModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="logoutCancel">Cancel</button>
+          <button class="btn btn-danger" id="logoutConfirm">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../JS/EmployeeEarnings.js"></script>
+  </body>
+</html>

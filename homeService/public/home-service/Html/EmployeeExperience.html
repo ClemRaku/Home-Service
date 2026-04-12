@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Experience | HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/EmployeeExperience.css" />
+  </head>
+  <body>
+    <div class="experience-layout">
+      <aside class="experience-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="experience-nav" aria-label="Employee Navigation">
+            <a href="../Html/EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              <span>Jobs</span>
+            </a>
+            <a href="../Html/EmployeeEarnings.html">
+              <i data-lucide="wallet"></i>
+              <span>Earnings</span>
+            </a>
+            <a href="../Html/EmployeeSchedule.html">
+              <i data-lucide="calendar"></i>
+              <span>Schedule</span>
+            </a>
+            <a href="../Html/EmployeeMessage.html">
+              <i data-lucide="message-square"></i>
+              <span>Messages</span>
+            </a>
+            <a class="active" href="../Html/EmployeeExperience.html">
+              <i data-lucide="clock"></i>
+              <span>Experience</span>
+            </a>
+            <a href="../Html/EmployeeSetting.html">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <div class="sidebar-metrics">
+              <div class="metric-card">
+                <p>৳32k</p>
+                <span>This Month</span>
+              </div>
+              <div class="metric-card">
+                <p>4.9</p>
+                <span>Rating</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <a class="logout" id="logoutBtn" href="../Html/Login.html">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+              </a>
+              <div class="status-card">
+                <div class="status-info">
+                  <p>Status</p>
+                  <span><span class="dot" id="statusDot"></span><span id="statusLabel">Online</span></span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="statusToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="experience-content">
+        <header class="page-header">
+          <h1>Experience</h1>
+        </header>
+
+        <div class="timeline">
+          <!-- Experience 1 -->
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i data-lucide="briefcase"></i>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>Senior Electrician</h3>
+                  <span class="company">PowerTech Solutions</span>
+                  <div class="timeline-meta">
+                    <span><i data-lucide="map-pin"></i> Dhaka, Bangladesh</span>
+                    <span><i data-lucide="calendar"></i> Jan 2020 – Present</span>
+                  </div>
+                </div>
+                <div class="timeline-badge-right">
+                  <span class="badge">Full-time</span>
+                  <span class="duration">4 years 3 months</span>
+                </div>
+              </div>
+              <p class="description">Leading a team of 5 electricians for large-scale residential and commercial projects. Responsible for project planning, safety compliance, and quality assurance.</p>
+              <ul class="achievements">
+                <li><i data-lucide="check-circle-2"></i> Managed 200+ residential wiring projects</li>
+                <li><i data-lucide="check-circle-2"></i> Reduced project completion time by 20%</li>
+                <li><i data-lucide="check-circle-2"></i> Zero safety incidents in 4 years</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Experience 2 -->
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i data-lucide="briefcase"></i>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>Electrician</h3>
+                  <span class="company">HomeServe Bangladesh</span>
+                  <div class="timeline-meta">
+                    <span><i data-lucide="map-pin"></i> Dhaka, Bangladesh</span>
+                    <span><i data-lucide="calendar"></i> Mar 2018 – Dec 2019</span>
+                  </div>
+                </div>
+                <div class="timeline-badge-right">
+                  <span class="badge">Full-time</span>
+                  <span class="duration">1 year 9 months</span>
+                </div>
+              </div>
+              <p class="description">Performed electrical installations, maintenance, and repairs for residential clients. Specialized in AC installation and circuit breaker repairs.</p>
+              <ul class="achievements">
+                <li><i data-lucide="check-circle-2"></i> Completed 150+ service calls</li>
+                <li><i data-lucide="check-circle-2"></i> Maintained 4.8 star customer rating</li>
+                <li><i data-lucide="check-circle-2"></i> Trained 3 junior electricians</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Experience 3 -->
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i data-lucide="briefcase"></i>
+            </div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>Apprentice Electrician</h3>
+                  <span class="company">City Electric Works</span>
+                  <div class="timeline-meta">
+                    <span><i data-lucide="map-pin"></i> Chittagong, Bangladesh</span>
+                    <span><i data-lucide="calendar"></i> Jun 2016 – Feb 2018</span>
+                  </div>
+                </div>
+                <div class="timeline-badge-right">
+                  <span class="badge apprenticeship">Apprenticeship</span>
+                  <span class="duration">1 year 8 months</span>
+                </div>
+              </div>
+              <p class="description">Assisted senior electricians in wiring, panel installations, and troubleshooting. Gained hands-on experience in both residential and industrial settings.</p>
+              <ul class="achievements">
+                <li><i data-lucide="check-circle-2"></i> Assisted in 80+ projects</li>
+                <li><i data-lucide="check-circle-2"></i> Completed NVQ Level 2 Electrical</li>
+                <li><i data-lucide="check-circle-2"></i> Learned industrial wiring standards</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="../JS/config.js"></script>
+    <script src="../JS/getLocation.js"></script>
+    <script src="../JS/EmployeeExperience.js"></script>
+  </body>
+</html>

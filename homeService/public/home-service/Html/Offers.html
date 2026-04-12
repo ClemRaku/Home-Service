@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offers | Home Service</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/Offers.css" />
+</head>
+
+<body>
+  <header class="hero">
+    <nav class="navbar">
+      <div class="logo-circle">
+        <img src="../Image/logo.png" alt="Home Service Logo" />
+      </div>
+      <ul class="nav-links">
+        <li><a href="Home.html">Home</a></li>
+        <li><a href="Services.html">Services</a></li>
+        <li><a href="Packages.html">Packages</a></li>
+        <li><a class="active" href="Offers.html">Offers</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+        <li><a href="About.html">About</a></li>
+      </ul>
+      <div class="auth-links">
+        <a class="login" href="Login.html">Login</a>
+        <a class="signup" href="SignUp.html">Sign up</a>
+      </div>
+    </nav>
+
+    <div class="hero-body">
+      <div class="hero-icon">
+        <i data-lucide="tag"></i>
+      </div>
+      <h1>Exclusive Offers &amp; Deals</h1>
+      <p>Save big on our professional home services with limited-time offers. Quality service at unbeatable prices.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="filter-section">
+      <div class="filter-bar">
+        <button class="filter-pill active" data-filter="all"><i data-lucide="sparkles"></i> All Offers</button>
+        <button class="filter-pill" data-filter="cleaning"><i data-lucide="spray-can"></i> Cleaning</button>
+        <button class="filter-pill" data-filter="plumbing"><i data-lucide="wrench"></i> Plumbing</button>
+        <button class="filter-pill" data-filter="electrical"><i data-lucide="zap"></i> Electrical</button>
+        <button class="filter-pill" data-filter="painting"><i data-lucide="paint-roller"></i> Painting</button>
+        <button class="filter-pill" data-filter="pest"><i data-lucide="bug"></i> Pest Control</button>
+        <button class="filter-pill" data-filter="appliance"><i data-lucide="settings"></i> Appliance</button>
+        <button class="filter-pill" data-filter="hvac"><i data-lucide="fan"></i> HVAC</button>
+      </div>
+    </section>
+
+    <section class="hot-deals">
+      <div class="hot-deals-left">
+        <span class="hot-icon"><i data-lucide="flame"></i></span>
+        <div>
+          <h3>Hot Deals</h3>
+          <p>Limited time offers - Book now!</p>
+        </div>
+      </div>
+      <div class="hot-deals-right">
+        <i data-lucide="clock"></i>
+        <span>Offers expire soon</span>
+      </div>
+    </section>
+
+    <section class="offers-grid" id="offersGrid">
+      <p class="offers-status">Loading offers...</p>
+    </section>
+
+    <section class="newsletter" id="about">
+      <div class="newsletter-icon">
+        <i data-lucide="bell"></i>
+      </div>
+      <h2>Don't Miss Out on Future Offers</h2>
+      <p>Subscribe to our newsletter and be the first to know about exclusive deals and special promotions.</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Enter your email address" required />
+        <button type="submit">Subscribe Now</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer-grid">
+      <div>
+        <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
+        <div class="socials">
+          <span><i data-lucide="facebook"></i></span>
+          <span><i data-lucide="twitter"></i></span>
+          <span><i data-lucide="instagram"></i></span>
+          <span><i data-lucide="linkedin"></i></span>
+        </div>
+      </div>
+      <div>
+        <h6>Quick Links</h6>
+        <a href="Home.html">Home</a>
+        <a href="Services.html">Services</a>
+        <a href="Packages.html">Packages</a>
+        <a href="Offers.html">Offers</a>
+        <a href="#about">About Us</a>
+        <a href="Contact.html">Contact</a>
+      </div>
+      <div>
+        <h6>Popular Services</h6>
+        <a href="#">Home Cleaning</a>
+        <a href="#">Plumbing Services</a>
+        <a href="#">Electrical Services</a>
+        <a href="#">Painting &amp; Renovation</a>
+        <a href="#">Pest Control</a>
+        <a href="#">Appliance Repair</a>
+      </div>
+      <div class="footer-contact">
+        <h6>Contact Info</h6>
+        <a href="#"><i data-lucide="map-pin"></i><span>123 Service Street, City, State 12345</span></a>
+        <a href="#"><i data-lucide="phone"></i><span>+1 (555) 123-4567</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>info@homeservices.com</span></a>
+        <a href="#"><i data-lucide="clock"></i><span>Mon - Sat: 8AM - 8PM</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Home Services. All rights reserved.</p>
+      <div>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Powered by Ready</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../JS/offers.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="../JS/auth-nav.js"></script>
+</body>
+
+</html>

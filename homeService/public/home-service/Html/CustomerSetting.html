@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Settings | HomeService</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/CustomerSetting.css" />
+  </head>
+  <body>
+    <div class="settings-layout">
+      <aside class="settings-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <nav class="menu" aria-label="Customer Navigation">
+          <a class="menu-item" href="../Html/CustomerProfile.html">
+            <i data-lucide="user"></i>
+            Profile
+          </a>
+          <a class="menu-item" href="../Html/CustomerBoooking.html">
+            <i data-lucide="calendar-check"></i>
+            Bookings
+          </a>
+          <a class="menu-item" href="../Html/CustomerTracker.html">
+            <i data-lucide="map-pin"></i>
+            Track
+          </a>
+          <a class="menu-item active" href="../Html/CustomerSetting.html">
+            <i data-lucide="settings"></i>
+            Settings
+          </a>
+          <a class="menu-item" href="../Html/CustomerMessage.html">
+            <i data-lucide="message-circle"></i>
+            Messages
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <a class="menu-item" href="../Html/Home.html">
+            <i data-lucide="house"></i>
+            Back to Home
+          </a>
+          <a class="menu-item" href="../Html/Home.html" onclick="localStorage.removeItem('hsAuthUser');">
+            <i data-lucide="log-out"></i>
+            Logout
+          </a>
+        </div>
+      </aside>
+
+      <main class="settings-main">
+        <h2 class="page-title">Settings</h2>
+
+        <section class="card">
+          <h3>Notification Preferences</h3>
+          <div class="preference-list">
+            <div class="preference-item is-active">
+              <div>
+                <h4>Email Notifications</h4>
+                <p>Receive booking updates via email</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item is-active">
+              <div>
+                <h4>SMS Notifications</h4>
+                <p>Get text messages for important updates</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div>
+                <h4>Push Notifications</h4>
+                <p>Receive push notifications on your device</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item is-active">
+              <div>
+                <h4>Booking Reminders</h4>
+                <p>Get reminders before scheduled services</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div>
+                <h4>Promotional Offers</h4>
+                <p>Receive special offers and discounts</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Privacy &amp; Security</h3>
+          <div class="security-list">
+            <div
+              class="security-item password-trigger"
+              role="button"
+              tabindex="0"
+              aria-haspopup="dialog"
+              aria-controls="passwordModal"
+            >
+              <div class="security-icon icon-green">
+                <i data-lucide="lock"></i>
+              </div>
+              <div class="security-text">
+                <h4>Change Password</h4>
+                <p>Update your account password</p>
+              </div>
+              <span class="chevron">
+                <i data-lucide="chevron-right"></i>
+              </span>
+            </div>
+
+            <div
+              class="security-item twofactor-trigger"
+              role="button"
+              tabindex="0"
+              aria-haspopup="dialog"
+              aria-controls="twoFactorModal"
+            >
+              <div class="security-icon icon-blue">
+                <i data-lucide="shield"></i>
+              </div>
+              <div class="security-text">
+                <h4>Two-Factor Authentication</h4>
+                <p>Add an extra layer of security</p>
+              </div>
+              <span class="chevron">
+                <i data-lucide="chevron-right"></i>
+              </span>
+            </div>
+
+            <div
+              class="security-item privacy-trigger"
+              role="button"
+              tabindex="0"
+              aria-haspopup="dialog"
+              aria-controls="privacyModal"
+            >
+              <div class="security-icon icon-purple">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <div class="security-text">
+                <h4>Privacy Settings</h4>
+                <p>Control who can see your information</p>
+              </div>
+              <span class="chevron">
+                <i data-lucide="chevron-right"></i>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Account Actions</h3>
+          <div class="actions">
+            <button class="action-btn" type="button">Download My Data</button>
+            <button class="action-btn danger" type="button">Delete Account</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="privacy-modal" id="privacyModal" aria-hidden="true">
+      <div
+        class="privacy-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="privacyModalTitle"
+      >
+        <h3 id="privacyModalTitle">Privacy Settings</h3>
+
+        <div class="privacy-modal__option">
+          <div>
+            <h4>Public Profile</h4>
+            <p>Allow others to see your profile</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="privacy-modal__option">
+          <div>
+            <h4>Share Location</h4>
+            <p>Share your location with workers</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="privacy-modal__option">
+          <div>
+            <h4>Activity Status</h4>
+            <p>Show when you were last active</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="privacy-modal__actions">
+          <button class="privacy-modal__btn primary" type="button" data-close-modal>
+            Save
+          </button>
+          <button class="privacy-modal__btn" type="button" data-close-modal>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="privacy-modal" id="passwordModal" aria-hidden="true">
+      <div
+        class="privacy-modal__card modal-card--form"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="passwordModalTitle"
+      >
+        <h3 id="passwordModalTitle">Change Password</h3>
+
+        <label class="modal-field">
+          <span>Current Password</span>
+          <input type="password" placeholder="Enter current password" />
+        </label>
+
+        <label class="modal-field">
+          <span>New Password</span>
+          <input type="password" placeholder="Enter new password" />
+        </label>
+
+        <label class="modal-field">
+          <span>Confirm New Password</span>
+          <input type="password" placeholder="Confirm new password" />
+        </label>
+
+        <div class="privacy-modal__actions">
+          <button class="privacy-modal__btn primary" type="button" data-close-modal>
+            Save
+          </button>
+          <button class="privacy-modal__btn" type="button" data-close-modal>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="privacy-modal" id="twoFactorModal" aria-hidden="true">
+      <div
+        class="privacy-modal__card modal-card--form"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="twoFactorModalTitle"
+      >
+        <h3 id="twoFactorModalTitle">Two-Factor Authentication</h3>
+
+        <label class="modal-field">
+          <span>Enable 2FA</span>
+          <div class="modal-inline-toggle">
+            <p>Protect your account with an extra verification step.</p>
+            <label class="switch">
+              <input type="checkbox" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </label>
+
+        <label class="modal-field">
+          <span>Backup Email</span>
+          <input type="email" placeholder="name@example.com" />
+        </label>
+
+        <label class="modal-field">
+          <span>Verification Phone</span>
+          <input type="tel" placeholder="+1 (555) 555-5555" />
+        </label>
+
+        <div class="privacy-modal__actions">
+          <button class="privacy-modal__btn primary" type="button" data-close-modal>
+            Save
+          </button>
+          <button class="privacy-modal__btn" type="button" data-close-modal>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../JS/CustomerSetting.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

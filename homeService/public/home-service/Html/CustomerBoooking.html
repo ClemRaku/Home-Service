@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Bookings - HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/CustomerBooking.css" />
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../Image/logo.png" alt="HomeServe" />
+                <h1>HomeService</h1>
+            </div>
+
+            <nav class="menu" aria-label="Customer Navigation">
+                <a class="menu-item" href="../Html/CustomerProfile.html">
+                    <i data-lucide="user"></i>
+                    Profile
+                </a>
+                <a class="menu-item active" href="../Html/CustomerBoooking.html">
+                    <i data-lucide="calendar-check"></i>
+                    Bookings
+                </a>
+                <a class="menu-item" href="../Html/CustomerTracker.html">
+                    <i data-lucide="map-pin"></i>
+                    Track
+                </a>
+                <a class="menu-item" href="../Html/CustomerSetting.html">
+                    <i data-lucide="settings"></i>
+                    Settings
+                </a>
+                <a class="menu-item" href="../Html/CustomerMessage.html">
+                    <i data-lucide="message-circle"></i>
+                    Messages
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a class="menu-item" href="../Html/Home.html">
+                    <i data-lucide="house"></i>
+                    Back to Home
+                </a>
+                <a class="menu-item" href="../Html/Home.html" onclick="localStorage.removeItem('hsAuthUser');">
+                    <i data-lucide="log-out"></i>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="page-header">
+                <h1>My Bookings</h1>
+                <div class="tabs">
+                    <button class="tab active" data-filter="all">All Bookings</button>
+                    <button class="tab" data-filter="upcoming">Upcoming</button>
+                    <button class="tab" data-filter="completed">Completed</button>
+                </div>
+            </header>
+
+            <section class="bookings-grid" id="bookingsGrid">
+                <p class="bookings-status">Loading bookings...</p>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="detailsModal" aria-hidden="true">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h2>Booking Details</h2>
+                    <p class="modal-subtitle" id="modalBookingId">Booking #10234</p>
+                </div>
+                <button class="modal-close" type="button" aria-label="Close details">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="modal-service">
+                <div class="modal-icon" id="modalIcon">
+                    <i data-lucide="zap" id="modalIconSymbol"></i>
+                </div>
+                <div class="modal-service-info">
+                    <h3 id="modalServiceName">Electrician</h3>
+                    <span class="status-pill upcoming" id="modalStatus">Upcoming</span>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-item" data-field="worker">
+                    <span>Worker</span>
+                    <strong id="modalWorker">John Martinez</strong>
+                </div>
+                <div class="modal-item" data-field="date">
+                    <span>Date</span>
+                    <strong id="modalDate">March 25, 2025</strong>
+                </div>
+                <div class="modal-item" data-field="time">
+                    <span>Time</span>
+                    <strong id="modalTime">10:00 AM - 12:00 PM</strong>
+                </div>
+                <div class="modal-item full" data-field="location">
+                    <span>Location</span>
+                    <strong id="modalLocation">123 Main Street, Apt 4B</strong>
+                </div>
+                <div class="modal-item full" data-field="details">
+                    <span>Additional Details</span>
+                    <div class="modal-details-box">
+                        <p id="modalDetails">No additional details provided.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-price" id="modalPrice">$85.00</div>
+                <button class="modal-action" type="button" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/CustomerBooking.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

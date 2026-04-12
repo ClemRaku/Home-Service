@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Profile | HomeService</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/EmployeeProfile.css" />
+  </head>
+  <body>
+    <div class="profile-layout">
+      <aside class="profile-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="profile-nav" aria-label="Employee Navigation">
+            <a class="active" href="./EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              Profile
+            </a>
+            <a href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              Jobs
+            </a>
+            <a href="../Html/EmployeeEarnings.html">
+              <i data-lucide="wallet"></i>
+              Earnings
+            </a>
+            <a href="../Html/EmployeeSchedule.html">
+              <i data-lucide="calendar"></i>
+              Schedule
+            </a>
+            <a href="../Html/EmployeeMessages.html">
+              <i data-lucide="message-square"></i>
+              Messages
+            </a>
+            <a href="../Html/EmployeeExperience.html">
+              <i data-lucide="activity"></i>
+              Experience
+            </a>
+            <a href="../Html/EmployeeSetting.html">
+              <i data-lucide="settings"></i>
+              Settings
+            </a>
+          </nav>
+
+          <div class="sidebar-metrics">
+            <div class="metric-card">
+              <p>৳32k</p>
+              <span>This Month</span>
+            </div>
+            <div class="metric-card">
+              <p>4.9</p>
+              <span>Rating</span>
+            </div>
+          </div>
+
+          <div class="sidebar-actions">
+            <a class="logout" href="../Html/Login.html">
+              <i data-lucide="log-out"></i>
+              Logout
+            </a>
+            <div class="status-card">
+              <div>
+                <p>Status</p>
+                <span><span class="dot"></span>Online</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="profile-main">
+        <h2 class="page-title">My Profile</h2>
+
+        <div class="profile-grid">
+          <section class="profile-card">
+            <div class="profile-header">
+              <div class="avatar-ring">
+                <img
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
+                  alt="Rahim Uddin"
+                />
+                <button class="camera-btn" type="button" aria-label="Change photo">
+                  <i data-lucide="camera"></i>
+                </button>
+              </div>
+              <h3>Rahim Uddin</h3>
+              <span class="role-tag">Electrician</span>
+              <div class="rating">
+                <i data-lucide="star" class="star"></i>
+                <strong>4.9</strong>
+                <span>(156 reviews)</span>
+              </div>
+            </div>
+
+            <div class="stats-grid">
+              <div>
+                <h4>342</h4>
+                <p>Jobs Done</p>
+              </div>
+              <div>
+                <h4>15</h4>
+                <p>min Response</p>
+              </div>
+            </div>
+
+            <div class="status-row">
+              <span>Status</span>
+              <span class="status"><span class="dot"></span>Available</span>
+            </div>
+
+            <button class="edit-btn" type="button">Edit Profile</button>
+          </section>
+
+          <div class="details-grid">
+            <section class="detail-card">
+              <h3>Contact Information</h3>
+              <div class="contact-grid">
+                <div>
+                  <p>Phone Number</p>
+                  <div class="icon-row">
+                    <i data-lucide="phone"></i>
+                    <span>+880 1712-345678</span>
+                  </div>
+                </div>
+                <div>
+                  <p>Email</p>
+                  <div class="icon-row">
+                    <i data-lucide="mail"></i>
+                    <span>rahim.uddin@email.com</span>
+                  </div>
+                </div>
+              </div>
+              <div class="address">
+                <p>Address</p>
+                <div class="icon-row">
+                  <i data-lucide="map-pin"></i>
+                  <span>House 45, Road 12, Dhanmondi, Dhaka 1209</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="detail-card">
+              <h3>About Me</h3>
+              <p class="detail-text">
+                Experienced electrician with over 8 years of expertise in residential and commercial electrical work.
+                Committed to providing safe and reliable service.
+              </p>
+              <div class="meta-row">
+                <div class="icon-row">
+                  <i data-lucide="calendar"></i>
+                  <span>Member since January 2022</span>
+                </div>
+                <div class="icon-row">
+                  <i data-lucide="badge-dollar-sign"></i>
+                  <span>৳500/hour</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="detail-card">
+              <h3>Skills &amp; Expertise</h3>
+              <div class="chip-row">
+                <span>Wiring</span>
+                <span>AC Repair</span>
+                <span>Fan Installation</span>
+                <span>Circuit Breaker</span>
+                <span>LED Installation</span>
+              </div>
+            </section>
+
+            <section class="detail-card">
+              <h3>Certifications</h3>
+              <div class="cert-list">
+                <div class="cert-item">
+                  <div class="icon-wrap"><i data-lucide="award"></i></div>
+                  <span>Licensed Electrician</span>
+                  <i data-lucide="check-circle" class="success"></i>
+                </div>
+                <div class="cert-item">
+                  <div class="icon-wrap"><i data-lucide="award"></i></div>
+                  <span>Safety Training Certified</span>
+                  <i data-lucide="check-circle" class="success"></i>
+                </div>
+                <div class="cert-item">
+                  <div class="icon-wrap"><i data-lucide="award"></i></div>
+                  <span>AC Technician</span>
+                  <i data-lucide="check-circle" class="success"></i>
+                </div>
+              </div>
+            </section>
+
+            <section class="detail-card reviews-card">
+              <div class="reviews-header">
+                <h3>Recent Reviews</h3>
+                <a href="#">View All</a>
+              </div>
+              <div class="review-item">
+                <img
+                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80"
+                  alt="Fatima Begum"
+                />
+                <div>
+                  <div class="review-title">
+                    <h4>Fatima Begum</h4>
+                    <span>2 days ago</span>
+                  </div>
+                  <div class="review-stars">
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                  </div>
+                  <p>
+                    Excellent work! Rahim fixed my AC quickly and professionally. Very polite and cleaned up after the
+                    work.
+                  </p>
+                  <span class="tag">AC Repair</span>
+                </div>
+              </div>
+
+              <div class="review-item">
+                <img
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
+                  alt="Karim Ahmed"
+                />
+                <div>
+                  <div class="review-title">
+                    <h4>Karim Ahmed</h4>
+                    <span>1 week ago</span>
+                  </div>
+                  <div class="review-stars">
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                    <i data-lucide="star"></i>
+                  </div>
+                  <p>
+                    Very skilled electrician. Completed the wiring work ahead of schedule. Highly recommended!
+                  </p>
+                  <span class="tag">Wiring Installation</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../JS/EmployeeProfile.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

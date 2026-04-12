@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Service Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/Admin.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
+      </div>
+
+      <nav class="nav">
+        <a href="Home.html"><i data-lucide="House"></i><span>Home</span></a>
+        <a class="active" href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a href="AdminOffers.html"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="#"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="dot"></span></button>
+          <div class="admin-info">
+            <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+              alt="Admin" />
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="analytics">
+        <div class="section-heading">
+          <h2>Analytics Dashboard</h2>
+          <p>Overview of your home service business performance</p>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div>
+              <h5>Total Revenue</h5>
+              <h3>$45,680</h3>
+              <span class="trend up">↑ 12.5% <small>vs last month</small></span>
+            </div>
+            <div class="stat-icon green"><i data-lucide="dollar-sign"></i></div>
+          </article>
+          <article class="stat-card">
+            <div>
+              <h5>Total Bookings</h5>
+              <h3>1,247</h3>
+              <span class="trend up">↑ 8.3% <small>vs last month</small></span>
+            </div>
+            <div class="stat-icon blue"><i data-lucide="calendar-check"></i></div>
+          </article>
+          <article class="stat-card">
+            <div>
+              <h5>Active Employees</h5>
+              <h3>24</h3>
+              <span class="trend up">↑ 4.2% <small>vs last month</small></span>
+            </div>
+            <div class="stat-icon purple"><i data-lucide="users"></i></div>
+          </article>
+          <article class="stat-card">
+            <div>
+              <h5>Active Customers</h5>
+              <h3>856</h3>
+              <span class="trend up">↑ 15.7% <small>vs last month</small></span>
+            </div>
+            <div class="stat-icon orange"><i data-lucide="user"></i></div>
+          </article>
+        </div>
+
+        <div class="charts-grid">
+          <article class="chart-card">
+            <div class="chart-head">
+              <h4>Monthly Revenue</h4>
+              <span>Last 12 months</span>
+            </div>
+            <canvas id="revenueChart" height="200"></canvas>
+          </article>
+          <article class="chart-card">
+            <div class="chart-head">
+              <h4>Monthly Bookings</h4>
+              <span>Last 12 months</span>
+            </div>
+            <canvas id="bookingChart" height="200"></canvas>
+          </article>
+        </div>
+
+        <article class="services-card">
+          <div class="chart-head">
+            <h4>Top Performing Services</h4>
+            <span>Bookings & revenue</span>
+          </div>
+          <div class="service-row">
+            <div class="service-info">
+              <span class="badge">#1</span>
+              <div>
+                <h5>Deep Cleaning</h5>
+                <p>312 bookings <strong>$62,400</strong></p>
+              </div>
+            </div>
+            <div class="progress"><span style="width: 88%"></span></div>
+          </div>
+          <div class="service-row">
+            <div class="service-info">
+              <span class="badge">#2</span>
+              <div>
+                <h5>Plumbing Repair</h5>
+                <p>245 bookings <strong>$29,400</strong></p>
+              </div>
+            </div>
+            <div class="progress"><span style="width: 72%"></span></div>
+          </div>
+          <div class="service-row">
+            <div class="service-info">
+              <span class="badge">#3</span>
+              <div>
+                <h5>Electrical Installation</h5>
+                <p>189 bookings <strong>$28,350</strong></p>
+              </div>
+            </div>
+            <div class="progress"><span style="width: 62%"></span></div>
+          </div>
+          <div class="service-row">
+            <div class="service-info">
+              <span class="badge">#4</span>
+              <div>
+                <h5>HVAC Maintenance</h5>
+                <p>156 bookings <strong>$28,080</strong></p>
+              </div>
+            </div>
+            <div class="progress"><span style="width: 52%"></span></div>
+          </div>
+          <div class="service-row">
+            <div class="service-info">
+              <span class="badge">#5</span>
+              <div>
+                <h5>Carpentry Work</h5>
+                <p>98 bookings <strong>$13,720</strong></p>
+              </div>
+            </div>
+            <div class="progress"><span style="width: 36%"></span></div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/admin.js"></script>
+</body>
+
+</html>

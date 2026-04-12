@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Package</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../CSS/AdminPackage.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar" id="sidebar">
+        <div class="logo-block">
+          <div class="logo">
+            <img src="../Image/logo.png" alt="Home Service" />
+          </div>
+          <div class="logo-text">
+            <h2>Admin Panel</h2>
+            <span>Home Service</span>
+          </div>
+          <button class="menu-btn sidebar-toggle" id="menuToggle">
+            <i data-lucide="table-of-contents"></i>
+          </button>
+        </div>
+        <nav class="nav">
+          <a href="Home.html"><i data-lucide="House"></i><span>Home</span></a>
+          <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+          <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+          <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+          <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+          <a class="active" href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+          <a href="AdminOffers.html"><i data-lucide="gift"></i><span>Offers</span></a>
+          <a href="/home-service/Html/AdminScheduling.html"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+          <a href="AdminContact.html"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+          <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <h1>Home Service Admin</h1>
+          </div>
+          <div class="topbar-right">
+            <button class="icon-btn" aria-label="Notifications">
+              <i data-lucide="bell"></i>
+              <span class="dot">3</span>
+            </button>
+            <div class="admin-info">
+              <img
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+                alt="Admin"
+              />
+              <div>
+                <h4>Admin User</h4>
+                <span>Super Admin</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="page-header">
+          <div>
+            <h1>Package Management</h1>
+            <p>Create and manage service packages</p>
+          </div>
+          <div class="header-actions">
+            <button class="secondary-btn" id="openManageCategories">
+              <i data-lucide="folder-plus"></i>
+              Manage Categories
+            </button>
+            <button class="primary-btn" id="openAddPackage">
+              <i data-lucide="plus"></i>
+              Add Package
+            </button>
+          </div>
+        </section>
+
+        <div id="packagesRoot">
+          <p class="loading-text">Loading packages...</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Package Modal -->
+    <div class="modal-overlay" id="addPackageModal" aria-hidden="true">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Add New Package</h3>
+          <button class="modal-close" type="button" id="closeAddPackage">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>
+            <span>Category</span>
+            <select id="addPackageCategory"></select>
+          </label>
+          <label>
+            <span>Package Name</span>
+            <input type="text" id="addPackageName" placeholder="Basic Home Care" />
+          </label>
+          <div class="modal-grid">
+            <label>
+              <span>Price ($)</span>
+              <input type="number" id="addPackagePrice" placeholder="250" />
+            </label>
+            <label>
+              <span>Discount (%)</span>
+              <input type="number" id="addPackageDiscount" placeholder="10" />
+            </label>
+            <label>
+              <span>Points</span>
+              <input type="number" id="addPackagePoints" placeholder="500" />
+            </label>
+          </div>
+          <div class="modal-services">
+            <span>Services (one per line)</span>
+            <textarea id="addPackageServices" placeholder="2 Home Cleaning Sessions&#10;1 Plumbing Inspection&#10;✓ Basic Pest Control"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" id="cancelAddPackage">Cancel</button>
+          <button class="primary-btn" type="button" id="submitAddPackage">Add Package</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Package Modal -->
+    <div class="modal-overlay" id="editPackageModal" aria-hidden="true">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Edit Package</h3>
+          <button class="modal-close" type="button" id="closeEditPackage">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>
+            <span>Category</span>
+            <select id="editPackageCategory"></select>
+          </label>
+          <label>
+            <span>Package Name</span>
+            <input type="text" id="editPackageName" />
+          </label>
+          <div class="modal-grid">
+            <label>
+              <span>Price ($)</span>
+              <input type="number" id="editPackagePrice" />
+            </label>
+            <label>
+              <span>Discount (%)</span>
+              <input type="number" id="editPackageDiscount" />
+            </label>
+            <label>
+              <span>Points</span>
+              <input type="number" id="editPackagePoints" />
+            </label>
+          </div>
+          <div class="modal-services">
+            <span>Services (one per line)</span>
+            <textarea id="editPackageServices"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" id="cancelEditPackage">Cancel</button>
+          <button class="primary-btn" type="button" id="submitEditPackage">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage Categories Modal -->
+    <div class="modal-overlay" id="manageCategoriesModal" aria-hidden="true">
+      <div class="modal modal-wide">
+        <div class="modal-header">
+          <h3>Manage Categories</h3>
+          <button class="modal-close" type="button" id="closeCategoriesModal">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="categories-list" id="categoriesList">
+            <p class="loading-text">Loading categories...</p>
+          </div>
+          <div class="add-category-form" id="addCategoryForm">
+            <h4>Add New Category</h4>
+            <label>
+              <span>Category Name</span>
+              <input type="text" id="newCategoryName" placeholder="e.g. Premium Care Packages" />
+            </label>
+            <label>
+              <span>Description</span>
+              <textarea id="newCategoryDescription" placeholder="Describe this category..."></textarea>
+            </label>
+            <label>
+              <span>Color</span>
+              <select id="newCategoryColor">
+                <option value="teal">Teal</option>
+                <option value="orange">Orange</option>
+                <option value="purple">Purple</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="red">Red</option>
+              </select>
+            </label>
+            <button class="primary-btn" type="button" id="submitNewCategory">
+              <i data-lucide="plus"></i>
+              Add Category
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../JS/admin.js"></script>
+    <script src="../JS/AdminPackage.js"></script>
+  </body>
+</html>

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Contact Requests</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../CSS/AdminContact.css" />
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar" id="sidebar">
+        <div class="logo-block">
+          <div class="logo">
+            <img src="../Image/logo.png" alt="Home Service" />
+          </div>
+          <div class="logo-text">
+            <h2>Admin Panel</h2>
+            <span>Home Service</span>
+          </div>
+          <button class="menu-btn sidebar-toggle" id="menuToggle">
+            <i data-lucide="table-of-contents"></i>
+          </button>
+        </div>
+
+        <nav class="nav">
+          <a href="Home.html"><i data-lucide="House"></i><span>Home</span></a>
+          <a href="Admin.html"
+            ><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a
+          >
+          <a href="AdminEmployees.html"
+            ><i data-lucide="users"></i><span>Employees</span></a
+          >
+          <a href="AdminCustomer.html"
+            ><i data-lucide="user"></i><span>Customers</span></a
+          >
+          <a href="AdminServices.html"
+            ><i data-lucide="wrench"></i><span>Services</span></a
+          >
+          <a href="AdminPackage.html"
+            ><i data-lucide="package"></i><span>Packages</span></a
+          >
+          <a href="AdminOffers.html"
+            ><i data-lucide="gift"></i><span>Offers</span></a
+          >
+          <a href="/home-service/Html/AdminScheduling.html"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+          <a class="active" href="AdminContact.html"
+            ><i data-lucide="mail"></i><span>Contact Requests</span></a
+          >
+          <a href="AdminProfile.html"
+            ><i data-lucide="user-cog"></i><span>Profile</span></a
+          >
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-left">
+            <h1>Home Service Admin</h1>
+          </div>
+          <div class="topbar-right">
+            <button class="icon-btn">
+              <i data-lucide="bell"></i><span class="dot">3</span>
+            </button>
+            <div class="admin-info">
+              <img
+                src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+                alt="Admin"
+              />
+              <div>
+                <h4>Admin User</h4>
+                <span>Super Admin</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="contacts">
+          <div class="section-head">
+            <div>
+              <h2>Contact Requests</h2>
+              <p>Manage customer inquiries and feedback</p>
+            </div>
+            <span class="pending-count">2 pending</span>
+          </div>
+
+          <div class="filter-row">
+            <select id="statusFilter">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="resolved">Resolved</option>
+            </select>
+          </div>
+
+          <div class="cards-grid" id="cardsGrid">
+            <p class="loading-status" id="loadingStatus">Loading contact requests...</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="request-modal" id="requestModal" aria-hidden="true">
+      <div class="request-modal__overlay" data-request-close></div>
+      <div
+        class="request-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="requestModalTitle"
+      >
+        <div class="request-modal__header">
+          <h3 id="requestModalTitle">Request Details</h3>
+          <button
+            type="button"
+            class="request-modal__close"
+            data-request-close
+            aria-label="Close request details"
+          >
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="request-modal__identity">
+          <div class="request-modal__avatar">
+            <i data-lucide="help-circle"></i>
+          </div>
+          <div>
+            <h4 id="modalCustomerName">Patricia White</h4>
+            <span id="modalCustomerStatus" class="request-modal__status pending"
+              >pending</span
+            >
+          </div>
+        </div>
+
+        <div class="request-modal__grid">
+          <div class="request-field">
+            <small>Email</small>
+            <p id="modalCustomerEmail">patricia.w@email.com</p>
+          </div>
+          <div class="request-field">
+            <small>Phone</small>
+            <p id="modalCustomerPhone">+1 456-789-0001</p>
+          </div>
+          <div class="request-field">
+            <small>Subject</small>
+            <p id="modalCustomerSubject">Service Inquiry</p>
+          </div>
+          <div class="request-field">
+            <small>Date</small>
+            <p id="modalCustomerDate">2024-01-23</p>
+          </div>
+          <div class="request-field request-field--full">
+            <small>Message</small>
+            <p id="modalCustomerMessage">
+              I need information about your HVAC maintenance packages
+            </p>
+          </div>
+        </div>
+
+        <div class="request-modal__actions">
+          <button
+            type="button"
+            class="request-btn request-btn--ghost"
+            data-request-close
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="request-btn request-btn--reply"
+            id="openReplyFromView"
+          >
+            Reply
+          </button>
+          <button type="button" class="request-btn request-btn--resolve">
+            Resolve
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="reply-modal" id="replyModal" aria-hidden="true">
+      <div class="reply-modal__overlay" data-reply-close></div>
+      <div
+        class="reply-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="replyModalTitle"
+      >
+        <div class="reply-modal__header">
+          <h3 id="replyModalTitle">Reply to Request</h3>
+          <button
+            type="button"
+            class="reply-modal__close"
+            data-reply-close
+            aria-label="Close reply popup"
+          >
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="reply-modal__recipient">
+          <div class="reply-modal__avatar">
+            <i data-lucide="mail"></i>
+          </div>
+          <div>
+            <h4 id="replyRecipientName">Patricia White</h4>
+            <p id="replyRecipientEmail">patricia.w@email.com</p>
+          </div>
+        </div>
+
+        <div class="reply-modal__original">
+          <small>Original Message</small>
+          <p id="replyOriginalMessage">
+            I need information about your HVAC maintenance packages
+          </p>
+        </div>
+
+        <form class="reply-modal__form" id="replyForm">
+          <label class="reply-field">
+            <span>Subject</span>
+            <input
+              type="text"
+              id="replySubject"
+              placeholder="Re: Service Inquiry"
+            />
+          </label>
+
+          <label class="reply-field">
+            <span>Your Reply</span>
+            <textarea
+              id="replyMessage"
+              rows="5"
+              placeholder="Write your response here..."
+            ></textarea>
+          </label>
+
+          <div class="reply-modal__actions">
+            <button
+              type="button"
+              class="reply-btn reply-btn--ghost"
+              data-reply-close
+            >
+              Cancel
+            </button>
+            <button type="submit" class="reply-btn reply-btn--send">
+              Send Reply
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="reply-success-modal" id="replySuccessModal" aria-hidden="true">
+      <div class="reply-success-modal__overlay" data-reply-success-close></div>
+      <div
+        class="reply-success-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="replySuccessTitle"
+      >
+        <div class="reply-success-modal__header">
+          <h3 id="replySuccessTitle">Reply Sent</h3>
+          <button
+            type="button"
+            class="reply-success-modal__close"
+            data-reply-success-close
+            aria-label="Close success popup"
+          >
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="reply-success-modal__icon">
+          <i data-lucide="check"></i>
+        </div>
+
+        <p class="reply-success-modal__text">
+          Your reply has been sent successfully to
+          <span id="replySuccessName">Patricia White</span>.
+        </p>
+
+        <div class="reply-success-modal__meta">
+          <div class="reply-success-field">
+            <small>Email</small>
+            <p id="replySuccessEmail">patricia.w@email.com</p>
+          </div>
+          <div class="reply-success-field">
+            <small>Subject</small>
+            <p id="replySuccessSubject">Re: Service Inquiry</p>
+          </div>
+        </div>
+
+        <div class="reply-success-modal__actions">
+          <button
+            type="button"
+            class="reply-success-btn reply-success-btn--ghost"
+            data-reply-success-close
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="reply-success-btn reply-success-btn--primary"
+            id="replySuccessDoneBtn"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../JS/AdminContact.js"></script>
+  </body>
+</html>

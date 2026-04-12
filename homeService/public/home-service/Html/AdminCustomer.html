@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Customer Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/AdminCustomer.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle"><i data-lucide="table-of-contents"></i></button>
+      </div>
+
+      <nav class="nav">
+        <a href="Home.html"><i data-lucide="House"></i><span>Home</span></a>
+        <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a class="active" href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a href="AdminOffers.html"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="/home-service/Html/AdminScheduling.html"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="AdminContact.html"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn"><i data-lucide="bell"></i><span class="notification-badge">3</span></button>
+          <div class="admin-info">
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="customers">
+        <div class="section-heading">
+          <h2>Customer Management</h2>
+          <p>Manage your customer base and track their activity</p>
+        </div>
+
+        <div class="search-card">
+          <div class="search-input">
+            <i data-lucide="search"></i>
+            <input id="customerSearch" type="text" placeholder="Search customers..." />
+          </div>
+          <div class="filter-wrapper">
+            <select id="statusFilter" class="status-select" aria-label="Filter by status">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="blacklisted">Blacklisted</option>
+            </select>
+            
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Activity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customerTableBody">
+              <tr>
+                <td colspan="6">Loading customers...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="customer-modal" id="customerModal" aria-hidden="true">
+    <div class="customer-modal__overlay" data-modal-close></div>
+    <div class="customer-modal__card" role="dialog" aria-modal="true" aria-labelledby="customerModalTitle">
+      <div class="customer-modal__header">
+        <h3 id="customerModalTitle">Customer Details</h3>
+        <button class="customer-modal__close" type="button" data-modal-close aria-label="Close customer details">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="customer-modal__profile">
+        <h4 id="modalName">Robert Anderson</h4>
+        <span id="modalStatus" class="status-pill active">active</span>
+      </div>
+
+      <div class="customer-modal__info-grid">
+        <div class="info-card">
+          <span class="info-icon"><i data-lucide="mail"></i></span>
+          <div>
+            <small>Email</small>
+            <p id="modalEmail">robert.a@email.com</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-icon"><i data-lucide="phone"></i></span>
+          <div>
+            <small>Phone</small>
+            <p id="modalPhone">+1 345-678-9001</p>
+          </div>
+        </div>
+        <div class="info-card full">
+          <span class="info-icon"><i data-lucide="map-pin"></i></span>
+          <div>
+            <small>Address</small>
+            <p id="modalAddress">123 Oak Street, New York, NY 10001</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-modal__stats">
+        <div class="stat-card">
+          <h5 id="modalBookings">12</h5>
+          <span>Bookings</span>
+        </div>
+        <div class="stat-card">
+          <h5 id="modalTotal">$2450</h5>
+          <span>Total Spent</span>
+        </div>
+        <div class="stat-card">
+          <h5 id="modalSince">2023</h5>
+          <span>Member Since</span>
+        </div>
+      </div>
+
+      <div class="customer-modal__bookings">
+        <h5>Recent Bookings</h5>
+        <div class="booking-item">
+          <span class="booking-icon"><i data-lucide="x"></i></span>
+          <div>
+            <strong>Plumbing Repair</strong>
+            <span>2024-01-25 · 10:00 AM</span>
+          </div>
+          <span class="booking-status scheduled">scheduled</span>
+        </div>
+        <div class="booking-item">
+          <span class="booking-icon"><i data-lucide="x"></i></span>
+          <div>
+            <strong>Carpentry Work</strong>
+            <span>2024-01-27 · 01:00 PM</span>
+          </div>
+          <span class="booking-status completed">completed</span>
+        </div>
+        <div class="last-booking"><i data-lucide="clock"></i>Last booking: 2024-01-15</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-customer-modal" id="editCustomerModal" aria-hidden="true">
+    <div class="edit-customer-modal__overlay" data-edit-close></div>
+    <div class="edit-customer-modal__card" role="dialog" aria-modal="true" aria-labelledby="editCustomerModalTitle">
+      <div class="edit-customer-modal__header">
+        <h3 id="editCustomerModalTitle">Edit <span>Customer</span></h3>
+        <button class="edit-customer-modal__close" type="button" data-edit-close aria-label="Close edit customer modal">
+          &times;
+        </button>
+      </div>
+
+      <form id="editCustomerForm" class="edit-customer-form">
+        <div class="edit-customer-form__group">
+          <label for="editCustomerName">Full Name</label>
+          <input id="editCustomerName" name="fullName" type="text" placeholder="John Smith" required />
+        </div>
+
+        <div class="edit-customer-form__group">
+          <label for="editCustomerEmail">Email</label>
+          <input id="editCustomerEmail" name="email" type="email" placeholder="john.smith@homeservice.com" required />
+        </div>
+
+        <div class="edit-customer-form__group">
+          <label for="editCustomerPhone">Phone</label>
+          <input id="editCustomerPhone" name="phone" type="tel" placeholder="+1 234-567-8901" required />
+        </div>
+
+        <div class="edit-customer-form__group">
+          <label for="editCustomerAddress">Address</label>
+          <input id="editCustomerAddress" name="address" type="text" placeholder="123 Oak Street, New York, NY 10001" required />
+        </div>
+
+        <div class="edit-customer-form__actions">
+          <button class="edit-customer-form__btn cancel" type="button" data-edit-close>Cancel</button>
+          <button class="edit-customer-form__btn save" type="submit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/AdminCustomer.js"></script>
+</body>
+
+</html>

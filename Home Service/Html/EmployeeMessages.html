@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Messages | HomeService</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/EmployeeMessage.css" />
+  </head>
+  <body>
+    <div class="message-layout">
+      <aside class="message-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeService</h1>
+        </div>
+
+        <div class="sidebar-scroll">
+          <div class="worker-card">
+            <div class="worker-avatar">R</div>
+            <div>
+              <p>Worker Portal</p>
+              <h2>Electrician</h2>
+            </div>
+          </div>
+
+          <nav class="message-nav" aria-label="Employee Navigation">
+            <a href="../Html/EmployeeProfile.html">
+              <i data-lucide="user"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../Html/EmployeeJobs.html">
+              <i data-lucide="briefcase"></i>
+              <span>Jobs</span>
+            </a>
+            <a href="../Html/EmployeeEarnings.html">
+              <i data-lucide="wallet"></i>
+              <span>Earnings</span>
+            </a>
+            <a href="../Html/EmployeeSchedule.html">
+              <i data-lucide="calendar"></i>
+              <span>Schedule</span>
+            </a>
+            <a class="active" href="../Html/EmployeeMessage.html">
+              <i data-lucide="message-square"></i>
+              <span>Messages</span>
+            </a>
+            <a href="../Html/EmployeeExperience.html">
+              <i data-lucide="activity"></i>
+              <span>Experience</span>
+            </a>
+            <a href="../Html/EmployeeSetting.html">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <div class="sidebar-metrics">
+              <div class="metric-card">
+                <p>৳32k</p>
+                <span>This Month</span>
+              </div>
+              <div class="metric-card">
+                <p>4.9</p>
+                <span>Rating</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <a class="logout" id="logoutBtn" href="../Html/Login.html">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+              </a>
+              <div class="status-card">
+                <div class="status-info">
+                  <p>Status</p>
+                  <span id="statusText"><span class="dot" id="statusDot"></span><span id="statusLabel">Online</span></span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="statusToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="message-content">
+        <header class="page-header">
+          <div>
+            <h1>Messages</h1>
+            <p>Chat with your clients</p>
+          </div>
+        </header>
+
+        <div class="chat-container">
+          <!-- Conversation List -->
+          <aside class="conversation-list" id="conversationList">
+            <div class="search-bar">
+              <i data-lucide="search"></i>
+              <input type="text" id="searchInput" placeholder="Search messages..." />
+            </div>
+
+            <div class="conversation-items" id="conversationItems">
+              <div class="conversation-item active" data-conversation="fatima">
+                <div class="conv-avatar">
+                  <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80" alt="Fatima Begum" />
+                  <span class="online-dot"></span>
+                </div>
+                <div class="conv-content">
+                  <div class="conv-header">
+                    <h4>Fatima Begum</h4>
+                    <span class="conv-time">10:32 AM</span>
+                  </div>
+                  <p class="conv-preview">Thank you so much! The AC is wor...</p>
+                  <span class="conv-category">AC Repair & Servicing</span>
+                </div>
+                <span class="unread-badge">2</span>
+              </div>
+
+              <div class="conversation-item" data-conversation="karim">
+                <div class="conv-avatar">
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt="Karim Ahmed" />
+                  <span class="online-dot"></span>
+                </div>
+                <div class="conv-content">
+                  <div class="conv-header">
+                    <h4>Karim Ahmed</h4>
+                    <span class="conv-time">9:45 AM</span>
+                  </div>
+                  <p class="conv-preview">Can you come at 2 PM today for th...</p>
+                  <span class="conv-category">Fan Installation</span>
+                </div>
+                <span class="unread-badge">1</span>
+              </div>
+
+              <div class="conversation-item" data-conversation="nasreen">
+                <div class="conv-avatar">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="Nasreen Akter" />
+                </div>
+                <div class="conv-content">
+                  <div class="conv-header">
+                    <h4>Nasreen Akter</h4>
+                    <span class="conv-time">Yesterday</span>
+                  </div>
+                  <p class="conv-preview">Please bring the right circuit breaker for ...</p>
+                  <span class="conv-category">Circuit Breaker Replacement</span>
+                </div>
+              </div>
+
+              <div class="conversation-item" data-conversation="rafiq">
+                <div class="conv-avatar">
+                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80" alt="Rafiq Islam" />
+                </div>
+                <div class="conv-content">
+                  <div class="conv-header">
+                    <h4>Rafiq Islam</h4>
+                    <span class="conv-time">Apr 8</span>
+                  </div>
+                  <p class="conv-preview">Great! See you on Friday then.</p>
+                  <span class="conv-category">LED Lighting Installation</span>
+                </div>
+              </div>
+
+              <div class="conversation-item" data-conversation="support">
+                <div class="conv-avatar support">
+                  <i data-lucide="headphones"></i>
+                  <span class="online-dot"></span>
+                </div>
+                <div class="conv-content">
+                  <div class="conv-header">
+                    <h4>HomeServe Support</h4>
+                    <span class="conv-time">Apr 7</span>
+                  </div>
+                  <p class="conv-preview">Your profile has been verified successfully!</p>
+                  <span class="conv-category">Support</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Chat Area -->
+          <section class="chat-area" id="chatArea">
+            <div class="chat-header">
+              <div class="chat-header-left">
+                <div class="chat-avatar">
+                  <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80" alt="Fatima Begum" />
+                  <span class="online-dot"></span>
+                </div>
+                <div>
+                  <h3 id="chatName">Fatima Begum</h3>
+                  <span id="chatStatus">Online · AC Repair & Servicing</span>
+                </div>
+              </div>
+              <div class="chat-header-actions">
+                <button type="button" class="chat-action-btn" id="callBtn">
+                  <i data-lucide="phone"></i>
+                </button>
+                <button type="button" class="chat-action-btn" id="moreBtn">
+                  <i data-lucide="more-vertical"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+              <div class="message received">
+                <img class="msg-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=60&q=80" alt="Fatima" />
+                <div class="msg-bubble">
+                  <p>Hello, is the AC repair done?</p>
+                  <span class="msg-time">10:15 AM</span>
+                </div>
+              </div>
+
+              <div class="message sent">
+                <div class="msg-bubble">
+                  <p>Yes, I just finished the servicing. The AC is running perfectly now.</p>
+                  <span class="msg-time">10:20 AM</span>
+                </div>
+              </div>
+
+              <div class="message received">
+                <img class="msg-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=60&q=80" alt="Fatima" />
+                <div class="msg-bubble">
+                  <p>That was so fast! How much do I owe you?</p>
+                  <span class="msg-time">10:25 AM</span>
+                </div>
+              </div>
+
+              <div class="message sent">
+                <div class="msg-bubble">
+                  <p>The total is ৳1,200 as agreed. You can pay via bKash or cash.</p>
+                  <span class="msg-time">10:28 AM</span>
+                </div>
+              </div>
+
+              <div class="message received">
+                <img class="msg-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=60&q=80" alt="Fatima" />
+                <div class="msg-bubble">
+                  <p>Thank you so much! The AC is working perfectly now.</p>
+                  <span class="msg-time">10:32 AM</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input">
+              <button type="button" class="attach-btn" id="attachBtn" title="Attach file">
+                <i data-lucide="paperclip"></i>
+              </button>
+              <button type="button" class="emoji-btn" id="emojiBtn" title="Emoji">
+                <i data-lucide="smile"></i>
+              </button>
+              <input type="text" id="messageInput" placeholder="Type a message..." />
+              <button type="button" class="send-btn" id="sendBtn" title="Send">
+                <i data-lucide="send"></i>
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file" id="fileInput" style="display:none" />
+
+    <!-- Emoji Picker -->
+    <div class="emoji-picker hidden" id="emojiPicker">
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+
+    <!-- Call Popup -->
+    <div class="call-popup hidden" id="callPopup">
+      <div class="call-popup-content">
+        <div class="call-popup-header">
+          <div class="call-popup-avatar" id="callPopupAvatar">
+            <img src="" alt="" id="callPopupAvatarImg" />
+          </div>
+          <div class="call-popup-info">
+            <h4 id="callPopupName">Fatima Begum</h4>
+            <span id="callPopupCategory">AC Repair &amp; Servicing</span>
+          </div>
+        </div>
+        <div class="call-popup-status" id="callPopupStatus">Ringing...</div>
+        <div class="call-popup-timer" id="callPopupTimer">00:00</div>
+        <div class="call-popup-actions">
+          <button type="button" class="call-popup-btn call-popup-btn-secondary" id="callPopupMute" title="Mute">
+            <i data-lucide="mic"></i>
+            <span>Mute</span>
+          </button>
+          <button type="button" class="call-popup-btn call-popup-btn-danger" id="callPopupEnd" title="End Call">
+            <i data-lucide="phone-off"></i>
+            <span>Cancel</span>
+          </button>
+          <button type="button" class="call-popup-btn call-popup-btn-secondary" id="callPopupSpeaker" title="Speaker">
+            <i data-lucide="volume-2"></i>
+            <span>Speaker</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- More Options Dropdown -->
+    <div class="dropdown-menu hidden" id="moreDropdown">
+      <button type="button" class="dropdown-item" id="viewProfileBtn">
+        <i data-lucide="user"></i>
+        <span>View Profile</span>
+      </button>
+      <button type="button" class="dropdown-item" id="muteNotifBtn">
+        <i data-lucide="bell-off"></i>
+        <span>Mute Notifications</span>
+      </button>
+      <button type="button" class="dropdown-item" id="clearChatBtn">
+        <i data-lucide="eraser"></i>
+        <span>Clear Chat</span>
+      </button>
+      <button type="button" class="dropdown-item" id="blockUserBtn">
+        <i data-lucide="ban"></i>
+        <span>Block User</span>
+      </button>
+      <button type="button" class="dropdown-item" id="deleteChatBtn">
+        <i data-lucide="trash-2"></i>
+        <span>Delete Chat</span>
+      </button>
+    </div>
+
+    <!-- View Profile Modal -->
+    <div class="modal-overlay hidden" id="profileModalOverlay">
+      <div class="modal modal-sm" id="profileModal">
+        <div class="modal-header">
+          <h3>User Profile</h3>
+          <button class="modal-close" id="profileModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="profileModalBody">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Mute Notifications Modal -->
+    <div class="modal-overlay hidden" id="muteModalOverlay">
+      <div class="modal modal-sm" id="muteModal">
+        <div class="modal-header">
+          <h3 id="muteModalTitle">Mute Notifications</h3>
+          <button class="modal-close" id="muteModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="muteModalText">You will no longer receive notification alerts from this conversation.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="muteCancel">Cancel</button>
+          <button class="btn btn-primary" id="muteConfirm">Mute</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clear Chat Confirmation Modal -->
+    <div class="modal-overlay hidden" id="clearChatModalOverlay">
+      <div class="modal modal-sm" id="clearChatModal">
+        <div class="modal-header">
+          <h3>Clear Chat</h3>
+          <button class="modal-close" id="clearChatModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to clear all messages in this chat?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="clearChatCancel">Cancel</button>
+          <button class="btn btn-danger" id="clearChatConfirm">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Chat Confirmation Modal -->
+    <div class="modal-overlay hidden" id="deleteChatModalOverlay">
+      <div class="modal modal-sm" id="deleteChatModal">
+        <div class="modal-header">
+          <h3>Delete Chat</h3>
+          <button class="modal-close" id="deleteChatModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this entire conversation? This cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="deleteChatCancel">Cancel</button>
+          <button class="btn btn-danger" id="deleteChatConfirm">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block User Confirmation Modal -->
+    <div class="modal-overlay hidden" id="blockModalOverlay">
+      <div class="modal modal-sm" id="blockModal">
+        <div class="modal-header">
+          <h3>Block User</h3>
+          <button class="modal-close" id="blockModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="blockUserText">Are you sure you want to block this user? They won't be able to message you.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="blockCancel">Cancel</button>
+          <button class="btn btn-danger" id="blockConfirm">Block</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay hidden" id="logoutModalOverlay">
+      <div class="modal modal-sm" id="logoutModal">
+        <div class="modal-header">
+          <h3>Confirm Logout</h3>
+          <button class="modal-close" id="logoutModalClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="logoutCancel">Cancel</button>
+          <button class="btn btn-danger" id="logoutConfirm">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="../JS/EmployeeMessage.js"></script>
+  </body>
+</html>

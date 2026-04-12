@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/Services.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="services-page">
+  <nav class="navbar">
+    <div class="logo-circle">
+      <img src="../Image/logo.png" alt="">
+    </div>
+    <ul class="nav-links">
+      <li><a href="../Html/Home.html">Home</a></li>
+      <li><a class="active" href="Services.html">Services</a></li>
+      <li><a href="../Html/Packages.html">Packages</a></li>
+      <li><a href="../Html/Offers.html">Offers</a></li>
+      <li><a href="../Html/Contact.html">Contact</a></li>
+      <li><a href="../Html/About.html">About</a></li>
+    </ul>
+    <div class="auth-links">
+      <a class="login" href="../Html/Login.html">Login</a>
+      <a class="signup" href="../Html/SignUp.html">Sign up</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Our Services</h1>
+      <p>Professional home services delivered by trusted specialists for every home care need.</p>
+    </div>
+  </header>
+
+  <main class="services-section">
+    <aside class="filters">
+      <h3>Filters</h3>
+      <label>
+        Service Type
+        <select>
+          <option>All Services</option>
+          <option>Recurring</option>
+          <option>One-Time</option>
+          <option>Emergency</option>
+        </select>
+      </label>
+      <label>
+        Category
+        <select>
+          <option>All Services</option>
+          <option>Cleaning Services</option>
+          <option>Plumbing Services</option>
+          <option>Electrical Services</option>
+          <option>Planting & renovation Services</option>
+          <option>Appliance Repair Services</option>
+          <option>Pest control Services</option>
+          <option>Home improvement & maintenance  Services</option>
+          <option>Gardening & landscaping Services</option>
+          <option>Moving & Logistics Services</option>
+          <option>Home Security Services</option>
+          <option>Health & Care Services</option>
+        </select>
+      </label>
+      <label>
+        Price Range
+        <select>
+          <option>All</option>
+          <option>500-1500tk</option>
+          <option>1500-5000tk</option>
+          <option>5000tk+</option>
+        </select>
+      </label>
+      <label>
+        Points
+        <select>
+          <option>All Points</option>
+          <option>10-20</option>
+          <option>20-30</option>
+          <option>30+</option>
+        </select>
+      </label>
+      <button class="filter-btn" type="button">Apply Filters</button>
+    </aside>
+
+    <section class="service-grid" id="serviceGrid">
+      <p class="services-status">Loading services...</p>
+    </section>
+  </main>
+
+  <div class="booking-modal-overlay" id="bookingModalOverlay" aria-hidden="true">
+    <div class="booking-modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+      <div class="booking-modal-header">
+        <div>
+          <h2 id="bookingTitle">Book Your Service</h2>
+          <p>Fill in the details and we'll get back to you shortly</p>
+        </div>
+        <button class="booking-close-btn" id="bookingCloseBtn" type="button" aria-label="Close booking form">×</button>
+      </div>
+
+      <form class="booking-form" id="bookingForm">
+        <div class="booking-field-grid">
+          <label>
+            Full Name
+            <input type="text" id="bookingFullName" readonly class="booking-readonly" />
+          </label>
+          <label>
+            Email Address
+            <input type="email" id="bookingEmail" readonly class="booking-readonly" />
+          </label>
+          <label>
+            Phone Number
+            <input type="tel" id="bookingPhone" readonly class="booking-readonly" />
+          </label>
+          <label>
+            Service Address
+            <input type="text" id="bookingAddress" readonly class="booking-readonly" />
+          </label>
+          <label>
+            Preferred Date <span>*</span>
+            <input type="date" id="bookingDate" required />
+          </label>
+          <label>
+            Preferred Time <span>*</span>
+            <select id="bookingTime" required>
+              <option value="">Select time</option>
+              <option>08:00 AM - 10:00 AM</option>
+              <option>10:00 AM - 12:00 PM</option>
+              <option>12:00 PM - 02:00 PM</option>
+              <option>02:00 PM - 04:00 PM</option>
+              <option>04:00 PM - 06:00 PM</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Additional Details
+          <textarea id="bookingDetails" rows="4" placeholder="Any special requirements or notes..."></textarea>
+        </label>
+
+        <div class="booking-form-actions">
+          <button type="button" class="booking-cancel-btn" id="bookingCancelBtn">Cancel</button>
+          <button type="submit" class="booking-submit-btn">Request Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
+        <div class="socials">
+          <span><i data-lucide="facebook"></i></span>
+          <span><i data-lucide="twitter"></i></span>
+          <span><i data-lucide="instagram"></i></span>
+          <span><i data-lucide="linkedin"></i></span>
+        </div>
+      </div>
+
+      <div>
+        <h6>Quick Links</h6>
+        <a href="#">Home</a>
+        <a href="#">Services</a>
+        <a href="#">Packages</a>
+        <a href="#">Offers</a>
+        <a href="#">About Us</a>
+        <a href="../Html/Contact.html">Contact</a>
+      </div>
+
+      <div>
+        <h6>Popular Services</h6>
+        <a href="#">Home Cleaning</a>
+        <a href="#">Plumbing Services</a>
+        <a href="#">Electrical Services</a>
+        <a href="#">Painting & Renovation</a>
+        <a href="#">Pest Control</a>
+        <a href="#">Appliance Repair</a>
+      </div>
+
+      <div class="footer-contact">
+        <h6>Contact Info</h6>
+        <a href="#"><i data-lucide="map-pin"></i><span>123 Service Street, City, State 12345</span></a>
+        <a href="#"><i data-lucide="phone"></i><span>+1 (555) 123-4567</span></a>
+        <a href="#"><i data-lucide="mail"></i><span>info@homeservices.com</span></a>
+        <a href="#"><i data-lucide="clock"></i><span>Mon - Sat: 8AM - 8PM</span></a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Home Services. All rights reserved.</p>
+      <div>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Powered by Ready</a>
+      </div>
+    </div>
+  </footer>
+</body>
+<script src="../JS/service.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+<script src="../JS/auth-nav.js"></script>
+
+</html>

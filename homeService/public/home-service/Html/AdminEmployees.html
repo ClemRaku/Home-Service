@@ -1,0 +1,241 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Employee Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/AdminEmployees.css" />
+</head>
+
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-block">
+        <div class="logo">
+          <img src="../Image/logo.png" alt="Home Service" />
+        </div>
+        <div class="logo-text">
+          <h2>Admin Panel</h2>
+          <span>Home Service</span>
+        </div>
+        <button class="menu-btn sidebar-toggle" id="menuToggle" aria-label="Toggle sidebar">
+          <i data-lucide="table-of-contents"></i>
+        </button>
+      </div>
+
+      <nav class="nav">
+        <a href="Home.html"><i data-lucide="House"></i><span>Home</span></a>
+        <a href="Admin.html"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a class="active" href="AdminEmployees.html"><i data-lucide="users"></i><span>Employees</span></a>
+        <a href="AdminCustomer.html"><i data-lucide="user"></i><span>Customers</span></a>
+        <a href="AdminServices.html"><i data-lucide="wrench"></i><span>Services</span></a>
+        <a href="AdminPackage.html"><i data-lucide="package"></i><span>Packages</span></a>
+        <a href="AdminOffers.html"><i data-lucide="gift"></i><span>Offers</span></a>
+        <a href="/home-service/Html/AdminScheduling.html"><i data-lucide="calendar"></i><span>Scheduling</span></a>
+        <a href="AdminContact.html"><i data-lucide="mail"></i><span>Contact Requests</span></a>
+        <a href="AdminProfile.html"><i data-lucide="user-cog"></i><span>Profile</span></a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Home Service Admin</h1>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="admin-info">
+            <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=120&q=80"
+              alt="Admin" />
+            <div>
+              <h4>Admin User</h4>
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="employees">
+        <div class="section-head">
+          <div>
+            <h2>Employee Management</h2>
+            <p>Manage your service team and track their performance</p>
+          </div>
+          <button class="add-btn" id="addEmployeeBtn">
+            <i data-lucide="plus"></i>
+            <span>Add Employee</span>
+          </button>
+        </div>
+
+        <div class="toolbar-card">
+          <label class="search-box" for="employeeSearch">
+            <i data-lucide="search"></i>
+            <input id="employeeSearch" type="text" placeholder="Search employees..." />
+          </label>
+          <select id="statusFilter" class="status-filter" aria-label="Filter employee status">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="table-card">
+          <table class="employee-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Role</th>
+                <th>Contact</th>
+                <th>Performance</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+              <tr>
+                <td colspan="6">Loading employees...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="add-modal-overlay" id="addEmployeeModal" aria-hidden="true">
+    <div class="add-modal" role="dialog" aria-modal="true" aria-labelledby="addEmployeeTitle">
+      <div class="add-modal-head">
+        <h3 id="addEmployeeTitle">Add New Employee</h3>
+        <button type="button" class="add-modal-close" id="addModalCloseBtn" aria-label="Close add modal">&times;</button>
+      </div>
+
+      <form id="addEmployeeForm" class="add-modal-form">
+        <div class="add-form-group">
+          <label for="addFullName">Full Name</label>
+          <input type="text" id="addFullName" placeholder="John Smith" required />
+        </div>
+
+        <div class="add-form-group">
+          <label for="addEmail">Email</label>
+          <input type="email" id="addEmail" placeholder="john.smith@homeservice.com" required />
+        </div>
+
+        <div class="add-form-group">
+          <label for="addPhone">Phone</label>
+          <input type="text" id="addPhone" placeholder="+1 234-567-8901" required />
+        </div>
+
+        <div class="add-form-group">
+          <label for="addRole">Role</label>
+          <input type="text" id="addRole" placeholder="" />
+        </div>
+
+        <div class="add-modal-actions">
+          <button type="button" class="add-modal-btn cancel" id="addCancelBtn">Cancel</button>
+          <button type="submit" class="add-modal-btn save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="edit-modal-overlay" id="editEmployeeModal" aria-hidden="true">
+    <div class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="editEmployeeTitle">
+      <div class="edit-modal-head">
+        <h3 id="editEmployeeTitle">Edit Employee</h3>
+        <button type="button" class="edit-modal-close" id="editModalCloseBtn" aria-label="Close edit modal">&times;</button>
+      </div>
+
+      <form id="editEmployeeForm" class="edit-modal-form">
+        <div class="form-group">
+          <label for="editFullName">Full Name</label>
+          <input type="text" id="editFullName" value="" />
+        </div>
+
+        <div class="form-group">
+          <label for="editEmail">Email</label>
+          <input type="email" id="editEmail" value="" />
+        </div>
+
+        <div class="form-group">
+          <label for="editPhone">Phone</label>
+          <input type="text" id="editPhone" value="" />
+        </div>
+
+        <div class="form-group">
+          <label for="editRole">Role</label>
+          <input type="text" id="editRole" value="" />
+        </div>
+
+        <div class="form-group">
+          <label for="editStatus">Status</label>
+          <select id="editStatus">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="edit-modal-actions">
+          <button type="button" class="modal-btn cancel" id="editCancelBtn">Cancel</button>
+          <button type="submit" class="modal-btn save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="location-modal-overlay" id="locationModal" aria-hidden="true">
+    <div class="location-modal" role="dialog" aria-modal="true" aria-labelledby="locationModalTitle">
+      <div class="location-modal-head">
+        <h3 id="locationModalTitle">Employee Location</h3>
+        <button type="button" class="location-modal-close" id="locationModalCloseBtn" aria-label="Close location modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="location-employee-card">
+        <img id="locationEmployeeAvatar" src="https://randomuser.me/api/portraits/lego/1.jpg" alt="Employee" />
+        <div>
+          <h4 id="locationEmployeeName">Employee</h4>
+          <span id="locationEmployeeRole">Role</span>
+        </div>
+      </div>
+
+      <div class="location-current-card">
+        <div class="location-current-head">
+          <i data-lucide="map-pin"></i>
+          <p>Current Location</p>
+        </div>
+        <p id="locationAddress">Location not available</p>
+        <small>
+          Lat : <span id="locationLat">40.7128</span> ,
+          Lng : <span id="locationLng">-74.0060</span>
+        </small>
+      </div>
+
+      <div class="location-map-wrap">
+        <div class="location-map-overlay-card">
+          <strong id="locationMapCoords">40°42'46.1"N 74°00'21.6"W</strong>
+          <a id="locationLargeMapLink" href="https://maps.google.com/?q=40.7128,-74.0060" target="_blank" rel="noopener noreferrer">View larger map</a>
+        </div>
+        <iframe
+          id="locationMapFrame"
+          src="https://maps.google.com/maps?q=40.7128,-74.0060&z=15&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Employee location map"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../JS/AdminEmplyees.js"></script>
+</body>
+
+</html>

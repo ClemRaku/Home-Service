@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Messages | HomeService</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../CSS/CustomerMessage.css" />
+  </head>
+  <body>
+    <div class="message-layout">
+      <aside class="message-sidebar">
+        <div class="brand">
+          <img src="../Image/logo.png" alt="HomeServe" />
+          <h1>HomeServe</h1>
+        </div>
+
+        <nav class="message-nav" aria-label="Customer Navigation">
+          <a href="../Html/CustomerProfile.html">
+            <i data-lucide="user"></i>
+            Profile
+          </a>
+          <a href="../Html/CustomerBoooking.html">
+            <i data-lucide="calendar-check"></i>
+            Bookings
+          </a>
+          <a href="../Html/CustomerTracker.html">
+            <i data-lucide="map-pin"></i>
+            Track
+          </a>
+          <a href="../Html/CustomerSetting.html">
+            <i data-lucide="settings"></i>
+            Settings
+          </a>
+          <a href="../Html/CustomerMessage.html" class="active">
+            <i data-lucide="message-circle"></i>
+            Messages
+          </a>
+        </nav>
+
+        <nav class="message-nav message-nav-bottom" aria-label="Customer Quick Actions">
+          <a href="../Html/Home.html">
+            <i data-lucide="house"></i>
+            Back to Home
+          </a>
+          <a href="../Html/Login.html">
+            <i data-lucide="log-out"></i>
+            Logout
+          </a>
+        </nav>
+      </aside>
+
+      <main class="message-main">
+        <header class="message-header">
+          <h2>Messages</h2>
+        </header>
+
+        <section class="message-shell">
+          <aside class="message-list">
+            <div class="search-bar">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="Search messages..." />
+            </div>
+
+            <div class="chat-card active">
+              <div class="chat-avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
+                  alt="John Martinez"
+                />
+                <span class="status-dot"></span>
+              </div>
+              <div class="chat-info">
+                <div class="chat-name-row">
+                  <h4>John Martinez</h4>
+                  <span>2m ago</span>
+                </div>
+                <p>I will arrive at 10 AM tomorrow</p>
+                <small>Electrician</small>
+              </div>
+              <span class="unread">2</span>
+            </div>
+
+            <div class="chat-card">
+              <div class="chat-avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80"
+                  alt="Michael Chen"
+                />
+              </div>
+              <div class="chat-info">
+                <div class="chat-name-row">
+                  <h4>Michael Chen</h4>
+                  <span>1h ago</span>
+                </div>
+                <p>The job is completed. Thank you!</p>
+                <small>Plumber</small>
+              </div>
+            </div>
+
+            <div class="chat-card">
+              <div class="chat-avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80"
+                  alt="Emma Wilson"
+                />
+                <span class="status-dot"></span>
+              </div>
+              <div class="chat-info">
+                <div class="chat-name-row">
+                  <h4>Emma Wilson</h4>
+                  <span>3h ago</span>
+                </div>
+                <p>Should I bring my own cleaning supplies?</p>
+                <small>Maid Service</small>
+              </div>
+              <span class="unread">1</span>
+            </div>
+
+            <div class="chat-card">
+              <div class="chat-avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
+                  alt="David Brown"
+                />
+              </div>
+              <div class="chat-info">
+                <div class="chat-name-row">
+                  <h4>David Brown</h4>
+                  <span>2d ago</span>
+                </div>
+                <p>The furniture looks amazing!</p>
+                <small>Carpenter</small>
+              </div>
+            </div>
+
+            <div class="chat-card">
+              <div class="chat-avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=200&q=80"
+                  alt="Sarah Thompson"
+                />
+                <span class="status-dot"></span>
+              </div>
+              <div class="chat-info">
+                <div class="chat-name-row">
+                  <h4>Sarah Thompson</h4>
+                  <span>30m ago</span>
+                </div>
+                <p>I am working on the wiring now</p>
+                <small>Electrician</small>
+              </div>
+            </div>
+
+            <div class="chat-card">
+              <div class="chat-avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=200&q=80"
+                  alt="Robert Garcia"
+                />
+              </div>
+              <div class="chat-info">
+                <div class="chat-name-row">
+                  <h4>Robert Garcia</h4>
+                  <span>1w ago</span>
+                </div>
+                <p>You are welcome! Have a great day!</p>
+                <small>Plumber</small>
+              </div>
+            </div>
+          </aside>
+
+          <section class="message-detail">
+            <div class="detail-header">
+              <div class="detail-user">
+                <img
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
+                  alt="John Martinez"
+                />
+                <div>
+                  <h3>John Martinez</h3>
+                  <span>Online</span>
+                </div>
+              </div>
+              <div class="detail-actions">
+                <button
+                  class="icon-btn"
+                  type="button"
+                  aria-label="Call"
+                  id="callTrigger"
+                >
+                  <i data-lucide="phone"></i>
+                </button>
+                <button
+                  class="icon-btn"
+                  type="button"
+                  aria-label="Video call"
+                  id="videoTrigger"
+                >
+                  <i data-lucide="video"></i>
+                </button>
+                <div class="menu-wrapper">
+                  <button
+                    class="icon-btn menu-trigger"
+                    type="button"
+                    aria-label="More"
+                    aria-expanded="false"
+                  >
+                    <i data-lucide="more-vertical"></i>
+                  </button>
+                  <div class="menu-popup" role="menu" aria-hidden="true">
+                    <button type="button" role="menuitem">
+                      <i data-lucide="search"></i>
+                      Search in chat
+                    </button>
+                    <button type="button" role="menuitem">
+                      <i data-lucide="bell-off"></i>
+                      Mute notifications
+                    </button>
+                    <button type="button" role="menuitem" class="danger">
+                      <i data-lucide="trash"></i>
+                      Clear chat
+                    </button>
+                    <button type="button" role="menuitem" class="danger">
+                      <i data-lucide="ban"></i>
+                      Block worker
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="message-body">
+              <div class="bubble received">
+                <p>Hi Sarah! I received your booking request.</p>
+                <span>9:30 AM</span>
+              </div>
+              <div class="bubble sent">
+                <p>Great! Can you come tomorrow at 10 AM?</p>
+                <span>9:32 AM</span>
+              </div>
+              <div class="bubble received">
+                <p>Yes, that works perfectly for me.</p>
+                <span>9:35 AM</span>
+              </div>
+              <div class="bubble received">
+                <p>I will arrive at 10 AM tomorrow</p>
+                <span>9:36 AM</span>
+              </div>
+              <div class="bubble sent">
+                <p>Perfect! See you then.</p>
+                <span>9:38 AM</span>
+              </div>
+            </div>
+
+            <div class="message-input">
+              <button class="icon-btn" type="button" aria-label="Attach">
+                <i data-lucide="paperclip"></i>
+              </button>
+              <button class="icon-btn" type="button" aria-label="Emoji">
+                <i data-lucide="smile"></i>
+              </button>
+              <input type="text" placeholder="Type a message..." />
+              <button class="send-btn" type="button" aria-label="Send">
+                <i data-lucide="send"></i>
+              </button>
+            </div>
+          </section>
+        </section>
+
+        <div class="call-overlay" id="callOverlay" aria-hidden="true">
+          <div class="call-modal" role="dialog" aria-modal="true" aria-labelledby="callTitle">
+            <div class="call-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
+                alt="John Martinez"
+              />
+              <span class="call-status">Calling...</span>
+            </div>
+            <h3 id="callTitle">John Martinez</h3>
+            <p>Connecting a voice call</p>
+            <div class="call-actions">
+              <button type="button" class="call-btn decline" data-close="call">
+                End Call
+              </button>
+              <button type="button" class="call-btn accept" data-close="call">
+                Mute
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="call-overlay" id="videoOverlay" aria-hidden="true">
+          <div class="call-modal" role="dialog" aria-modal="true" aria-labelledby="videoTitle">
+            <div class="call-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80"
+                alt="John Martinez"
+              />
+              <span class="call-status">Ringing...</span>
+            </div>
+            <h3 id="videoTitle">John Martinez</h3>
+            <p>Starting a video call</p>
+            <div class="call-actions">
+              <button type="button" class="call-btn decline" data-close="video">
+                End Call
+              </button>
+              <button type="button" class="call-btn accept" data-close="video">
+                Join
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../JS/CustomerMessage.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
