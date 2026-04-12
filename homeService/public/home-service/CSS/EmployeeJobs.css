@@ -770,3 +770,57 @@ body {
   border-color: #0d9488;
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
 }
+
+@media (max-width: 480px) {
+  .jobs-sidebar { padding: 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand h1 { font-size: 14px; }
+  .worker-card { flex-direction: column; text-align: center; padding: 10px; gap: 8px; }
+  .worker-avatar { width: 32px; height: 32px; font-size: 12px; }
+  .jobs-nav a { height: 36px; font-size: 12px; gap: 8px; }
+  .jobs-nav a i { width: 16px; height: 16px; }
+  .status-card { flex-direction: column; gap: 8px; align-items: flex-start; padding: 10px 12px; }
+  .status-info p { font-size: 10px; }
+  .status-info span { font-size: 12px; }
+  .toggle { width: 40px; height: 22px; }
+  .toggle-slider::after { width: 16px; height: 16px; }
+  .toggle input:checked + .toggle-slider::after { transform: translateX(18px); }
+  .metric-card { max-width: 120px; padding: 10px; }
+  .metric-card p { font-size: 12px; }
+  .metric-card span { font-size: 10px; }
+  .jobs-content { padding: 12px; }
+  .page-header h1 { font-size: 18px; }
+  .page-header p { font-size: 12px; }
+  .jobs-filters { flex-wrap: wrap; gap: 6px; }
+  .filter-btn { padding: 6px 10px; font-size: 11px; }
+  .jobs-grid { gap: 12px; }
+  .job-card { padding: 12px; gap: 10px; }
+  .job-header { gap: 8px; }
+  .job-avatar { width: 40px; height: 40px; font-size: 14px; }
+  .job-title { font-size: 13px; }
+  .job-status { font-size: 11px; padding: 3px 8px; }
+  .job-details { gap: 6px; margin-top: 8px; }
+  .job-detail { font-size: 11px; }
+  .job-detail i { width: 14px; height: 14px; }
+  .job-description { font-size: 12px; margin-top: 8px; }
+  .job-price { font-size: 13px; }
+  .job-actions { flex-direction: column; gap: 8px; margin-top: 12px; }
+  .job-action-btn { padding: 8px 12px; font-size: 12px; }
+  .modal { width: 95%; max-width: 95%; border-radius: 12px; }
+  .modal-header { padding: 14px 16px; }
+  .modal-header h3 { font-size: 14px; }
+  .modal-body { padding: 16px; }
+  .modal-close { width: 28px; height: 28px; }
+  .modal-close i { width: 16px; height: 16px; }
+  .form-group label { font-size: 12px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; font-size: 12px; }
+  .job-detail-modal { gap: 12px; }
+  .job-detail-header { gap: 10px; }
+  .job-detail-title { font-size: 14px; }
+  .job-detail-status { font-size: 11px; padding: 3px 8px; }
+  .job-detail-section { padding: 12px 0; }
+  .job-detail-label { font-size: 12px; }
+  .job-detail-value { font-size: 13px; }
+  .status-edit { padding: 6px 10px; font-size: 12px; }
+}

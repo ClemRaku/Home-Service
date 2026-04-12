@@ -606,3 +606,47 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Mobile Responsive ── */
+@media (max-width: 768px) {
+  .admin-sidebar { width: 100%; position: relative; padding: 16px; }
+  .admin-layout { flex-direction: column; }
+  .admin-content { margin-left: 0; padding: 16px; }
+  .brand h1 { font-size: 16px; }
+  .brand img { width: 36px; height: 36px; }
+  .admin-nav a { height: 38px; padding: 0 12px; font-size: 13px; }
+  .admin-header { padding: 16px 0; }
+  .admin-header h1 { font-size: 20px; }
+  .filters { flex-wrap: wrap; gap: 8px; }
+  .filter-btn { padding: 8px 12px; font-size: 12px; }
+  .service-card { padding: 14px; }
+  .service-info { gap: 8px; }
+  .service-name { font-size: 14px; }
+  .service-category { font-size: 12px; }
+  .table-container { overflow-x: auto; }
+  table { min-width: 600px; }
+  .modal { width: 95%; max-width: 95%; }
+}
+@media (max-width: 480px) {
+  .admin-sidebar { padding: 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand h1 { font-size: 14px; }
+  .admin-nav a { height: 36px; font-size: 12px; gap: 8px; }
+  .admin-content { padding: 12px; }
+  .admin-header h1 { font-size: 18px; }
+  .filters { gap: 6px; }
+  .filter-btn { padding: 6px 10px; font-size: 11px; }
+  .service-card { padding: 12px; }
+  .service-name { font-size: 13px; }
+  .service-category { font-size: 11px; }
+  .table-container { margin: 0 -12px; padding: 0 12px; }
+  table { min-width: 500px; font-size: 12px; }
+  th, td { padding: 8px 10px; }
+  .modal { width: 98%; border-radius: 12px; }
+  .modal-header { padding: 14px 16px; }
+  .modal-header h3 { font-size: 14px; }
+  .modal-body { padding: 16px; }
+  .form-group label { font-size: 12px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; font-size: 12px; }
+}
