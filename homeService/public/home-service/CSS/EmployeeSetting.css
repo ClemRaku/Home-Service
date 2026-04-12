@@ -1110,3 +1110,70 @@ body {
   font-weight: 500;
   color: #111827;
 }
+
+/* ── Mobile Responsive ── */
+@media (max-width: 1100px) {
+  .setting-content { padding: 24px; }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .setting-sidebar { width: 100%; position: relative; padding: 16px; }
+  .setting-layout { flex-direction: column; }
+  .setting-content { margin-left: 0; padding: 16px; }
+  .brand h1 { font-size: 16px; }
+  .brand img { width: 36px; height: 36px; }
+  .worker-card { padding: 12px; }
+  .worker-avatar { width: 32px; height: 32px; font-size: 12px; }
+  .setting-nav a { height: 38px; padding: 0 12px; font-size: 13px; }
+  .status-card { padding: 10px 12px; }
+  .status-info p { font-size: 10px; }
+  .status-info span { font-size: 12px; }
+  .toggle { width: 40px; height: 22px; }
+  .setting-section { padding: 16px; }
+  .setting-section h3 { font-size: 15px; }
+  .setting-option { padding: 14px; }
+  .setting-option-title { font-size: 13px; }
+  .setting-option-desc { font-size: 12px; }
+  .status-btn { padding: 8px 12px; font-size: 12px; }
+  .day-btn { padding: 8px 12px; font-size: 12px; }
+  .payment-method { padding: 14px; }
+  .payment-method-info { gap: 10px; }
+  .payment-method-icon { width: 36px; height: 36px; }
+  .setting-row { flex-direction: column; gap: 12px; }
+  .modal { width: 95%; max-width: 95%; }
+  .modal-header { padding: 14px 16px; }
+  .modal-body { padding: 16px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 10px 12px; font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .setting-sidebar { padding: 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand h1 { font-size: 14px; }
+  .worker-card { flex-direction: column; text-align: center; gap: 8px; padding: 10px; }
+  .setting-nav a { height: 36px; font-size: 12px; gap: 8px; }
+  .status-card { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .setting-content { padding: 12px; }
+  .setting-section { padding: 12px; }
+  .setting-section h3 { font-size: 14px; margin-bottom: 12px; }
+  .setting-option { padding: 12px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .setting-option-title { font-size: 12px; }
+  .setting-option-desc { font-size: 11px; }
+  .status-btn { padding: 6px 10px; font-size: 11px; }
+  .day-btn { padding: 6px 10px; font-size: 11px; }
+  .payment-method { padding: 12px; flex-direction: column; align-items: flex-start; }
+  .payment-method-info { gap: 8px; }
+  .payment-method-icon { width: 32px; height: 32px; }
+  .payment-method-name { font-size: 13px; }
+  .payment-method-detail { font-size: 12px; }
+  .session-device { padding: 10px; }
+  .session-device-info { gap: 8px; }
+  .session-device-name { font-size: 12px; }
+  .session-device-detail { font-size: 11px; }
+  .modal { border-radius: 12px; }
+  .modal-header h3 { font-size: 14px; }
+  .form-group label { font-size: 12px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; font-size: 12px; }
+}

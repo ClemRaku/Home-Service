@@ -1147,4 +1147,527 @@ body {
   color: #a16207;
 }
 
+/* ── Mobile Responsive ── */
+
+/* Tablet: 1100px and below */
+@media (max-width: 1100px) {
+  .schedule-content {
+    padding: 24px;
+  }
+
+  .schedule-main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-right {
+    order: -1;
+  }
+}
+
+/* Mobile: 768px and below */
+@media (max-width: 768px) {
+  .schedule-sidebar {
+    width: 100%;
+    position: relative;
+    padding: 16px;
+  }
+
+  .brand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand h1 {
+    font-size: 16px;
+  }
+
+  .worker-card {
+    padding: 12px;
+  }
+
+  .worker-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .schedule-nav a {
+    height: 38px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .metric-card {
+    max-width: 140px;
+  }
+
+  .metric-card p {
+    font-size: 13px;
+  }
+
+  .status-card {
+    padding: 10px 12px;
+  }
+
+  .status-info p {
+    font-size: 10px;
+  }
+
+  .status-info span {
+    font-size: 12px;
+  }
+
+  .toggle {
+    width: 40px;
+    height: 22px;
+  }
+
+  .toggle-slider::after {
+    width: 16px;
+    height: 16px;
+  }
+
+  .toggle input:checked + .toggle-slider::after {
+    transform: translateX(18px);
+  }
+
+  .schedule-layout {
+    flex-direction: column;
+  }
+
+  .schedule-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .page-header h1 {
+    font-size: 20px;
+  }
+
+  .week-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .week-controls button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .week-days-row {
+    gap: 4px;
+  }
+
+  .week-day {
+    padding: 8px 4px;
+  }
+
+  .week-day .day-name {
+    font-size: 10px;
+  }
+
+  .week-day .day-number {
+    font-size: 14px;
+  }
+
+  .schedule-main-content {
+    gap: 16px;
+  }
+
+  .day-schedule {
+    padding: 16px;
+  }
+
+  .day-schedule-header h3 {
+    font-size: 14px;
+  }
+
+  .job-card {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .job-info h4 {
+    font-size: 13px;
+  }
+
+  .job-info p {
+    font-size: 12px;
+  }
+
+  .job-time .time {
+    font-size: 13px;
+  }
+
+  .week-overview {
+    padding: 16px;
+  }
+
+  .reminders-card {
+    padding: 16px;
+  }
+
+  .reminder-item {
+    padding: 12px;
+  }
+
+  .reminder-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .reminder-icon i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .reminder-info h4 {
+    font-size: 12px;
+  }
+
+  .reminder-info p {
+    font-size: 11px;
+  }
+
+  .week-stats-card {
+    padding: 16px;
+  }
+
+  .week-stat-left span {
+    font-size: 13px;
+  }
+
+  .week-stat-value {
+    font-size: 13px;
+  }
+
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    min-width: auto;
+  }
+
+  .modal {
+    width: 95%;
+    max-width: 95%;
+  }
+
+  .modal-header {
+    padding: 14px 16px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+  }
+}
+
+/* Small Mobile: 480px and below */
+@media (max-width: 480px) {
+  .schedule-sidebar {
+    padding: 12px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand h1 {
+    font-size: 14px;
+  }
+
+  .worker-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .schedule-nav a {
+    height: 36px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .schedule-nav a i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .metric-card {
+    max-width: 120px;
+    padding: 10px;
+  }
+
+  .metric-card p {
+    font-size: 12px;
+  }
+
+  .metric-card span {
+    font-size: 10px;
+  }
+
+  .status-card {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .logout {
+    font-size: 13px;
+  }
+
+  .schedule-content {
+    padding: 12px;
+  }
+
+  .page-header h1 {
+    font-size: 18px;
+  }
+
+  .page-header p {
+    font-size: 12px;
+  }
+
+  .week-controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .week-controls button {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .week-days-row {
+    gap: 2px;
+  }
+
+  .week-day {
+    padding: 6px 2px;
+  }
+
+  .week-day .day-name {
+    font-size: 9px;
+  }
+
+  .week-day .day-number {
+    font-size: 12px;
+  }
+
+  .week-day .day-dot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .day-schedule {
+    padding: 12px;
+  }
+
+  .day-schedule-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .day-schedule-header h3 {
+    font-size: 13px;
+  }
+
+  .day-schedule-header span {
+    font-size: 11px;
+  }
+
+  .job-card {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .job-time {
+    text-align: left;
+  }
+
+  .job-time .time {
+    font-size: 12px;
+  }
+
+  .job-time .duration {
+    font-size: 11px;
+  }
+
+  .job-info h4 {
+    font-size: 12px;
+  }
+
+  .job-info p {
+    font-size: 11px;
+  }
+
+  .week-overview {
+    padding: 12px;
+  }
+
+  .week-overview h3 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .overview-day {
+    font-size: 12px;
+    min-width: 48px;
+  }
+
+  .overview-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .reminders-card {
+    padding: 12px;
+  }
+
+  .reminders-header h3 {
+    font-size: 14px;
+  }
+
+  .add-reminder-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .add-reminder-btn i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .reminder-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .reminder-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .reminder-icon i {
+    width: 14px;
+    height: 14px;
+  }
+
+  .reminder-info h4 {
+    font-size: 11px;
+  }
+
+  .reminder-info p {
+    font-size: 10px;
+  }
+
+  .reminder-info span {
+    font-size: 11px;
+  }
+
+  .week-stats-card {
+    padding: 12px;
+  }
+
+  .week-stats-card h3 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .week-stat {
+    gap: 8px;
+  }
+
+  .week-stat-left i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .week-stat-left span {
+    font-size: 12px;
+  }
+
+  .week-stat-value {
+    font-size: 12px;
+  }
+
+  .modal {
+    border-radius: 12px;
+  }
+
+  .modal-header h3 {
+    font-size: 14px;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+  }
+
+  .modal-close i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .job-detail-row {
+    padding: 8px 0;
+  }
+
+  .job-detail-label {
+    font-size: 12px;
+  }
+
+  .job-detail-row span:not(.job-detail-label):not(.status-badge) {
+    font-size: 13px;
+  }
+
+  .job-price {
+    font-size: 14px !important;
+  }
+
+  .job-detail-description p {
+    font-size: 13px;
+  }
+
+  .status-badge {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+}
+
 

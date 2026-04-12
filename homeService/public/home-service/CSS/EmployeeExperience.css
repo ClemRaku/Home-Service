@@ -532,3 +532,44 @@ body {
     align-items: flex-start;
   }
 }
+
+/* ── Mobile Responsive ── */
+@media (max-width: 900px) {
+  .experience-sidebar { width: 100%; position: relative; }
+  .experience-layout { flex-direction: column; }
+  .experience-content { margin-left: 0; }
+}
+@media (max-width: 768px) {
+  .experience-sidebar { width: 100%; position: relative; padding: 16px; }
+  .experience-layout { flex-direction: column; }
+  .experience-content { margin-left: 0; padding: 16px; }
+  .brand h1 { font-size: 16px; }
+  .brand img { width: 36px; height: 36px; }
+  .worker-avatar { width: 32px; height: 32px; font-size: 12px; }
+  .experience-nav a { height: 38px; padding: 0 12px; font-size: 13px; }
+  .metrics-grid { grid-template-columns: 1fr; }
+  .metric-card { padding: 16px; }
+  .metric-value { font-size: 20px; }
+  .metric-label { font-size: 12px; }
+  .cert-item { padding: 14px; }
+  .skill-tags { gap: 8px; }
+  .skill-tag { padding: 6px 12px; font-size: 12px; }
+  .status-card { padding: 10px 12px; }
+  .toggle { width: 40px; height: 22px; }
+}
+@media (max-width: 480px) {
+  .experience-sidebar { padding: 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand h1 { font-size: 14px; }
+  .worker-card { flex-direction: column; text-align: center; padding: 10px; }
+  .experience-content { padding: 12px; }
+  .experience-nav a { height: 36px; font-size: 12px; }
+  .metrics-grid { gap: 10px; }
+  .metric-card { padding: 12px; }
+  .metric-value { font-size: 18px; }
+  .metric-label { font-size: 11px; }
+  .cert-item { padding: 12px; }
+  .skill-tag { padding: 5px 10px; font-size: 11px; }
+  .status-card { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
