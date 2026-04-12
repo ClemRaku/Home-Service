@@ -999,3 +999,39 @@ body.modal-open {
     padding: 6px 8px;
   }
 }
+
+@media (max-width: 480px) {
+  .admin-sidebar { padding: 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand h1 { font-size: 14px; }
+  .admin-nav a { height: 36px; font-size: 12px; gap: 8px; padding: 0 10px; }
+  .admin-content { padding: 12px; }
+  .admin-header h1 { font-size: 18px; }
+  .admin-header p { font-size: 12px; }
+  .filters { gap: 6px; flex-wrap: wrap; }
+  .filter-btn { padding: 6px 10px; font-size: 11px; }
+  .employee-table-wrap { margin: 0 -12px; padding: 0 12px; overflow-x: auto; }
+  .employee-table { min-width: 500px; font-size: 12px; }
+  .employee-table th, .employee-table td { padding: 8px 10px; }
+  .employee-card { padding: 12px; }
+  .employee-name { font-size: 13px; }
+  .employee-role { font-size: 11px; }
+  .modal { width: 98%; border-radius: 12px; }
+  .modal-header { padding: 14px 16px; }
+  .modal-header h3 { font-size: 14px; }
+  .modal-body { padding: 16px; }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { font-size: 12px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; font-size: 12px; }
+  .modal-actions { flex-direction: column; gap: 8px; }
+  .modal-actions button { width: 100%; }
+  .badge { padding: 3px 8px; font-size: 10px; }
+  .action-buttons { flex-direction: column; gap: 6px; }
+  .action-buttons button { width: 100%; padding: 8px; font-size: 12px; }
+  .stat-card { padding: 12px; }
+  .stat-value { font-size: 18px; }
+  .stat-label { font-size: 11px; }
+  .location-map-wrap iframe { height: 200px; }
+  .location-map-overlay-card { min-width: 130px; padding: 6px; }
+}

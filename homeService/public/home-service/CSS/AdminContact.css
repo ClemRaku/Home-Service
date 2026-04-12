@@ -1051,3 +1051,44 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .admin-sidebar { padding: 12px; }
+  .brand { gap: 8px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand h1 { font-size: 14px; }
+  .admin-nav a { height: 36px; font-size: 12px; gap: 8px; padding: 0 10px; }
+  .admin-content { padding: 12px; }
+  .admin-header h1 { font-size: 18px; }
+  .admin-header p { font-size: 12px; }
+  .filters { gap: 6px; flex-wrap: wrap; }
+  .filter-btn { padding: 6px 10px; font-size: 11px; }
+  .contact-table-wrap { margin: 0 -12px; padding: 0 12px; overflow-x: auto; }
+  .contact-table { min-width: 500px; font-size: 12px; }
+  .contact-table th, .contact-table td { padding: 8px 10px; }
+  .contact-card { padding: 12px; }
+  .contact-name { font-size: 13px; }
+  .contact-email { font-size: 11px; }
+  .modal { width: 98%; border-radius: 12px; }
+  .modal-header { padding: 14px 16px; }
+  .modal-header h3 { font-size: 14px; }
+  .modal-body { padding: 16px; }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { font-size: 12px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; font-size: 12px; }
+  .modal-actions { flex-direction: column; gap: 8px; }
+  .modal-actions button { width: 100%; }
+  .badge { padding: 3px 8px; font-size: 10px; }
+  .action-buttons { flex-direction: column; gap: 6px; }
+  .action-buttons button { width: 100%; padding: 8px; font-size: 12px; }
+  .stat-card { padding: 12px; }
+  .stat-value { font-size: 18px; }
+  .stat-label { font-size: 11px; }
+  .reply-modal__card { width: 98%; padding: 12px; }
+  .reply-modal__header h3 { font-size: 14px; }
+  .reply-modal__textarea { padding: 10px; font-size: 12px; }
+  .reply-modal__actions { flex-direction: column; gap: 8px; }
+  .reply-modal__actions button { width: 100%; }
+  .reply-success-modal__card { padding: 16px; }
+  .reply-success-modal__meta { font-size: 12px; }
+}
