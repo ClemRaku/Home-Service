@@ -4,6 +4,8 @@
 
 **Home-Service** is a comprehensive home service management web application that provides a complete platform for connecting homeowners with professional service providers (cleaning, plumbing, electrical, painting, pest control, appliance repair, HVAC).
 
+**Project Start Date:** January 2026
+
 The project has a **hybrid architecture** with two sub-projects:
 
 1. **Static Site** (`Home Service/`) - Vanilla HTML/CSS/JavaScript pages
@@ -15,6 +17,17 @@ The project has a **hybrid architecture** with two sub-projects:
 - Tahasin
 - Nazmul
 - Raka
+
+### Team Goal
+Our goal is to create a modern, user-friendly platform that simplifies the process of booking and managing home services. We're building a complete solution that connects homeowners with professional service providers, streamlining appointment scheduling, service tracking, and business management for all stakeholders.
+
+### Git Branches
+| Branch                | Purpose                                          |
+| --------------------- | ------------------------------------------------ |
+| `main`                | 🟢 Stable production branch — latest working state |
+| `Backend`             | 🔧 Supabase backend setup, database schemas, API logic, and backend-related features |
+| `Frontend`            | 🎨 Active frontend development — React pages, components, UI/UX work |
+| `Debu-Frontend`       | 🧪 Debottom's experimental/frontend debugging branch for testing new features before merging to `Frontend` |
 
 ### Key Features
 
