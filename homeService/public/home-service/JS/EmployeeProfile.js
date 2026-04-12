@@ -1,6 +1,5 @@
-const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+// Supabase config (use window globals from config.js - do NOT redeclare)
+// Use window.SUPABASE_URL and window.SUPABASE_ANON_KEY directly throughout this file
 
 // Get logged-in employee from localStorage
 const authUser = JSON.parse(localStorage.getItem('hsAuthUser'));
@@ -13,12 +12,12 @@ if (!authUser || authUser.role !== 'employee') {
 async function fetchEmployeeData(email) {
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/employees?select=*&email=eq.${encodeURIComponent(email)}`,
+      `${window.SUPABASE_URL}/rest/v1/employees?select=*&email=eq.${encodeURIComponent(email)}`,
       {
         method: 'GET',
         headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          apikey: window.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
         },
       }
     );
@@ -39,12 +38,12 @@ async function fetchEmployeeData(email) {
 async function fetchEmployeeBookings(email) {
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
+      `${window.SUPABASE_URL}/rest/v1/bookings?select=*&employee_email=eq.${encodeURIComponent(email)}`,
       {
         method: 'GET',
         headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          apikey: window.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
         },
       }
     );
@@ -61,8 +60,8 @@ async function fetchEmployeeBookings(email) {
 async function syncSidebarStatus(email) {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/employees?select=availability&email=eq.${encodeURIComponent(email)}`,
-      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+      `${window.SUPABASE_URL}/rest/v1/employees?select=availability&email=eq.${encodeURIComponent(email)}`,
+      { headers: { apikey: window.SUPABASE_ANON_KEY, Authorization: `Bearer ${window.SUPABASE_ANON_KEY}` } }
     );
     if (!res.ok) return;
     const data = await res.json();
@@ -289,13 +288,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         const response = await fetch(
-          `${SUPABASE_URL}/rest/v1/employees?email=eq.${encodeURIComponent(authUser.email)}`,
+          `${window.SUPABASE_URL}/rest/v1/employees?email=eq.${encodeURIComponent(authUser.email)}`,
           {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              apikey: window.SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
               Prefer: 'return=minimal',
             },
             body: JSON.stringify(formData),
@@ -331,16 +330,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const updateStatus = () => {
-    if (toggle.checked) {
-      sidebarStatusDot.style.background = "#48d889";
+  const updateStatus = async (syncToDB = true) => {
+    const isOnline = toggle.checked;
+    if (isOnline) {
+      sidebarStatusDot.style.background = "#4ade80";
       sidebarStatusText.lastChild.textContent = "Online";
     } else {
-      sidebarStatusDot.style.background = "#f6b028";
+      sidebarStatusDot.style.background = "#ef4444";
       sidebarStatusText.lastChild.textContent = "Offline";
+    }
+
+    // Sync to database if employee is logged in
+    if (syncToDB && authUser?.email) {
+      try {
+        const res = await fetch(
+          `${window.SUPABASE_URL}/rest/v1/employees?email=eq.${encodeURIComponent(authUser.email)}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: window.SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify({ availability: isOnline ? 'available' : 'unavailable' }),
+          }
+        );
+        if (!res.ok) {
+          console.warn('Failed to sync status to database');
+        }
+      } catch (err) {
+        console.error('Error syncing status to database:', err);
+      }
     }
   };
 
-  updateStatus();
-  toggle.addEventListener("change", updateStatus);
+  updateStatus(false); // Initial sync from DB, don't overwrite
+  toggle.addEventListener("change", () => updateStatus(true)); // User toggled, sync to DB
 });

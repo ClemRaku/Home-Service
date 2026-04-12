@@ -6,9 +6,8 @@
  * No API key or external library needed — this uses the built-in navigator.geolocation.
  */
 
-const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
-const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVycXFxb3ZkcHJncGZnbXVlZXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzU2NTIsImV4cCI6MjA4NzAxMTY1Mn0.fnXv6X6v8MAn2tusVwIZmfQTaUXDkyAX6mYoYW8RD9o';
+// Supabase config (use window globals from config.js - do NOT redeclare)
+// Use window.SUPABASE_URL and window.SUPABASE_ANON_KEY directly throughout this file
 
 // Geolocation options: high accuracy, fast response, cached for 5 min
 const GEO_OPTIONS = {
@@ -61,13 +60,13 @@ const persistLocationToDB = async (email, lat, lng) => {
   if (!email) return;
   try {
     await fetch(
-      `${SUPABASE_URL}/rest/v1/employees?email=eq.${encodeURIComponent(email)}`,
+      `${window.SUPABASE_URL}/rest/v1/employees?email=eq.${encodeURIComponent(email)}`,
       {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          apikey: window.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${window.SUPABASE_ANON_KEY}`,
           Prefer: 'return=minimal',
         },
         body: JSON.stringify({
@@ -107,9 +106,30 @@ const initLocation = async () => {
   }
 };
 
+// Run location tracking continuously every 10 seconds
+const startLocationTracking = () => {
+  // Initial capture
+  initLocation();
+
+  // Update every 10 seconds
+  const locationInterval = setInterval(() => {
+    initLocation();
+  }, 10000); // 10000ms = 10 seconds
+
+  // Store interval ID so it can be cleared if needed
+  window.employeeLocationInterval = locationInterval;
+
+  console.log('🔄 Real-time location tracking started (every 10s)');
+
+  // Clean up on page unload
+  window.addEventListener('beforeunload', () => {
+    clearInterval(locationInterval);
+  });
+};
+
 // Run when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initLocation);
+  document.addEventListener('DOMContentLoaded', startLocationTracking);
 } else {
-  initLocation();
+  startLocationTracking();
 }
