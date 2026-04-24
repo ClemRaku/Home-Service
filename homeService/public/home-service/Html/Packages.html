@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#11c5bb" />
   <title>Packages | Home Service</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +19,7 @@
   <header class="hero">
     <nav class="navbar">
       <div class="logo-circle">
-        <img src="../Image/logo.png" alt="">
+        <img src="../Image/logo.png" alt="" role="presentation" />
       </div>
       <ul class="nav-links">
         <li><a href="Home.html">Home</a></li>
@@ -238,6 +239,64 @@
       </div>
     </section>
 
+    <div class="booking-modal-overlay" id="bookingModalOverlay" aria-hidden="true">
+      <div class="booking-modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+        <div class="booking-modal-header">
+          <div>
+            <h2 id="bookingTitle">Choose Package</h2>
+            <p>Fill in the details and we'll get back to you shortly</p>
+          </div>
+          <button class="booking-close-btn" id="bookingCloseBtn" type="button" aria-label="Close booking form" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">×</button>
+        </div>
+
+        <form class="booking-form" id="bookingForm">
+          <div class="booking-field-grid">
+            <label>
+              Full Name
+              <input type="text" id="bookingFullName" readonly class="booking-readonly" />
+            </label>
+            <label>
+              Email Address
+              <input type="email" id="bookingEmail" readonly class="booking-readonly" />
+            </label>
+            <label>
+              Phone Number
+              <input type="tel" id="bookingPhone" readonly class="booking-readonly" />
+            </label>
+            <label>
+              Service Address
+              <input type="text" id="bookingAddress" readonly class="booking-readonly" />
+            </label>
+            <label>
+              Preferred Date <span>*</span>
+              <input type="date" id="bookingDate" required />
+            </label>
+            <label>
+              Preferred Time <span>*</span>
+              <select id="bookingTime" required>
+                <option value="">Select time</option>
+                <option>08:00 AM - 10:00 AM</option>
+                <option>10:00 AM - 12:00 PM</option>
+                <option>12:00 PM - 02:00 PM</option>
+                <option>02:00 PM - 04:00 PM</option>
+                <option>04:00 PM - 06:00 PM</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Additional Details
+            <textarea id="bookingDetails" rows="4" placeholder="Any special requirements or notes..."></textarea>
+          </label>
+
+          <div class="booking-form-actions">
+            <button type="button" class="booking-cancel-btn" id="bookingCancelBtn">Cancel</button>
+            <button type="submit" class="booking-submit-btn">Request Booking</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <section class="cta">
       <h2>Need a Custom Package?</h2>
       <p>Contact us to create a personalized package that fits your specific needs</p>
@@ -250,10 +309,10 @@
       <div>
         <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
         <div class="socials">
-          <span><i data-lucide="facebook"></i></span>
-          <span><i data-lucide="twitter"></i></span>
-          <span><i data-lucide="instagram"></i></span>
-          <span><i data-lucide="linkedin"></i></span>
+          <span><i data-lucide="facebook" aria-hidden="true"></i></span>
+          <span><i data-lucide="twitter" aria-hidden="true"></i></span>
+          <span><i data-lucide="instagram" aria-hidden="true"></i></span>
+          <span><i data-lucide="linkedin" aria-hidden="true"></i></span>
         </div>
       </div>
       <div>
@@ -276,10 +335,10 @@
       </div>
       <div class="footer-contact">
         <h6>Contact Info</h6>
-        <a href="#"><i data-lucide="map-pin"></i><span>123 Service Street, City, State 12345</span></a>
-        <a href="#"><i data-lucide="phone"></i><span>+1 (555) 123-4567</span></a>
-        <a href="#"><i data-lucide="mail"></i><span>info@homeservices.com</span></a>
-        <a href="#"><i data-lucide="clock"></i><span>Mon - Sat: 8AM - 8PM</span></a>
+        <a href="#"><i data-lucide="map-pin" aria-hidden="true"></i><span>123 Service Street, City, State 12345</span></a>
+        <a href="#"><i data-lucide="phone" aria-hidden="true"></i><span>+1 (555) 123-4567</span></a>
+        <a href="#"><i data-lucide="mail" aria-hidden="true"></i><span>info@homeservices.com</span></a>
+        <a href="#"><i data-lucide="clock" aria-hidden="true"></i><span>Mon - Sat: 8AM - 8PM</span></a>
       </div>
     </div>
     <div class="footer-bottom">

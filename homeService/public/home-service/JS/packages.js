@@ -4,6 +4,170 @@ const SUPABASE_ANON_KEY =
 
 const packagesRoot = document.querySelector('#packagesRoot');
 const customGrid = document.getElementById('customGrid');
+const bookingModalOverlay = document.querySelector('#bookingModalOverlay');
+const bookingCloseBtn = document.querySelector('#bookingCloseBtn');
+const bookingCancelBtn = document.querySelector('#bookingCancelBtn');
+const bookingForm = document.querySelector('#bookingForm');
+
+const bookingFullName = document.querySelector('#bookingFullName');
+const bookingEmail = document.querySelector('#bookingEmail');
+const bookingPhone = document.querySelector('#bookingPhone');
+const bookingAddress = document.querySelector('#bookingAddress');
+const bookingDate = document.querySelector('#bookingDate');
+const bookingTime = document.querySelector('#bookingTime');
+const bookingDetails = document.querySelector('#bookingDetails');
+
+const getStoredAuthUser = () => {
+  try {
+    const raw = localStorage.getItem('hsAuthUser');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const fillBookingFormFromCustomer = async () => {
+  const authUser = getStoredAuthUser();
+  if (!authUser || !authUser.email) return;
+
+  if (bookingFullName) bookingFullName.value = authUser.name || '';
+  if (bookingEmail) bookingEmail.value = authUser.email || '';
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/customers?select=full_name,email,phone_number,address&email=eq.${encodeURIComponent(authUser.email)}`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    if (res.ok) {
+      const rows = await res.json();
+      if (rows.length) {
+        const c = rows[0];
+        if (bookingFullName) bookingFullName.value = c.full_name || '';
+        if (bookingEmail) bookingEmail.value = c.email || '';
+        if (bookingPhone) bookingPhone.value = c.phone_number || '';
+        if (bookingAddress) bookingAddress.value = c.address || '';
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch customer details:', err);
+  }
+};
+
+let selectedPackageName = '';
+
+const openBookingModal = async (packageName = '') => {
+  if (!bookingModalOverlay) return;
+
+  selectedPackageName = packageName;
+  const bookingTitle = document.querySelector('#bookingTitle');
+  if (bookingTitle) {
+    bookingTitle.textContent = packageName ? `Book ${packageName}` : 'Choose Package';
+  }
+
+  await fillBookingFormFromCustomer();
+
+  if (bookingDate) bookingDate.value = '';
+  if (bookingTime) bookingTime.value = '';
+  if (bookingDetails) bookingDetails.value = '';
+
+  bookingModalOverlay.classList.add('active');
+  bookingModalOverlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+};
+
+const closeBookingModal = () => {
+  if (!bookingModalOverlay) return;
+
+  bookingModalOverlay.classList.remove('active');
+  bookingModalOverlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+};
+
+bookingCloseBtn?.addEventListener('click', closeBookingModal);
+bookingCancelBtn?.addEventListener('click', closeBookingModal);
+
+bookingModalOverlay?.addEventListener('click', (event) => {
+  if (event.target === bookingModalOverlay) {
+    closeBookingModal();
+  }
+});
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && bookingModalOverlay?.classList.contains('active')) {
+    closeBookingModal();
+  }
+});
+
+bookingForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const authUser = getStoredAuthUser();
+  if (!authUser || !authUser.email) {
+    alert('Please sign in to book a package.');
+    closeBookingModal();
+    return;
+  }
+
+  const date = bookingDate?.value || '';
+  const time = bookingTime?.value || '';
+  const details = bookingDetails?.value || '';
+
+  if (!date || !time) {
+    alert('Please select date and time.');
+    return;
+  }
+
+  const timeMatch = time.match(/(\d{2}):(\d{2})\s*(AM|PM)\s*-\s*(\d{2}):(\d{2})\s*(AM|PM)/i);
+  let startTime = null;
+  let endTime = null;
+  if (timeMatch) {
+    const to24h = (h, m, period) => {
+      let hour = parseInt(h);
+      const min = m || '00';
+      if (period.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (period.toUpperCase() === 'AM' && hour === 12) hour = 0;
+      return `${String(hour).padStart(2, '0')}:${min}:00`;
+    };
+    startTime = to24h(timeMatch[1], timeMatch[2], timeMatch[3]);
+    endTime = to24h(timeMatch[4], timeMatch[5], timeMatch[6]);
+  }
+
+  const payload = {
+    customer_email: authUser.email,
+    service_name: selectedPackageName,
+    scheduled_date: date,
+    start_time: startTime,
+    end_time: endTime,
+    address: bookingAddress?.value || '',
+    price: 0,
+    status: 'upcoming',
+    additional_details: details,
+  };
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt);
+    }
+
+    alert('Package booking request submitted successfully!');
+    closeBookingModal();
+  } catch (err) {
+    console.error('Booking error:', err);
+    alert(`Failed to submit booking: ${err.message}`);
+  }
+});
 
 const normalizeText = (value = '') => String(value).replace(/\s+/g, ' ').trim();
 
@@ -62,7 +226,7 @@ const renderPackageCard = (pkg, cardClass) => {
         <ul class="package-features">
           ${features.map((item) => `<li><span>${escapeHtml(item.prefix)}</span> ${escapeHtml(item.text)}</li>`).join('')}
         </ul>
-        <button>Choose Package</button>
+        <button type="button" class="choose-package-btn">Choose Package</button>
       </div>
     </article>
   `;
@@ -74,7 +238,7 @@ const renderCustomCard = (pkg) => `
     <h3>${escapeHtml(pkg.package_name)}</h3>
     <p>${escapeHtml(pkg.description || '')}</p>
     <p class="custom-price">${formatPrice(pkg.price)}</p>
-    <button class="outline">Get Quote</button>
+    <button class="outline choose-package-btn" type="button">Get Quote</button>
   </article>
 `;
 
@@ -147,6 +311,15 @@ const loadPackages = async () => {
         customGrid.innerHTML = '<p class="loading-text">No custom packages available yet.</p>';
       }
     }
+
+    // Add click handlers for Choose Package / Get Quote buttons
+    document.querySelectorAll('.choose-package-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.package-card') || button.closest('.custom-card');
+        const packageName = card?.querySelector('h3')?.textContent.trim() || '';
+        openBookingModal(packageName);
+      });
+    });
 
     window.lucide?.createIcons();
   } catch (error) {
