@@ -173,6 +173,99 @@ Open your browser and go to **`http://localhost:5173/`** 🎉
 
 ---
 
+## 🗄️ Database Setup (If Supabase Expires)
+
+The Supabase database runs on a free tier which can expire. If you need to set up a new database, follow these steps:
+
+### Option A: Set Up a New Supabase Project
+
+1. Go to [supabase.com](https://supabase.com) and create a new account or log in
+2. Click **New Project** and fill in the details:
+   - **Name**: Home Service (or any name you prefer)
+   - **Database Password**: Set a strong password (save this!)
+   - **Region**: Choose the closest region to you
+3. Wait for the project to be created (this may take a few minutes)
+4. Once ready, go to **Settings** → **API** in your Supabase dashboard
+5. Copy your:
+   - `Project URL`
+   - `anon public` key
+   - `service_role` key (for admin access)
+
+### Option B: Use Another PostgreSQL Database
+
+You can use any PostgreSQL database (e.g., Neon, Railway, Render, or a local PostgreSQL installation). Ensure you have:
+- Database URL
+- Ability to run SQL files
+
+---
+
+### Step 1: Upload the SQL Schema
+
+#### Using Supabase SQL Editor:
+
+1. In your Supabase dashboard, go to **SQL Editor**
+2. Click **New Query**
+3. Open `homeService/sql/database_schema.sql` in a text editor
+4. Copy and paste the entire contents into the Supabase SQL Editor
+5. Click **Run** to execute the schema
+
+#### Using psql (Command Line):
+
+```bash
+psql "your_postgres_connection_string" -f homeService/sql/database_schema.sql
+```
+
+#### Using pgAdmin or DBeaver:
+
+1. Connect to your database
+2. Right-click on your database → **Query Tool** (or **New Query**)
+3. Open `homeService/sql/database_schema.sql`
+4. Execute the script
+
+---
+
+### Step 2: (Supabase Only) Apply RLS Policies
+
+If using Supabase, you should also apply the RLS policies for security:
+
+1. In Supabase SQL Editor, create a **New Query**
+2. Open `homeService/sql/secure_rls_policies.sql`
+3. Copy and paste the contents
+4. Click **Run**
+
+---
+
+### Step 3: Update Your `.env` File
+
+Edit the `.env` file in the `homeService` folder:
+
+```
+# For Supabase:
+REACT_APP_SUPABASE_URL=https://your-project-id.supabase.co
+REACT_APP_ANON_KEY=your_anon_key_here
+
+# For other PostgreSQL databases, use these instead:
+REACT_APP_DB_HOST=your_database_host
+REACT_APP_DB_PORT=5432
+REACT_APP_DB_NAME=postgres
+REACT_APP_DB_USER=postgres
+REACT_APP_DB_PASSWORD=your_password_here
+```
+
+---
+
+### Step 4: Restart the Application
+
+```bash
+# Stop the current server (Ctrl+C)
+# Restart it
+npm run dev
+```
+
+The application should now connect to your new database. 🎉
+
+---
+
 ## 📂 Project Structure
 
 ```
