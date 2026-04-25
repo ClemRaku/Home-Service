@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#11c5bb" />
   <title>Get Started | Home Service</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +15,7 @@
 </head>
 
 <body class="signup-page">
-  <button class="close-btn" type="button" aria-label="Close sign up">×</button>
+  <button class="close-btn" type="button" aria-label="Close sign up" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()" onclick="window.history.back()">×</button>
 
   <main class="signup">
     <div class="signup-header">
@@ -27,40 +28,40 @@
         <label>
           Full Name
           <span class="input-wrapper">
-            <i data-lucide="user"></i>
-            <input type="text" name="fullName" placeholder="John Doe" required />
+            <i data-lucide="user" aria-hidden="true"></i>
+            <input type="text" name="fullName" placeholder="John Doe" autocomplete="name" required />
           </span>
         </label>
 
         <label>
           Email
           <span class="input-wrapper">
-            <i data-lucide="mail"></i>
-            <input type="email" name="email" placeholder="your@email.com" required />
+            <i data-lucide="mail" aria-hidden="true"></i>
+            <input type="email" name="email" placeholder="your@email.com" autocomplete="email" required />
           </span>
         </label>
 
         <label>
           Phone
           <span class="input-wrapper">
-            <i data-lucide="phone"></i>
-            <input type="tel" name="phone" placeholder="+1 555 123 4567" required />
+            <i data-lucide="phone" aria-hidden="true"></i>
+            <input type="tel" name="phone" placeholder="+1 555 123 4567" autocomplete="tel" required />
           </span>
         </label>
 
         <label>
           Password
           <span class="input-wrapper">
-            <i data-lucide="lock"></i>
-            <input type="password" name="password" placeholder="••••" required />
+            <i data-lucide="lock" aria-hidden="true"></i>
+            <input type="password" name="password" placeholder="••••" autocomplete="new-password" required />
           </span>
         </label>
 
         <label>
           Confirm Password
           <span class="input-wrapper">
-            <i data-lucide="lock"></i>
-            <input type="password" name="confirmPassword" placeholder="••••" required />
+            <i data-lucide="lock" aria-hidden="true"></i>
+            <input type="password" name="confirmPassword" placeholder="••••" autocomplete="new-password" required />
           </span>
         </label>
 
@@ -76,10 +77,10 @@
       <div>
         <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
         <div class="socials">
-          <span><i data-lucide="facebook"></i></span>
-          <span><i data-lucide="twitter"></i></span>
-          <span><i data-lucide="instagram"></i></span>
-          <span><i data-lucide="linkedin"></i></span>
+          <span><i data-lucide="facebook" aria-hidden="true"></i></span>
+          <span><i data-lucide="twitter" aria-hidden="true"></i></span>
+          <span><i data-lucide="instagram" aria-hidden="true"></i></span>
+          <span><i data-lucide="linkedin" aria-hidden="true"></i></span>
         </div>
       </div>
 
@@ -105,10 +106,10 @@
 
       <div class="footer-contact">
         <h6>Contact Info</h6>
-        <a href="#"><i data-lucide="map-pin"></i><span>123 Service Street, City, State 12345</span></a>
-        <a href="#"><i data-lucide="phone"></i><span>+1 (555) 123-4567</span></a>
-        <a href="#"><i data-lucide="mail"></i><span>info@homeservices.com</span></a>
-        <a href="#"><i data-lucide="clock"></i><span>Mon - Sat: 8AM - 8PM</span></a>
+        <a href="#"><i data-lucide="map-pin" aria-hidden="true"></i><span>123 Service Street, City, State 12345</span></a>
+        <a href="#"><i data-lucide="phone" aria-hidden="true"></i><span>+1 (555) 123-4567</span></a>
+        <a href="#"><i data-lucide="mail" aria-hidden="true"></i><span>info@homeservices.com</span></a>
+        <a href="#"><i data-lucide="clock" aria-hidden="true"></i><span>Mon - Sat: 8AM - 8PM</span></a>
       </div>
     </div>
 

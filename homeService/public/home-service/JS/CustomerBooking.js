@@ -77,6 +77,7 @@ const statusLabels = {
   completed: 'Completed',
   in_progress: 'In Progress',
   cancelled: 'Cancelled',
+  unassigned: 'Unassigned',
 };
 
 const bookingsGrid = document.getElementById('bookingsGrid');
@@ -203,7 +204,7 @@ const renderBookings = (bookings) => {
             <p><i data-lucide="map-pin"></i><strong>Location:</strong> ${booking.address}</p>
           </div>
           <div class="card-bottom">
-            <div class="price">$${servicePrice.toFixed(2)}</div>
+            <div class="price">৳${servicePrice.toFixed(2)}</div>
             <div class="actions">
               <button class="chat-btn" aria-label="Message"><i data-lucide="message-circle"></i></button>
               <button class="details-btn">View Details</button>
@@ -254,7 +255,7 @@ const attachCardEvents = () => {
       if (modalTime) modalTime.textContent = timeText.replace('Time:', '').trim();
       if (modalLocation) modalLocation.textContent = locationText.replace('Location:', '').trim();
       if (modalDetails) modalDetails.textContent = (booking && booking.additional_details) || 'No additional details provided.';
-      if (modalPrice) modalPrice.textContent = `$${((booking && servicePrices[booking.service_name]) || 0).toFixed(2)}`;
+      if (modalPrice) modalPrice.textContent = `৳${((booking && servicePrices[booking.service_name]) || 0).toFixed(2)}`;
       if (modalIcon) modalIcon.className = `modal-icon ${cardIcon}`;
       if (modalIconSymbol) modalIconSymbol.setAttribute('data-lucide', iconSymbol);
 

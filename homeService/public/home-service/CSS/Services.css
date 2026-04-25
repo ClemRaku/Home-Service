@@ -10,6 +10,15 @@
   box-sizing: border-box;
 }
 
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 html,
 body {
   margin: 0;
@@ -17,7 +26,7 @@ body {
   font-family: "Poppins", sans-serif;
   background: var(--bg);
   color: var(--text);
-  
+  scroll-margin-top: 80px;
 }
 
 a {
@@ -901,6 +910,7 @@ body.modal-open {
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.25s ease, visibility 0.25s ease;
+  overscroll-behavior: contain;
 }
 
 .booking-modal-overlay.active {
@@ -1065,5 +1075,16 @@ body.modal-open {
 
   .booking-modal-header p {
     font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

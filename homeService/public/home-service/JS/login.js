@@ -1,8 +1,8 @@
 const closeButton = document.querySelector('.close-btn');
 const loginForm = document.querySelector('#loginForm') || document.querySelector('.login-form');
-const loginMessage = document.querySelector('#loginMessage');
-const emailInput = loginForm?.querySelector('input[type="email"]') || document.querySelector('input[name="email"]');
-const passwordInput = loginForm?.querySelector('input[type="password"]') || document.querySelector('input[name="password"]');
+const loginMessage = document.getElementById('loginMessage');
+const emailInput = document.getElementById('loginEmail') || loginForm?.querySelector('input[type="email"]');
+const passwordInput = document.getElementById('loginPassword') || loginForm?.querySelector('input[type="password"]');
 const passwordToggleButton = document.querySelector('.icon-button');
 
 const SUPABASE_URL = 'https://erqqqovdprgpfgmueevj.supabase.co';
@@ -152,30 +152,20 @@ if (loginForm) {
     setLoginMessage('Signing in...', false);
 
     try {
-      // First check customers table
-      const customerRows = await fetchCustomers(email);
-      const matchedCustomer = findCustomer(customerRows, password);
+      // Automatic role checking flow: 
+      // 1. Admin
+      // 2. Employee
+      // 3. Customer
 
-      if (matchedCustomer) {
-        localStorage.setItem(
-          'hsAuthUser',
-          JSON.stringify({
-            role: 'customer',
-            name: matchedCustomer.full_name,
-            email: matchedCustomer.email,
-          })
-        );
+      const inputEmail = emailInput ? emailInput.value.trim().toLowerCase() : '';
+      const inputPassword = passwordInput ? passwordInput.value : '';
 
-        setLoginMessage('Login successful. Redirecting...', false);
-        window.location.href = 'CustomerProfile.html';
-        return;
-      }
-
-      // Then check admin_profiles table
-      const adminRows = await fetchAdmins(email);
-      const matchedAdmin = findAdmin(adminRows, password);
-
+      // Check Admin
+      const adminRows = await fetchAdmins(inputEmail);
+      const matchedAdmin = findAdmin(adminRows, inputPassword);
       if (matchedAdmin) {
+        // Set both localStorage for general auth and sessionStorage for admin dashboard consistency
+        sessionStorage.setItem('adminEmail', matchedAdmin.email);
         localStorage.setItem(
           'hsAuthUser',
           JSON.stringify({
@@ -184,16 +174,14 @@ if (loginForm) {
             email: matchedAdmin.email,
           })
         );
-
         setLoginMessage('Login successful. Redirecting...', false);
         window.location.href = 'Admin.html';
         return;
       }
 
-      // Then check employees table
-      const employeeRows = await fetchEmployees(email);
-      const matchedEmployee = findEmployee(employeeRows, password);
-
+      // Check Employee
+      const employeeRows = await fetchEmployees(inputEmail);
+      const matchedEmployee = findEmployee(employeeRows, inputPassword);
       if (matchedEmployee) {
         localStorage.setItem(
           'hsAuthUser',
@@ -203,9 +191,25 @@ if (loginForm) {
             email: matchedEmployee.email,
           })
         );
-
         setLoginMessage('Login successful. Redirecting...', false);
         window.location.href = 'EmployeeProfile.html';
+        return;
+      }
+
+      // Check Customer
+      const customerRows = await fetchCustomers(inputEmail);
+      const matchedCustomer = findCustomer(customerRows, inputPassword);
+      if (matchedCustomer) {
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            role: 'customer',
+            name: matchedCustomer.full_name,
+            email: matchedCustomer.email,
+          })
+        );
+        setLoginMessage('Login successful. Redirecting...', false);
+        window.location.href = 'CustomerProfile.html';
         return;
       }
 

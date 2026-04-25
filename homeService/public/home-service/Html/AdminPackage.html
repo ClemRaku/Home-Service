@@ -107,7 +107,7 @@
           </label>
           <div class="modal-grid">
             <label>
-              <span>Price ($)</span>
+              <span>Price (৳)</span>
               <input type="number" id="addPackagePrice" placeholder="250" />
             </label>
             <label>
@@ -120,8 +120,10 @@
             </label>
           </div>
           <div class="modal-services">
-            <span>Services (one per line)</span>
-            <textarea id="addPackageServices" placeholder="2 Home Cleaning Sessions&#10;1 Plumbing Inspection&#10;✓ Basic Pest Control"></textarea>
+            <span>Select Services</span>
+            <div id="addPackageServicesList" class="services-selection-list">
+              <p class="loading-text">Loading available services...</p>
+            </div>
           </div>
         </div>
         <div class="modal-actions">
@@ -151,7 +153,7 @@
           </label>
           <div class="modal-grid">
             <label>
-              <span>Price ($)</span>
+              <span>Price (৳)</span>
               <input type="number" id="editPackagePrice" />
             </label>
             <label>
@@ -164,8 +166,10 @@
             </label>
           </div>
           <div class="modal-services">
-            <span>Services (one per line)</span>
-            <textarea id="editPackageServices"></textarea>
+            <span>Select Services</span>
+            <div id="editPackageServicesList" class="services-selection-list">
+              <p class="loading-text">Loading available services...</p>
+            </div>
           </div>
         </div>
         <div class="modal-actions">

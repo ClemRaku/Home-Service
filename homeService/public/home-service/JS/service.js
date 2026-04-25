@@ -177,6 +177,10 @@ const openBookingModal = async (serviceName = '') => {
   if (!bookingModalOverlay) return;
 
   selectedServiceName = serviceName;
+  const bookingTitle = document.querySelector('#bookingTitle');
+  if (bookingTitle) {
+    bookingTitle.textContent = serviceName ? `Book ${serviceName}` : 'Book Your Service';
+  }
 
   // Auto-fill from customer data
   await fillBookingFormFromCustomer();
@@ -271,7 +275,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     end_time: endTime,
     address: bookingAddress?.value || '',
     price: 0,
-    status: 'upcoming',
+    status: 'unassigned',
     additional_details: details,
   };
 

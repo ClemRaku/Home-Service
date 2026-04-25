@@ -109,7 +109,7 @@ const normalizeStatus = (statusValue) => {
 
 const formatCurrency = (value) => {
   const amount = Number(value);
-  return Number.isFinite(amount) ? `$${amount}` : '$0';
+  return Number.isFinite(amount) ? `৳${amount}` : '৳0';
 };
 
 const renderEmptyState = (message) => {
