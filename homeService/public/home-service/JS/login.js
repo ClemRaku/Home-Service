@@ -164,6 +164,8 @@ if (loginForm) {
       const adminRows = await fetchAdmins(inputEmail);
       const matchedAdmin = findAdmin(adminRows, inputPassword);
       if (matchedAdmin) {
+        // Set both localStorage for general auth and sessionStorage for admin dashboard consistency
+        sessionStorage.setItem('adminEmail', matchedAdmin.email);
         localStorage.setItem(
           'hsAuthUser',
           JSON.stringify({
