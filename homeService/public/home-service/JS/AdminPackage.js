@@ -10,6 +10,7 @@ const manageCategoriesModal = document.getElementById('manageCategoriesModal');
 const categoriesList = document.getElementById('categoriesList');
 
 let allCategories = [];
+let allServices = [];
 let editingPackageName = null;
 
 // ── Helpers ──
@@ -109,6 +110,45 @@ const renderCategoriesList = () => {
   });
 };
 
+// ── Fetch & render services ──
+const loadServices = async () => {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/services?select=service_name&order=service_name.asc`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    allServices = res.ok ? await res.json() : [];
+    renderServicesSelectionList('addPackageServicesList');
+    renderServicesSelectionList('editPackageServicesList');
+  } catch (err) { console.error('Error loading services:', err); }
+};
+
+const renderServicesSelectionList = (containerId, selectedServiceNames = []) => {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!allServices.length) {
+    container.innerHTML = '<p class="loading-text">No services available.</p>';
+    return;
+  }
+
+  container.innerHTML = allServices.map(s => {
+    const isChecked = selectedServiceNames.includes(s.service_name);
+    return `
+      <div class="service-selection-item">
+        <input type="checkbox" id="${containerId}-${escapeHtml(s.service_name)}" value="${escapeHtml(s.service_name)}" ${isChecked ? 'checked' : ''}>
+        <label for="${containerId}-${escapeHtml(s.service_name)}">${escapeHtml(s.service_name)}</label>
+      </div>
+    `;
+  }).join('');
+};
+
+const getSelectedServices = (containerId) => {
+  const container = document.getElementById(containerId);
+  if (!container) return [];
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+  return Array.from(checkboxes).map(cb => cb.value);
+};
+
 // ── Fetch & render packages ──
 const loadPackages = async () => {
   if (!packagesRoot) return;
@@ -118,6 +158,25 @@ const loadPackages = async () => {
     });
     if (!res.ok) throw new Error(`Failed (${res.status})`);
     const packages = await res.json();
+    
+    // Fetch package_services relationship
+    const psRes = await fetch(`${SUPABASE_URL}/rest/v1/package_services?select=package_name,service_name`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    const packageServices = psRes.ok ? await psRes.json() : [];
+    
+    // Map services to packages
+    const servicesByPackage = {};
+    packageServices.forEach(ps => {
+      if (!servicesByPackage[ps.package_name]) servicesByPackage[ps.package_name] = [];
+      servicesByPackage[ps.package_name].push(ps.service_name);
+    });
+    
+    // Attach services to packages
+    packages.forEach(pkg => {
+      pkg._services = servicesByPackage[pkg.package_name] || [];
+    });
+    
     renderPackages(packages);
     window.lucide?.createIcons();
   } catch (err) {
@@ -142,9 +201,14 @@ const renderPackages = (packages) => {
   const grouped = {};
   packages.forEach(pkg => {
     const cat = pkg.package_categories;
-    if (!cat) return;
-    if (!grouped[cat.id]) grouped[cat.id] = { cat, packages: [] };
-    grouped[cat.id].packages.push(pkg);
+    const catId = cat ? cat.id : 'uncategorized';
+    if (!grouped[catId]) {
+        grouped[catId] = { 
+            cat: cat || { name: 'Uncategorized', description: 'Packages without a category', color_class: 'teal' }, 
+            packages: [] 
+        };
+    }
+    grouped[catId].packages.push(pkg);
   });
 
   packagesRoot.innerHTML = Object.values(grouped).map(g => `
@@ -161,7 +225,7 @@ const renderPackages = (packages) => {
 };
 
 const renderPackageCard = (pkg, colorClass) => {
-  const services = String(pkg.services_included || '').split('\n').filter(Boolean);
+  const services = pkg._services?.length ? pkg._services : String(pkg.services_included || '').split('\n').filter(Boolean);
   return `
     <article class="package-card" data-name="${escapeHtml(pkg.package_name)}">
       <div class="card-header">
@@ -202,30 +266,58 @@ const submitAddPackage = async () => {
   const price = parseFloat(document.getElementById('addPackagePrice')?.value);
   const discount = parseInt(document.getElementById('addPackageDiscount')?.value) || 0;
   const points = parseInt(document.getElementById('addPackagePoints')?.value) || null;
-  const services = document.getElementById('addPackageServices')?.value.trim();
+  const serviceList = getSelectedServices('addPackageServicesList');
 
-  console.log('Adding package:', { catId, name, price, discount, points, services });
+  console.log('Adding package:', { catId, name, price, discount, points, serviceList });
 
   if (!catId || !name || isNaN(price)) { alert('Please fill in category, name, and price.'); return; }
 
+  // Create package first
   const cat = allCategories.find(c => c.id === catId);
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/packages`, {
+  const pkgRes = await fetch(`${SUPABASE_URL}/rest/v1/packages`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
-    body: JSON.stringify({ package_name: name, price, discount, points, category_id: catId, services_included: services, package_category: cat?.name || '', category_description: cat?.description || '', description: '' })
+    body: JSON.stringify({ 
+      package_name: name, 
+      price, 
+      discount, 
+      points, 
+      category_id: catId, 
+      services_included: serviceList.join('\n'), // Keep as backup
+      package_category: cat?.name || '', 
+      category_description: cat?.description || '', 
+      description: '' 
+    })
   });
 
-  console.log('Add package response:', res.status, res.statusText);
+  if (!pkgRes.ok) { 
+    const txt = await pkgRes.text(); 
+    alert(`Failed to add package: ${txt}`); 
+    return; 
+  }
 
-  if (!res.ok) { const txt = await res.text(); alert(`Failed to add package: ${txt}`); return; }
+  // Insert each service into package_services
+  if (serviceList.length > 0) {
+    const payload = serviceList.map(s => ({ package_name: name, service_name: s }));
+    await fetch(`${SUPABASE_URL}/rest/v1/package_services`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            apikey: SUPABASE_ANON_KEY, 
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+    });
+  }
 
   // Reset form
   document.getElementById('addPackageName').value = '';
   document.getElementById('addPackagePrice').value = '';
   document.getElementById('addPackageDiscount').value = '';
   document.getElementById('addPackagePoints').value = '';
-  document.getElementById('addPackageServices').value = '';
   document.getElementById('addPackageCategory').value = '';
+  renderServicesSelectionList('addPackageServicesList');
 
   closeModal(addPackageModal);
   loadPackages();
@@ -238,8 +330,11 @@ const openEditPackage = (pkg) => {
   document.getElementById('editPackagePrice').value = pkg.price;
   document.getElementById('editPackageDiscount').value = pkg.discount || 0;
   document.getElementById('editPackagePoints').value = pkg.points || '';
-  document.getElementById('editPackageServices').value = pkg.services_included || '';
   document.getElementById('editPackageCategory').value = pkg.category_id || '';
+  
+  // Render services with selection
+  renderServicesSelectionList('editPackageServicesList', pkg._services || []);
+  
   openModal(editPackageModal);
 };
 
@@ -249,9 +344,9 @@ const submitEditPackage = async () => {
   const price = parseFloat(document.getElementById('editPackagePrice')?.value);
   const discount = parseInt(document.getElementById('editPackageDiscount')?.value) || 0;
   const points = parseInt(document.getElementById('editPackagePoints')?.value) || null;
-  const services = document.getElementById('editPackageServices')?.value.trim();
+  const serviceList = getSelectedServices('editPackageServicesList');
 
-  console.log('Editing package:', { oldName: editingPackageName, catId, name, price, discount, points, services });
+  console.log('Editing package:', { oldName: editingPackageName, catId, name, price, discount, points, serviceList });
 
   if (!name || isNaN(price)) { alert('Please fill in name and price.'); return; }
 
@@ -260,17 +355,39 @@ const submitEditPackage = async () => {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
     body: JSON.stringify({
-      package_name: name, price, discount, points,
+      package_name: name, 
+      price, 
+      discount, 
+      points,
       category_id: catId || null,
-      services_included: services,
+      services_included: serviceList.join('\n'), // Keep as backup
       package_category: cat?.name || '',
       category_description: cat?.description || ''
     })
   });
 
-  console.log('Edit package response:', res.status, res.statusText);
-
   if (!res.ok) { const txt = await res.text(); alert(`Failed to update package: ${txt}`); return; }
+
+  // Update package_services: delete then insert
+  await fetch(`${SUPABASE_URL}/rest/v1/package_services?package_name=eq.${encodeURIComponent(editingPackageName)}`, {
+    method: 'DELETE',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+  });
+
+  if (serviceList.length > 0) {
+    const payload = serviceList.map(s => ({ package_name: name, service_name: s }));
+    await fetch(`${SUPABASE_URL}/rest/v1/package_services`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            apikey: SUPABASE_ANON_KEY, 
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+    });
+  }
+
   closeModal(editPackageModal);
   loadPackages();
 };
@@ -278,6 +395,13 @@ const submitEditPackage = async () => {
 // ── Delete package ──
 const deletePackage = async (name) => {
   if (!confirm(`Delete package "${name}"?`)) return;
+  
+  // Delete package services first
+  await fetch(`${SUPABASE_URL}/rest/v1/package_services?package_name=eq.${encodeURIComponent(name)}`, {
+    method: 'DELETE',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+  });
+
   await fetch(`${SUPABASE_URL}/rest/v1/packages?package_name=eq.${encodeURIComponent(name)}`, {
     method: 'DELETE',
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
@@ -300,8 +424,6 @@ const submitNewCategory = async () => {
     headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, Prefer: 'return=minimal' },
     body: JSON.stringify({ name, description: desc, color_class: color })
   });
-
-  console.log('Add category response:', res.status, res.statusText);
 
   if (!res.ok) { const txt = await res.text(); alert(`Failed to add category: ${txt}`); return; }
   document.getElementById('newCategoryName').value = '';
@@ -348,7 +470,15 @@ const init = () => {
         fetch(`${SUPABASE_URL}/rest/v1/packages?select=*,category_id&package_name=eq.${encodeURIComponent(name)}`, {
           headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
         }).then(r => r.json()).then(rows => {
-          if (rows.length) openEditPackage(rows[0]);
+          if (rows.length) {
+              // Fetch services for this package too
+              fetch(`${SUPABASE_URL}/rest/v1/package_services?select=service_name&package_name=eq.${encodeURIComponent(name)}`, {
+                  headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+              }).then(r => r.json()).then(services => {
+                  rows[0]._services = services.map(s => s.service_name);
+                  openEditPackage(rows[0]);
+              });
+          }
         }).catch(err => { console.error('Fetch error:', err); alert('Failed to fetch package data.'); });
       }
       if (deleteBtn) {
@@ -360,6 +490,7 @@ const init = () => {
 
   // Load data
   loadCategories();
+  loadServices();
   loadPackages();
 };
 

@@ -765,6 +765,52 @@ img {
   margin-bottom: 14px;
 }
 
+/* ── Services selection list ── */
+.services-selection-list {
+  border: 1px solid #dde1ea;
+  border-radius: 10px;
+  padding: 12px;
+  background: #f9fbff;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.service-selection-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.service-selection-item:hover {
+  border-color: #0d9488;
+  background: #f0fdfa;
+}
+
+.service-selection-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #0d9488;
+  cursor: pointer;
+}
+
+.service-selection-item label {
+  flex: 1;
+  font-size: 13px;
+  color: #1f2a3d;
+  cursor: pointer;
+  margin: 0;
+  display: block;
+}
+
 /* ── Textarea in modals ── */
 .modal-services textarea {
   width: 100%;

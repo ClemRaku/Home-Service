@@ -140,7 +140,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     end_time: endTime,
     address: bookingAddress?.value || '',
     price: 0,
-    status: 'upcoming',
+    status: 'unassigned',
     additional_details: details,
   };
 
@@ -201,16 +201,22 @@ const featurePrefix = (value = '') => {
 const formatPrice = (value) => `$${Number(value || 0).toLocaleString()}`;
 
 const renderPackageCard = (pkg, cardClass) => {
-  const services = splitServices(pkg.services_included);
+  const services = pkg._services?.length ? pkg._services : splitServices(pkg.services_included);
   const features = [];
 
   if (pkg.points !== null && pkg.points !== undefined && pkg.points !== '') {
     features.push({ prefix: String(pkg.points), text: 'Points' });
   }
 
-  services.forEach((service) => {
-    features.push(featurePrefix(service));
-  });
+  if (pkg._services?.length) {
+    pkg._services.forEach(service => {
+      features.push(featurePrefix(service));
+    });
+  } else {
+    services.forEach((service) => {
+      features.push(featurePrefix(service));
+    });
+  }
 
   return `
     <article class="package-card ${cardClass}">
@@ -261,6 +267,25 @@ const loadPackages = async () => {
 
     if (!pkgRes.ok) throw new Error(`Failed (${pkgRes.status})`);
     const packages = await pkgRes.json();
+
+    // Fetch package_services relationship
+    const psRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/package_services?select=package_name,service_name`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    const packageServices = psRes.ok ? await psRes.json() : [];
+
+    // Map services to packages
+    const servicesByPackage = {};
+    packageServices.forEach(ps => {
+      if (!servicesByPackage[ps.package_name]) servicesByPackage[ps.package_name] = [];
+      servicesByPackage[ps.package_name].push(ps.service_name);
+    });
+
+    // Attach services to packages
+    packages.forEach(pkg => {
+      pkg._services = servicesByPackage[pkg.package_name] || [];
+    });
 
     if (!packages.length && !categories.length) {
       packagesRoot.innerHTML = `
