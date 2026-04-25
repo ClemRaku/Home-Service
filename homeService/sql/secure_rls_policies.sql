@@ -13,6 +13,7 @@ ALTER TABLE employees ENABLE ROW LEVEL SECURITY;
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE package_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE package_services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE packages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE service_performance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
@@ -183,6 +184,25 @@ CREATE POLICY "Admins can manage offers" ON offers
             SELECT 1 FROM admin_profiles ap
             WHERE ap.email::text = auth.uid()::text
             AND ap.can_manage_offers = true
+            AND ap.status::text = 'Active'
+        )
+    );
+
+-- ============================================
+-- Table: package_services
+-- ============================================
+CREATE POLICY "Public can read package_services" ON package_services
+    FOR SELECT USING (true);
+
+CREATE POLICY "anon full access package_services" ON package_services
+    FOR ALL TO anon USING (true) WITH CHECK (true);
+
+CREATE POLICY "Admins can manage package_services" ON package_services
+    FOR ALL USING (
+        EXISTS (
+            SELECT 1 FROM admin_profiles ap
+            WHERE ap.email::text = auth.uid()::text
+            AND ap.can_manage_packages = true
             AND ap.status::text = 'Active'
         )
     );

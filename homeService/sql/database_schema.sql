@@ -257,9 +257,43 @@ CREATE POLICY "anon full access"
     WITH CHECK (true);
 
 
+
 -- ============================================================
--- TABLE: package_categories
+-- TABLE: package_services
 -- ============================================================
+-- Purpose: Junction table linking packages to their constituent services
+-- Primary Key: id (UUID)
+-- Foreign Keys: package_name -> packages(package_name), service_name -> services(service_name)
+-- RLS: Enabled
+-- ============================================================
+
+CREATE TABLE public.package_services (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    package_name VARCHAR REFERENCES public.packages(package_name) ON DELETE CASCADE,
+    service_name VARCHAR REFERENCES public.services(service_name) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(package_name, service_name)
+);
+
+ALTER TABLE public.package_services ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for package_services
+CREATE POLICY "Public can read package_services" ON public.package_services
+    FOR SELECT USING (true);
+
+CREATE POLICY "anon full access package_services" ON public.package_services
+    FOR ALL USING (true) WITH CHECK (true);
+
+CREATE POLICY "Admins can manage package_services" ON public.package_services
+    FOR ALL USING (
+        EXISTS (
+            SELECT 1 FROM admin_profiles ap
+            WHERE ap.email::text = auth.uid()::text
+            AND ap.can_manage_packages = true
+            AND ap.status::text = 'Active'
+        )
+    );
+
 -- Purpose: Categories for grouping service packages
 -- Primary Key: id (UUID)
 -- RLS: Enabled
