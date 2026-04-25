@@ -152,67 +152,66 @@ if (loginForm) {
     setLoginMessage('Signing in...', false);
 
     try {
-      // Get selected role from the UI
-      const roleSelect = document.getElementById('roleSelect');
-      const selectedRole = roleSelect ? roleSelect.value : 'admin'; // Default to admin for now if role select is missing
+      // Automatic role checking flow: 
+      // 1. Admin
+      // 2. Employee
+      // 3. Customer
 
-      if (selectedRole === 'admin') {
-        const adminRows = await fetchAdmins(email);
-        const matchedAdmin = findAdmin(adminRows, password);
+      const inputEmail = emailInput ? emailInput.value.trim().toLowerCase() : '';
+      const inputPassword = passwordInput ? passwordInput.value : '';
 
-        if (matchedAdmin) {
-          localStorage.setItem(
-            'hsAuthUser',
-            JSON.stringify({
-              role: 'admin',
-              name: matchedAdmin.full_name,
-              email: matchedAdmin.email,
-            })
-          );
-
-          setLoginMessage('Login successful. Redirecting...', false);
-          window.location.href = 'Admin.html';
-          return;
-        }
-      } else if (selectedRole === 'employee') {
-        const employeeRows = await fetchEmployees(email);
-        const matchedEmployee = findEmployee(employeeRows, password);
-
-        if (matchedEmployee) {
-          localStorage.setItem(
-            'hsAuthUser',
-            JSON.stringify({
-              role: 'employee',
-              name: matchedEmployee.full_name || matchedEmployee.name,
-              email: matchedEmployee.email,
-            })
-          );
-
-          setLoginMessage('Login successful. Redirecting...', false);
-          window.location.href = 'EmployeeProfile.html';
-          return;
-        }
-      } else {
-        const customerRows = await fetchCustomers(email);
-        const matchedCustomer = findCustomer(customerRows, password);
-
-        if (matchedCustomer) {
-          localStorage.setItem(
-            'hsAuthUser',
-            JSON.stringify({
-              role: 'customer',
-              name: matchedCustomer.full_name,
-              email: matchedCustomer.email,
-            })
-          );
-
-          setLoginMessage('Login successful. Redirecting...', false);
-          window.location.href = 'CustomerProfile.html';
-          return;
-        }
+      // Check Admin
+      const adminRows = await fetchAdmins(inputEmail);
+      const matchedAdmin = findAdmin(adminRows, inputPassword);
+      if (matchedAdmin) {
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            role: 'admin',
+            name: matchedAdmin.full_name,
+            email: matchedAdmin.email,
+          })
+        );
+        setLoginMessage('Login successful. Redirecting...', false);
+        window.location.href = 'Admin.html';
+        return;
       }
 
-      setLoginMessage('Invalid email or password for the selected role.');
+      // Check Employee
+      const employeeRows = await fetchEmployees(inputEmail);
+      const matchedEmployee = findEmployee(employeeRows, inputPassword);
+      if (matchedEmployee) {
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            role: 'employee',
+            name: matchedEmployee.full_name || matchedEmployee.name,
+            email: matchedEmployee.email,
+          })
+        );
+        setLoginMessage('Login successful. Redirecting...', false);
+        window.location.href = 'EmployeeProfile.html';
+        return;
+      }
+
+      // Check Customer
+      const customerRows = await fetchCustomers(inputEmail);
+      const matchedCustomer = findCustomer(customerRows, inputPassword);
+      if (matchedCustomer) {
+        localStorage.setItem(
+          'hsAuthUser',
+          JSON.stringify({
+            role: 'customer',
+            name: matchedCustomer.full_name,
+            email: matchedCustomer.email,
+          })
+        );
+        setLoginMessage('Login successful. Redirecting...', false);
+        window.location.href = 'CustomerProfile.html';
+        return;
+      }
+
+      setLoginMessage('Invalid email or password.');
     } catch (error) {
       console.error('Login error:', error);
       setLoginMessage(
