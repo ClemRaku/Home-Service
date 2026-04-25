@@ -192,8 +192,9 @@ const splitServices = (services = '') =>
 
 const featurePrefix = (value = '') => {
   const trimmed = normalizeText(value);
-  const match = trimmed.match(/^([^\s]+)\s+(.*)$/);
-  if (!match) return { prefix: '✓', text: trimmed };
+  // Match a leading number (integer or decimal) as prefix
+  const match = trimmed.match(/^(\d+(?:\.\d+)?)\s+(.*)$/);
+  if (!match) return { prefix: null, text: trimmed };
   const [, prefix, text] = match;
   return { prefix, text };
 };
@@ -208,15 +209,10 @@ const renderPackageCard = (pkg, cardClass) => {
     features.push({ prefix: String(pkg.points), text: 'Points' });
   }
 
-  if (pkg._services?.length) {
-    pkg._services.forEach(service => {
-      features.push(featurePrefix(service));
-    });
-  } else {
-    services.forEach((service) => {
-      features.push(featurePrefix(service));
-    });
-  }
+  const items = pkg._services?.length ? pkg._services : services;
+  items.forEach((item) => {
+    features.push(featurePrefix(item));
+  });
 
   return `
     <article class="package-card ${cardClass}">
@@ -230,7 +226,12 @@ const renderPackageCard = (pkg, cardClass) => {
       </div>
       <div class="package-body">
         <ul class="package-features">
-          ${features.map((item) => `<li><span>${escapeHtml(item.prefix)}</span> ${escapeHtml(item.text)}</li>`).join('')}
+          ${features.map((item) => `
+            <li>
+              ${item.prefix ? `<span>${escapeHtml(item.prefix)}</span>` : '<i data-lucide="check"></i>'}
+              ${escapeHtml(item.text)}
+            </li>
+          `).join('')}
         </ul>
         <button type="button" class="choose-package-btn">Choose Package</button>
       </div>
