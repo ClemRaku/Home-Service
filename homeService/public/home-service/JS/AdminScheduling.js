@@ -630,7 +630,7 @@ if (scheduleForm) {
       }
 
       if (formMode === "create") {
-        payload.status = "upcoming";
+        payload.status = (payload.employee_email && payload.employee_name) ? "upcoming" : "unassigned";
         payload.address = "";
         payload.price = 0;
         payload.additional_details = "";
@@ -641,7 +641,7 @@ if (scheduleForm) {
           return first - second;
         });
       } else {
-        const updatedRecord = await persistBookingUpdate(bookingInternalId, {
+        const updateData = {
           customer_name: payload.customer_name,
           customer_email: payload.customer_email,
           service_name: payload.service_name,
@@ -649,7 +649,11 @@ if (scheduleForm) {
           employee_name: payload.employee_name,
           scheduled_date: payload.scheduled_date,
           start_time: payload.start_time,
-        });
+        };
+        if (payload.employee_email && payload.employee_name) {
+          updateData.status = 'upcoming';
+        }
+        const updatedRecord = await persistBookingUpdate(bookingInternalId, updateData);
         syncBookingRowInState(updatedRecord);
         activeBookingRow = scheduleTableBody?.querySelector(`tr[data-booking-id="${CSS.escape(String(updatedRecord.id))}"]`) || null;
         activeBookingRecord = getBookingById(updatedRecord.id);

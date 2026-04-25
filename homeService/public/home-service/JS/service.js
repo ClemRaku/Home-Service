@@ -275,7 +275,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     end_time: endTime,
     address: bookingAddress?.value || '',
     price: 0,
-    status: 'upcoming',
+    status: 'unassigned',
     additional_details: details,
   };
 

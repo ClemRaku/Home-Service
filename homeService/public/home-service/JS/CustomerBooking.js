@@ -77,6 +77,7 @@ const statusLabels = {
   completed: 'Completed',
   in_progress: 'In Progress',
   cancelled: 'Cancelled',
+  unassigned: 'Unassigned',
 };
 
 const bookingsGrid = document.getElementById('bookingsGrid');
