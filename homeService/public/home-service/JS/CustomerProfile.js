@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const formatCoins = (value) => Number(value || 0).toLocaleString();
   const formatWallet = (value) => {
     const num = Number(value || 0);
-    return `$${num.toFixed(2)}`;
+    return `৳${num.toFixed(2)}`;
   };
   const extractLocation = (address = '') => {
     const parts = address.split(',').map((s) => s.trim()).filter(Boolean);

@@ -199,7 +199,7 @@ const featurePrefix = (value = '') => {
   return { prefix, text };
 };
 
-const formatPrice = (value) => `$${Number(value || 0).toLocaleString()}`;
+const formatPrice = (value) => `৳${Number(value || 0).toLocaleString()}`;
 
 const renderPackageCard = (pkg, cardClass) => {
   const services = pkg._services?.length ? pkg._services : splitServices(pkg.services_included);

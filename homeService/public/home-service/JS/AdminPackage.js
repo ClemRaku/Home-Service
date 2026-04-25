@@ -15,7 +15,7 @@ let editingPackageName = null;
 
 // ── Helpers ──
 const escapeHtml = (v = '') => String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const formatPrice = (v) => `$${Number(v || 0).toLocaleString()}`;
+const formatPrice = (v) => `৳${Number(v || 0).toLocaleString()}`;
 const colorDot = { teal: '#0d9488', orange: '#f59e0b', purple: '#8b5cf6', blue: '#3b82f6', green: '#22c55e', red: '#ef4444' };
 
 // ── Modal helpers ──

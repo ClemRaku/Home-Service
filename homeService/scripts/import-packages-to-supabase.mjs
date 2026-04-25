@@ -15,7 +15,7 @@ const clean = (value = '') =>
     .trim();
 
 const priceNumber = (value = '') => {
-  const match = String(value).match(/\$\s*([\d,]+(?:\.\d+)?)/);
+  const match = String(value).match(/[৳$]\s*([\d,]+(?:\.\d+)?)/);
   return match ? Number(match[1].replace(/,/g, '')) : 0;
 };
 
