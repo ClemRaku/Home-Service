@@ -235,11 +235,12 @@ const renderBookingRows = (rows) => {
     const customerEmail = escapeHtml(row.customer_email || "N/A");
     const serviceType = escapeHtml(row.service_name || "N/A");
     const employeeName = escapeHtml(row.employee_name || "Unassigned");
+    const isUnassigned = employeeName === "Unassigned";
     const status = getSafeStatusClass(getBookingStatus(row));
     const formattedDateTime = escapeHtml(formatDateAndTime(row.scheduled_date, row.start_time));
 
     return `
-      <tr data-booking-id="${escapeHtml(row.id)}">
+      <tr data-booking-id="${escapeHtml(row.id)}" class="${isUnassigned ? 'row-highlight-unassigned' : ''}">
         <td>${bookingId}</td>
         <td>
           ${customerName}

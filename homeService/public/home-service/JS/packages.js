@@ -54,6 +54,7 @@ const fillBookingFormFromCustomer = async () => {
 };
 
 let selectedPackageName = '';
+let allPackages = [];
 
 const openBookingModal = async (packageName = '') => {
   if (!bookingModalOverlay) return;
@@ -132,17 +133,24 @@ bookingForm?.addEventListener('submit', async (e) => {
     endTime = to24h(timeMatch[4], timeMatch[5], timeMatch[6]);
   }
 
-  const payload = {
+  // Find the selected package and its services
+  const selectedPkg = allPackages.find(p => p.package_name === selectedPackageName);
+  const servicesToBook = (selectedPkg && selectedPkg._services && selectedPkg._services.length > 0)
+    ? selectedPkg._services
+    : [selectedPackageName];
+
+  const payloads = servicesToBook.map(serviceName => ({
     customer_email: authUser.email,
-    service_name: selectedPackageName,
+    customer_name: bookingFullName?.value || authUser.name || '',
+    service_name: serviceName,
     scheduled_date: date,
     start_time: startTime,
     end_time: endTime,
     address: bookingAddress?.value || '',
     price: 0,
     status: 'unassigned',
-    additional_details: details,
-  };
+    additional_details: `Package: ${selectedPackageName}. ${details}`.trim(),
+  }));
 
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
@@ -153,7 +161,7 @@ bookingForm?.addEventListener('submit', async (e) => {
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         Prefer: 'return=minimal',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payloads),
     });
 
     if (!res.ok) {
@@ -161,7 +169,7 @@ bookingForm?.addEventListener('submit', async (e) => {
       throw new Error(txt);
     }
 
-    alert('Package booking request submitted successfully!');
+    alert(`Successfully booked ${servicesToBook.length} services from the ${selectedPackageName} package!`);
     closeBookingModal();
   } catch (err) {
     console.error('Booking error:', err);
@@ -268,6 +276,7 @@ const loadPackages = async () => {
 
     if (!pkgRes.ok) throw new Error(`Failed (${pkgRes.status})`);
     const packages = await pkgRes.json();
+    allPackages = packages; // Populate global variable
 
     // Fetch package_services relationship
     const psRes = await fetch(

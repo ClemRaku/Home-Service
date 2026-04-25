@@ -344,6 +344,15 @@ img {
   border-bottom: none;
 }
 
+.schedule-table tbody tr.row-highlight-unassigned {
+  background-color: #fee2e2 !important; /* light red/pink */
+}
+
+.schedule-table tbody tr.row-highlight-unassigned:hover {
+  background-color: #fecaca !important;
+}
+
+
 .muted {
   color: #6b7a99;
   margin-top: 4px;
