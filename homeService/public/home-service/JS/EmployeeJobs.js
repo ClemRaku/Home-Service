@@ -376,6 +376,77 @@ function attachJobEvents() {
     modal.setAttribute("aria-hidden", "true");
   };
 
+  let servicePrices = {};
+  let packageData = {};
+
+  const loadPriceData = async () => {
+    try {
+      const sRes = await fetch(`${SUPABASE_URL}/rest/v1/services?select=service_name,price`, {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const services = await sRes.json();
+      if (Array.isArray(services)) {
+        services.forEach(s => { servicePrices[s.service_name] = s.price; });
+      }
+
+      const pkgRes = await fetch(`${SUPABASE_URL}/rest/v1/packages?select=package_name,price`, {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const pkgs = await pkgRes.json();
+
+      const psRes = await fetch(`${SUPABASE_URL}/rest/v1/package_services?select=package_name,service_name`, {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const ps = await psRes.json();
+
+      const serviceCounts = {};
+      ps.forEach(item => {
+        serviceCounts[item.package_name] = (serviceCounts[item.package_name] || 0) + 1;
+      });
+
+      if (Array.isArray(pkgs)) {
+        pkgs.forEach(pkg => {
+          pkg.serviceCount = serviceCounts[pkg.package_name] || 1;
+          packageData[pkg.package_name] = pkg;
+        });
+      }
+    } catch (err) { console.warn("Could not load price data:", err); }
+  };
+
+  const calculateBookingPrice = (booking) => {
+    if (booking.price > 0) return booking.price;
+    const details = booking.additional_details || '';
+    const packageMatch = details.match(/Package:\s*([^.]+)/i);
+    if (packageMatch) {
+      const pkgName = packageMatch[1].trim();
+      const pkg = packageData[pkgName];
+      if (pkg) return pkg.price / pkg.serviceCount;
+    }
+    return servicePrices[booking.service_name] || 0;
+  };
+
+  const deductCustomerWallet = async (customerEmail, amount) => {
+    if (!customerEmail || amount <= 0) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/customers?select=wallet_balance&email=eq.${encodeURIComponent(customerEmail)}`, {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const customers = await res.json();
+      if (!customers || !customers.length) return;
+      const newBalance = (customers[0].wallet_balance || 0) - amount;
+      await fetch(`${SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(customerEmail)}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ wallet_balance: newBalance })
+      });
+      console.log(`Deducted ৳${amount} from ${customerEmail}`);
+    } catch (err) { console.error("Wallet deduction failed:", err); }
+  };
+
   const updateJobCard = async ({
     status,
     statusLabel,
@@ -399,18 +470,30 @@ function attachJobEvents() {
     if (bookingId) {
       const dbStatus = { 'completed': 'completed', 'in-progress': 'in_progress', 'scheduled': 'upcoming', 'cancelled': 'cancelled' }[status] || status;
       try {
-        await fetch(
-          `${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}`,
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}&select=*`,
           {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
               apikey: SUPABASE_ANON_KEY,
               Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              Prefer: 'return=representation'
             },
             body: JSON.stringify({ status: dbStatus }),
           }
         );
+
+        if (dbStatus === 'completed') {
+          const rows = await response.json();
+          if (rows && rows.length > 0) {
+            const booking = rows[0];
+            const price = calculateBookingPrice(booking);
+            if (booking.customer_email && price > 0) {
+              await deductCustomerWallet(booking.customer_email, price);
+            }
+          }
+        }
       } catch (err) {
         console.error('Failed to update booking status:', err);
       }
@@ -423,7 +506,6 @@ function attachJobEvents() {
       modalPrimary.disabled = status === "completed";
     }
   };
-
   // Filter buttons
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -502,18 +584,30 @@ function attachJobEvents() {
       if (bookingId) {
         const dbStatus = { 'completed': 'completed', 'in-progress': 'in_progress', 'scheduled': 'upcoming', 'cancelled': 'cancelled' }[newStatus] || newStatus;
         try {
-          await fetch(
-            `${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}`,
+          const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}&select=*`,
             {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
                 apikey: SUPABASE_ANON_KEY,
                 Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                Prefer: 'return=representation'
               },
               body: JSON.stringify({ status: dbStatus }),
             }
           );
+
+          if (dbStatus === 'completed') {
+            const rows = await response.json();
+            if (rows && rows.length > 0) {
+              const booking = rows[0];
+              const price = calculateBookingPrice(booking);
+              if (booking.customer_email && price > 0) {
+                await deductCustomerWallet(booking.customer_email, price);
+              }
+            }
+          }
           // Refresh stats
           const bookings = await fetchEmployeeBookings(authUser.email);
           const statusMap = { 'upcoming': 'scheduled', 'in_progress': 'in-progress', 'completed': 'completed', 'cancelled': 'cancelled' };
@@ -567,6 +661,7 @@ function attachJobEvents() {
 
 // Main init
 document.addEventListener("DOMContentLoaded", async () => {
+  await loadPriceData();
   let bookings = [];
   if (authUser && authUser.email) {
     await syncSidebarStatus(authUser.email);
