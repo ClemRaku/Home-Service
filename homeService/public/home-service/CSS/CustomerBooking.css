@@ -146,6 +146,12 @@ body {
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 1px 4px rgba(24, 39, 75, 0.04);
+    transition: border-color 0.2s ease;
+}
+
+.booking-card.unassigned {
+    border-color: #ef4444;
+    border-width: 2px;
 }
 
 .card-top {
@@ -221,6 +227,16 @@ body {
 .status-pill.progress {
     background: #fee5cc;
     color: #d86111;
+}
+
+.status-pill.unassigned {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.status-pill.cancelled {
+    background: #f3f4f6;
+    color: #6b7280;
 }
 
 .details {

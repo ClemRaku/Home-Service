@@ -26,6 +26,75 @@ const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5c
 let bookingRows = [];
 let serviceOptions = [];
 let employeeOptions = [];
+let servicePrices = {};
+let packageData = {};
+
+const loadPriceData = async () => {
+  try {
+    const sRes = await supabaseRequest("/rest/v1/services?select=service_name,price", { method: "GET" });
+    if (Array.isArray(sRes)) {
+      sRes.forEach(s => { servicePrices[s.service_name] = s.price; });
+    }
+
+    const pkgRes = await supabaseRequest("/rest/v1/packages?select=package_name,price", { method: "GET" });
+    const pkgs = Array.isArray(pkgRes) ? pkgRes : [];
+
+    const psRes = await supabaseRequest("/rest/v1/package_services?select=package_name,service_name", { method: "GET" });
+    const ps = Array.isArray(psRes) ? psRes : [];
+
+    const serviceCounts = {};
+    ps.forEach(item => {
+      serviceCounts[item.package_name] = (serviceCounts[item.package_name] || 0) + 1;
+    });
+
+    pkgs.forEach(pkg => {
+      pkg.serviceCount = serviceCounts[pkg.package_name] || 1;
+      packageData[pkg.package_name] = pkg;
+    });
+  } catch (err) {
+    console.warn("Could not load price/package data:", err);
+  }
+};
+
+const calculateBookingPrice = (booking) => {
+  if (booking.price > 0) return booking.price;
+
+  const details = booking.additional_details || '';
+  const packageMatch = details.match(/Package:\s*([^.]+)/i);
+  if (packageMatch) {
+    const pkgName = packageMatch[1].trim();
+    const pkg = packageData[pkgName];
+    if (pkg) {
+      return pkg.price / pkg.serviceCount;
+    }
+  }
+
+  return servicePrices[booking.service_name] || 0;
+};
+
+const deductCustomerWallet = async (customerEmail, amount) => {
+  if (!customerEmail || amount <= 0) return;
+
+  try {
+    const customers = await supabaseRequest(`/rest/v1/customers?select=wallet_balance&email=eq.${encodeURIComponent(customerEmail)}`, { method: "GET" });
+    if (!customers || !customers.length) {
+      console.warn(`Customer ${customerEmail} not found for wallet deduction.`);
+      return;
+    }
+
+    const currentBalance = customers[0].wallet_balance || 0;
+    const newBalance = currentBalance - amount;
+
+    await supabaseRequest(`/rest/v1/customers?email=eq.${encodeURIComponent(customerEmail)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ wallet_balance: newBalance })
+    });
+
+    console.log(`Deducted ৳${amount} from ${customerEmail}. New balance: ৳${newBalance}`);
+  } catch (err) {
+    console.error("Failed to deduct wallet balance:", err);
+  }
+};
 
 if (menuToggle && sidebar && dashboard) {
   menuToggle.addEventListener("click", () => {
@@ -238,6 +307,7 @@ const renderBookingRows = (rows) => {
     const isUnassigned = employeeName === "Unassigned";
     const status = getSafeStatusClass(getBookingStatus(row));
     const formattedDateTime = escapeHtml(formatDateAndTime(row.scheduled_date, row.start_time));
+    const price = calculateBookingPrice(row);
 
     return `
       <tr data-booking-id="${escapeHtml(row.id)}" class="${isUnassigned ? 'row-highlight-unassigned' : ''}">
@@ -250,6 +320,7 @@ const renderBookingRows = (rows) => {
         <td>${employeeName}</td>
         <td>${formattedDateTime}</td>
         <td><span class="status ${status}">${escapeHtml(status)}</span></td>
+        <td class="price-cell">৳${price.toFixed(2)}</td>
         <td>
           <div class="actions">
             <button class="action-btn view" type="button" aria-label="View booking details">
@@ -257,6 +328,9 @@ const renderBookingRows = (rows) => {
             </button>
             <button class="action-btn edit" type="button" aria-label="Edit booking">
               <i data-lucide="pencil"></i>
+            </button>
+            <button class="action-btn delete" type="button" aria-label="Delete booking" style="color: #ef4444;">
+              <i data-lucide="trash-2"></i>
             </button>
           </div>
         </td>
@@ -269,6 +343,7 @@ const renderBookingRows = (rows) => {
 
 const loadBookings = async () => {
   try {
+    await loadPriceData();
     const rows = await supabaseRequest("/rest/v1/bookings?select=*&order=scheduled_date.asc,start_time.asc", { method: "GET" });
     bookingRows = Array.isArray(rows) ? rows : [];
 
@@ -517,6 +592,22 @@ if (scheduleTableBody) {
       return;
     }
 
+    if (actionButton.classList.contains("delete")) {
+      if (!confirm(`Are you sure you want to delete booking #${record.booking_number}?`)) return;
+      
+      (async () => {
+        try {
+          await supabaseRequest(`/rest/v1/bookings?id=eq.${record.id}`, { method: "DELETE" });
+          bookingRows = bookingRows.filter(r => r.id !== record.id);
+          renderBookingRows(bookingRows);
+        } catch (err) {
+          console.error("Delete failed:", err);
+          alert("Failed to delete booking.");
+        }
+      })();
+      return;
+    }
+
     if (actionButton.classList.contains("view")) {
       const currentStatus = getSafeStatusClass(getBookingStatus(record));
       populateBookingModal(record);
@@ -563,6 +654,13 @@ if (bookingProgressButton) {
         const updatedRecord = await persistBookingUpdate(activeBookingRecord.id, { status: "completed" });
         syncBookingRowInState(updatedRecord);
         activeBookingRecord = getBookingById(updatedRecord.id);
+        
+        // Deduct wallet balance
+        const price = calculateBookingPrice(activeBookingRecord);
+        if (activeBookingRecord.customer_email && price > 0) {
+          await deductCustomerWallet(activeBookingRecord.customer_email, price);
+        }
+
         setBookingStatus("completed");
         renderBookingRows(bookingRows);
         activeBookingRow = scheduleTableBody?.querySelector(`tr[data-booking-id="${CSS.escape(String(updatedRecord.id))}"]`) || null;

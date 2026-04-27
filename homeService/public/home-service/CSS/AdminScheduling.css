@@ -352,6 +352,12 @@ img {
   background-color: #fecaca !important;
 }
 
+.price-cell {
+  font-weight: 600;
+  color: #0f766e;
+  text-align: right !important;
+}
+
 
 .muted {
   color: #6b7a99;
