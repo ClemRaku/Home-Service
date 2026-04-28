@@ -254,7 +254,11 @@ bookingForm?.addEventListener('submit', async (e) => {
 
   // Find selected service to get its price
   const service = allServicesData.find(s => s.service_name === selectedServiceName);
-  const servicePrice = service ? Number(service.price) || 0 : 0;
+  let servicePrice = service ? Number(service.price) || 0 : 0;
+  
+  if (isNaN(servicePrice) || servicePrice === null) {
+    servicePrice = 0;
+  }
 
   // Parse start/end time from the time slot (e.g. "08:00 AM - 10:00 AM")
   const timeMatch = time.match(/(\d{2}):(\d{2})\s*(AM|PM)\s*-\s*(\d{2}):(\d{2})\s*(AM|PM)/i);

@@ -70,7 +70,7 @@ async function syncSidebarStatus(email) {
     const dot = document.getElementById('statusDot');
     const label = document.getElementById('statusLabel');
     const toggle = document.getElementById('statusToggle');
-    if (dot) dot.style.background = isOnline ? '#4ade80' : '#ef4444';
+    if (dot) dot.style.background = isOnline ? '#10b981' : '#f43f5e';
     if (label) label.textContent = isOnline ? 'Online' : 'Offline';
     if (toggle) toggle.checked = isOnline;
   } catch (err) { console.warn('Could not sync sidebar status:', err); }
@@ -179,7 +179,7 @@ async function renderCategoryCard() {
     .slice(0, 6); // Top 6
 
   // Color palette for categories
-  const colors = ['#0d9488', '#f97316', '#eab308', '#22c55e', '#a855f7', '#ef4444'];
+  const colors = ['#0d9488', '#f59e0b', '#8b5cf6', '#3b82f6', '#10b981', '#f43f5e'];
 
   const categoryList = document.querySelector('.category-list');
   if (!categoryList) return;

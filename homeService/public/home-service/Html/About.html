@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#11c5bb" />
   <title>About Us - Home Service</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +18,7 @@
   <header class="hero">
     <nav class="navbar">
       <div class="logo-circle">
-        <img src="../Image/logo.png" alt="Home Service logo" />
+        <img src="../Image/logo.png" alt="Home Service logo" width="40" height="40" />
       </div>
       <ul class="nav-links">
         <li><a href="../Html/Home.html">Home</a></li>
@@ -62,7 +63,10 @@
       <div class="story-image">
         <img
           src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80"
-          alt="Team collaboration" />
+          alt="Team collaboration"
+          width="900"
+          height="600"
+          loading="lazy" />
       </div>
     </section>
 
@@ -73,22 +77,22 @@
       </div>
       <div class="values-grid">
         <article class="value-card">
-          <div class="value-icon"><i data-lucide="shield-check"></i></div>
+          <div class="value-icon"><i data-lucide="shield-check" aria-hidden="true"></i></div>
           <h3>Quality Assurance</h3>
           <p>We ensure every service meets the highest standards of excellence and professionalism.</p>
         </article>
         <article class="value-card">
-          <div class="value-icon"><i data-lucide="heart"></i></div>
+          <div class="value-icon"><i data-lucide="heart" aria-hidden="true"></i></div>
           <h3>Customer First</h3>
           <p>Your satisfaction is our priority. We go above and beyond to exceed expectations.</p>
         </article>
         <article class="value-card">
-          <div class="value-icon"><i data-lucide="users"></i></div>
+          <div class="value-icon"><i data-lucide="users" aria-hidden="true"></i></div>
           <h3>Expert Team</h3>
           <p>Our professionals are certified, experienced, and passionate about their work.</p>
         </article>
         <article class="value-card">
-          <div class="value-icon"><i data-lucide="leaf"></i></div>
+          <div class="value-icon"><i data-lucide="leaf" aria-hidden="true"></i></div>
           <h3>Eco-Friendly</h3>
           <p>We use environmentally safe products and sustainable practices in all our services.</p>
         </article>
@@ -129,7 +133,10 @@
         <article class="team-card">
           <img
             src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80"
-            alt="John Anderson" />
+            alt="John Anderson"
+            width="500"
+            height="500"
+            loading="lazy" />
           <div class="team-info">
             <h4>John Anderson</h4>
             <span>Founder &amp; CEO</span>
@@ -138,7 +145,10 @@
         <article class="team-card">
           <img
             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80"
-            alt="Sarah Mitchell" />
+            alt="Sarah Mitchell"
+            width="500"
+            height="500"
+            loading="lazy" />
           <div class="team-info">
             <h4>Sarah Mitchell</h4>
             <span>Operations Director</span>
@@ -147,7 +157,10 @@
         <article class="team-card">
           <img
             src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=500&q=80"
-            alt="Michael Chen" />
+            alt="Michael Chen"
+            width="500"
+            height="500"
+            loading="lazy" />
           <div class="team-info">
             <h4>Michael Chen</h4>
             <span>Customer Service Manager</span>
@@ -156,7 +169,10 @@
         <article class="team-card">
           <img
             src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=500&q=80"
-            alt="Emily Rodriguez" />
+            alt="Emily Rodriguez"
+            width="500"
+            height="500"
+            loading="lazy" />
           <div class="team-info">
             <h4>Emily Rodriguez</h4>
             <span>Quality Assurance Lead</span>
@@ -180,14 +196,14 @@
       <div>
         <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
         <div class="socials">
-          <span><i data-lucide="facebook"></i></span>
-          <span><i data-lucide="twitter"></i></span>
-          <span><i data-lucide="instagram"></i></span>
-          <span><i data-lucide="linkedin"></i></span>
+          <a href="#" aria-label="Facebook"><span><i data-lucide="facebook" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="Twitter"><span><i data-lucide="twitter" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="Instagram"><span><i data-lucide="instagram" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="LinkedIn"><span><i data-lucide="linkedin" aria-hidden="true"></i></span></a>
         </div>
       </div>
 
-      <div>
+      <nav aria-label="Footer Quick Links">
         <h6>Quick Links</h6>
         <a href="../Html/Home.html">Home</a>
         <a href="../Html/Services.html">Services</a>
@@ -195,7 +211,7 @@
         <a href="../Html/Offers.html">Offers</a>
         <a href="../Html/About.html">About Us</a>
         <a href="../Html/Contact.html">Contact</a>
-      </div>
+      </nav>
 
       <div>
         <h6>Popular Services</h6>
@@ -209,10 +225,10 @@
 
       <div class="footer-contact">
         <h6>Contact Info</h6>
-        <a href="#"><i data-lucide="map-pin"></i><span>123 Service Street, City, State 12345</span></a>
-        <a href="#"><i data-lucide="phone"></i><span>+1 (555) 123-4567</span></a>
-        <a href="#"><i data-lucide="mail"></i><span>info@homeservices.com</span></a>
-        <a href="#"><i data-lucide="clock"></i><span>Mon - Sat: 8AM - 8PM</span></a>
+        <a href="#"><i data-lucide="map-pin" aria-hidden="true"></i><span>123 Service Street, City, State 12345</span></a>
+        <a href="#"><i data-lucide="phone" aria-hidden="true"></i><span>+1 (555) 123-4567</span></a>
+        <a href="#"><i data-lucide="mail" aria-hidden="true"></i><span>info@homeservices.com</span></a>
+        <a href="#"><i data-lucide="clock" aria-hidden="true"></i><span>Mon - Sat: 8AM - 8PM</span></a>
       </div>
     </div>
 

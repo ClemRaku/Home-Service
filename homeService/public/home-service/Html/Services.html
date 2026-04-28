@@ -5,11 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#11c5bb" />
-  <title>Our Services</title>
+  <title>Our Services - Home Service</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="../CSS/Services.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -18,7 +18,7 @@
 <body class="services-page">
   <nav class="navbar">
     <div class="logo-circle">
-      <img src="../Image/logo.png" alt="" role="presentation" />
+      <img src="../Image/logo.png" alt="Home Service Logo" width="40" height="40" />
     </div>
     <ul class="nav-links">
       <li><a href="../Html/Home.html">Home</a></li>
@@ -42,57 +42,61 @@
   </header>
 
   <main class="services-section">
-    <aside class="filters">
-      <h3>Filters</h3>
-      <label>
+    <aside class="filters" aria-labelledby="filterTitle">
+      <h3 id="filterTitle">Filters</h3>
+      <label for="filterServiceType">
         Service Type
-        <select>
-          <option>All Services</option>
-          <option>Recurring</option>
-          <option>One-Time</option>
-          <option>Emergency</option>
-        </select>
       </label>
-      <label>
+      <select id="filterServiceType" name="serviceType">
+        <option>All Services</option>
+        <option>Recurring</option>
+        <option>One-Time</option>
+        <option>Emergency</option>
+      </select>
+      
+      <label for="filterCategory">
         Category
-        <select>
-          <option>All Services</option>
-          <option>Cleaning Services</option>
-          <option>Plumbing Services</option>
-          <option>Electrical Services</option>
-          <option>Planting & renovation Services</option>
-          <option>Appliance Repair Services</option>
-          <option>Pest control Services</option>
-          <option>Home improvement & maintenance  Services</option>
-          <option>Gardening & landscaping Services</option>
-          <option>Moving & Logistics Services</option>
-          <option>Home Security Services</option>
-          <option>Health & Care Services</option>
-        </select>
       </label>
-      <label>
+      <select id="filterCategory" name="category">
+        <option>All Services</option>
+        <option>Cleaning Services</option>
+        <option>Plumbing Services</option>
+        <option>Electrical Services</option>
+        <option>Planting & renovation Services</option>
+        <option>Appliance Repair Services</option>
+        <option>Pest control Services</option>
+        <option>Home improvement & maintenance Services</option>
+        <option>Gardening & landscaping Services</option>
+        <option>Moving & Logistics Services</option>
+        <option>Home Security Services</option>
+        <option>Health & Care Services</option>
+      </select>
+      
+      <label for="filterPrice">
         Price Range
-        <select>
-          <option>All</option>
-          <option>500-1500tk</option>
-          <option>1500-5000tk</option>
-          <option>5000tk+</option>
-        </select>
       </label>
-      <label>
+      <select id="filterPrice" name="priceRange">
+        <option>All</option>
+        <option>500-1500tk</option>
+        <option>1500-5000tk</option>
+        <option>5000tk+</option>
+      </select>
+      
+      <label for="filterPoints">
         Points
-        <select>
-          <option>All Points</option>
-          <option>10-20</option>
-          <option>20-30</option>
-          <option>30+</option>
-        </select>
       </label>
+      <select id="filterPoints" name="points">
+        <option>All Points</option>
+        <option>10-20</option>
+        <option>20-30</option>
+        <option>30+</option>
+      </select>
+      
       <button class="filter-btn" type="button">Apply Filters</button>
     </aside>
 
-    <section class="service-grid" id="serviceGrid">
-      <p class="services-status">Loading services...</p>
+    <section class="service-grid" id="serviceGrid" aria-live="polite">
+      <p class="services-status">Loading services…</p>
     </section>
   </main>
 
@@ -108,43 +112,48 @@
 
       <form class="booking-form" id="bookingForm">
         <div class="booking-field-grid">
-          <label>
+          <label for="bookingFullName">
             Full Name
-            <input type="text" id="bookingFullName" readonly class="booking-readonly" />
           </label>
-          <label>
+          <input type="text" id="bookingFullName" name="fullName" readonly class="booking-readonly" autocomplete="name" />
+          
+          <label for="bookingEmail">
             Email Address
-            <input type="email" id="bookingEmail" readonly class="booking-readonly" />
           </label>
-          <label>
+          <input type="email" id="bookingEmail" name="email" readonly class="booking-readonly" autocomplete="email" />
+          
+          <label for="bookingPhone">
             Phone Number
-            <input type="tel" id="bookingPhone" readonly class="booking-readonly" />
           </label>
-          <label>
+          <input type="tel" id="bookingPhone" name="phone" readonly class="booking-readonly" autocomplete="tel" />
+          
+          <label for="bookingAddress">
             Service Address
-            <input type="text" id="bookingAddress" readonly class="booking-readonly" />
           </label>
-          <label>
+          <input type="text" id="bookingAddress" name="address" readonly class="booking-readonly" autocomplete="street-address" />
+          
+          <label for="bookingDate">
             Preferred Date <span>*</span>
-            <input type="date" id="bookingDate" required />
           </label>
-          <label>
+          <input type="date" id="bookingDate" name="date" required />
+          
+          <label for="bookingTime">
             Preferred Time <span>*</span>
-            <select id="bookingTime" required>
-              <option value="">Select time</option>
-              <option>08:00 AM - 10:00 AM</option>
-              <option>10:00 AM - 12:00 PM</option>
-              <option>12:00 PM - 02:00 PM</option>
-              <option>02:00 PM - 04:00 PM</option>
-              <option>04:00 PM - 06:00 PM</option>
-            </select>
           </label>
+          <select id="bookingTime" name="time" required>
+            <option value="">Select time</option>
+            <option>08:00 AM - 10:00 AM</option>
+            <option>10:00 AM - 12:00 PM</option>
+            <option>12:00 PM - 02:00 PM</option>
+            <option>02:00 PM - 04:00 PM</option>
+            <option>04:00 PM - 06:00 PM</option>
+          </select>
         </div>
 
-        <label>
+        <label for="bookingDetails">
           Additional Details
-          <textarea id="bookingDetails" rows="4" placeholder="Any special requirements or notes..."></textarea>
         </label>
+        <textarea id="bookingDetails" name="details" rows="4" placeholder="Any special requirements or notes…"></textarea>
 
         <div class="booking-form-actions">
           <button type="button" class="booking-cancel-btn" id="bookingCancelBtn">Cancel</button>
@@ -154,29 +163,27 @@
     </div>
   </div>
 
-  
-
   <footer class="footer">
     <div class="footer-grid">
       <div>
         <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
         <div class="socials">
-          <span><i data-lucide="facebook" aria-hidden="true"></i></span>
-          <span><i data-lucide="twitter" aria-hidden="true"></i></span>
-          <span><i data-lucide="instagram" aria-hidden="true"></i></span>
-          <span><i data-lucide="linkedin" aria-hidden="true"></i></span>
+          <a href="#" aria-label="Facebook"><span><i data-lucide="facebook" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="Twitter"><span><i data-lucide="twitter" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="Instagram"><span><i data-lucide="instagram" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="LinkedIn"><span><i data-lucide="linkedin" aria-hidden="true"></i></span></a>
         </div>
       </div>
 
-      <div>
+      <nav aria-label="Footer Quick Links">
         <h6>Quick Links</h6>
-        <a href="#">Home</a>
-        <a href="#">Services</a>
-        <a href="#">Packages</a>
-        <a href="#">Offers</a>
-        <a href="#">About Us</a>
+        <a href="../Html/Home.html">Home</a>
+        <a href="Services.html">Services</a>
+        <a href="../Html/Packages.html">Packages</a>
+        <a href="../Html/Offers.html">Offers</a>
+        <a href="../Html/About.html">About Us</a>
         <a href="../Html/Contact.html">Contact</a>
-      </div>
+      </nav>
 
       <div>
         <h6>Popular Services</h6>
@@ -206,12 +213,13 @@
       </div>
     </div>
   </footer>
+
+  <script src="../JS/service.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="../JS/auth-nav.js"></script>
 </body>
-<script src="../JS/service.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-  lucide.createIcons();
-</script>
-<script src="../JS/auth-nav.js"></script>
 
 </html>
