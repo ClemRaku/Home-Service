@@ -139,6 +139,9 @@ bookingForm?.addEventListener('submit', async (e) => {
     ? selectedPkg._services
     : [selectedPackageName];
 
+  const packagePrice = selectedPkg ? Number(selectedPkg.price) || 0 : 0;
+  const pricePerService = servicesToBook.length > 0 ? packagePrice / servicesToBook.length : 0;
+
   const payloads = servicesToBook.map(serviceName => ({
     customer_email: authUser.email,
     customer_name: bookingFullName?.value || authUser.name || '',
@@ -147,7 +150,7 @@ bookingForm?.addEventListener('submit', async (e) => {
     start_time: startTime,
     end_time: endTime,
     address: bookingAddress?.value || '',
-    price: 0,
+    price: pricePerService,
     status: 'unassigned',
     additional_details: `Package: ${selectedPackageName}. ${details}`.trim(),
   }));
