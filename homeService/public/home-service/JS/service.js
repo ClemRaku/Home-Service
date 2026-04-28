@@ -172,6 +172,7 @@ const matchesPoints = (points, selected) => {
 };
 
 let selectedServiceName = '';
+let allServicesData = []; // Store all fetched services
 
 const openBookingModal = async (serviceName = '') => {
   if (!bookingModalOverlay) return;
@@ -251,6 +252,14 @@ bookingForm?.addEventListener('submit', async (e) => {
     return;
   }
 
+  // Find selected service to get its price
+  const service = allServicesData.find(s => s.service_name === selectedServiceName);
+  let servicePrice = service ? Number(service.price) || 0 : 0;
+  
+  if (isNaN(servicePrice) || servicePrice === null) {
+    servicePrice = 0;
+  }
+
   // Parse start/end time from the time slot (e.g. "08:00 AM - 10:00 AM")
   const timeMatch = time.match(/(\d{2}):(\d{2})\s*(AM|PM)\s*-\s*(\d{2}):(\d{2})\s*(AM|PM)/i);
   let startTime = null;
@@ -269,12 +278,13 @@ bookingForm?.addEventListener('submit', async (e) => {
 
   const payload = {
     customer_email: authUser.email,
+    customer_name: bookingFullName?.value || authUser.name || '',
     service_name: selectedServiceName,
     scheduled_date: date,
     start_time: startTime,
     end_time: endTime,
     address: bookingAddress?.value || '',
-    price: 0,
+    price: servicePrice,
     status: 'unassigned',
     additional_details: details,
   };
@@ -423,7 +433,8 @@ const loadServices = async () => {
     }
 
     const services = await response.json();
-    renderCards(Array.isArray(services) ? services : []);
+    allServicesData = Array.isArray(services) ? services : [];
+    renderCards(allServicesData);
     applyFilters();
   } catch (error) {
     console.error('Error loading services:', error);

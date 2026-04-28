@@ -520,11 +520,12 @@ const buildRevenueChart = async () => {
           {
             data: values,
             borderColor: "#0d9488",
-            backgroundColor: "rgba(13, 148, 136, 0.15)",
+            backgroundColor: "rgba(13, 148, 136, 0.1)",
             tension: 0.4,
             fill: true,
             pointRadius: 4,
             pointBackgroundColor: "#0d9488",
+            borderWidth: 3
           },
         ],
       },
@@ -535,9 +536,11 @@ const buildRevenueChart = async () => {
         scales: {
           x: {
             grid: { display: false },
+            ticks: { font: { family: "'Inter', sans-serif" } }
           },
           y: {
-            grid: { color: "#eef2f7" },
+            grid: { color: "rgba(226, 232, 240, 0.5)" },
+            ticks: { font: { family: "'Inter', sans-serif" } }
           },
         },
       },
@@ -576,8 +579,8 @@ const buildBookingChart = async () => {
         datasets: [
           {
             data: values,
-            backgroundColor: "#3b82f6",
-            borderRadius: 10,
+            backgroundColor: "#f59e0b",
+            borderRadius: 6,
             maxBarThickness: 26,
           },
         ],
@@ -589,9 +592,11 @@ const buildBookingChart = async () => {
         scales: {
           x: {
             grid: { display: false },
+            ticks: { font: { family: "'Inter', sans-serif" } }
           },
           y: {
-            grid: { color: "#eef2f7" },
+            grid: { color: "rgba(226, 232, 240, 0.5)" },
+            ticks: { font: { family: "'Inter', sans-serif" } }
           },
         },
       },

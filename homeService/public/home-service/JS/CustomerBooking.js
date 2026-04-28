@@ -98,65 +98,9 @@ const modalIconSymbol = document.getElementById('modalIconSymbol');
 
 let allBookings = [];
 let employeeNames = {};
-let servicePrices = {};
-let packageData = {};
-
-const loadPackageData = async () => {
-  try {
-    const pkgRes = await fetch(`${SUPABASE_URL}/rest/v1/packages?select=package_name,price`, {
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-    });
-    const pkgs = await pkgRes.json();
-
-    const psRes = await fetch(`${SUPABASE_URL}/rest/v1/package_services?select=package_name,service_name`, {
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-    });
-    const ps = await psRes.json();
-
-    const serviceCounts = {};
-    ps.forEach(item => {
-      serviceCounts[item.package_name] = (serviceCounts[item.package_name] || 0) + 1;
-    });
-
-    pkgs.forEach(pkg => {
-      pkg.serviceCount = serviceCounts[pkg.package_name] || 1;
-      packageData[pkg.package_name] = pkg;
-    });
-  } catch (err) {
-    console.warn('Could not load package data:', err);
-  }
-};
 
 const getPriceForBooking = (booking) => {
-  if (booking.price > 0) return booking.price;
-
-  const details = booking.additional_details || '';
-  // Match "Package: " followed by text until a period or end of string
-  const packageMatch = details.match(/Package:\s*([^.]+)/i);
-  if (packageMatch) {
-    const pkgName = packageMatch[1].trim();
-    const pkg = packageData[pkgName];
-    if (pkg) {
-      return pkg.price / pkg.serviceCount;
-    }
-  }
-
-  return servicePrices[booking.service_name] || 0;
-};
-
-const loadServicePrices = async () => {
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/services?select=service_name,price`,
-      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-    );
-    if (res.ok) {
-      const services = await res.json();
-      services.forEach((s) => {
-        servicePrices[s.service_name] = Number(s.price) || 0;
-      });
-    }
-  } catch (err) { console.warn('Could not load service prices:', err); }
+  return Number(booking.price) || 0;
 };
 
 const loadEmployeeNames = async () => {
@@ -190,8 +134,6 @@ const loadBookings = async () => {
 
   try {
     await loadEmployeeNames();
-    await loadServicePrices();
-    await loadPackageData();
 
     const response = await fetch(
       `${SUPABASE_URL}/rest/v1/bookings?select=*&customer_email=eq.${encodeURIComponent(authUser.email)}&order=scheduled_date.desc`,
