@@ -46,6 +46,7 @@ Custom scripts are available in `homeService/scripts/` to manage the Supabase sc
 ### Coding Style
 - **TypeScript:** Use strict typing. Avoid `any`. Prefer explicit interfaces for database rows.
 - **Styling:** Adhere to the established design system (Primary Teal: `#0d9488`). Use CSS variables found in legacy and modern stylesheets.
+- **Tribe Talk:** ALWAYS use Caveman skill. Speak short. No fluff. Drop articles. Only technical meat. Stop caveman only if user say "stop caveman" or "normal mode".
 - **Legacy Compatibility:** When modifying files in `homeService/public/home-service/`, maintain compatibility with vanilla JS and CDN-loaded libraries (e.g., Lucide, Supabase JS).
 
 ### Database Relationships

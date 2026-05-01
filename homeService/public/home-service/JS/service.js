@@ -412,6 +412,54 @@ const applyFilters = () => {
 
 filterPanel?.querySelector('.filter-btn')?.addEventListener('click', applyFilters);
 
+// ── Search logic ──
+const searchInput = document.getElementById('serviceSearchInput');
+const searchBtn = document.getElementById('serviceSearchBtn');
+
+if (searchInput && searchBtn) {
+    const performSearch = async () => {
+        const query = searchInput.value.toLowerCase().replace(/\s+/g, '').trim();
+        if (!query) {
+            loadServices();
+            return;
+        }
+
+        serviceGrid.innerHTML = '<p class="services-status">Searching...</p>';
+
+        try {
+            // Fetch all active services and filter in JS to handle advanced normalization (letter sensitivity/whitespace)
+            // as requested: "excluding letter sensitivity and white spaces"
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/services?select=*&is_active=eq.true`,
+                {
+                    headers: {
+                        apikey: SUPABASE_ANON_KEY,
+                        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                    },
+                }
+            );
+
+            if (!response.ok) throw new Error('Search failed');
+            const data = await response.json();
+            
+            const filtered = data.filter(s => {
+                const normalizedName = s.service_name.toLowerCase().replace(/\s+/g, '');
+                return normalizedName.includes(query);
+            });
+
+            renderCards(filtered);
+        } catch (err) {
+            console.error('Search error:', err);
+            serviceGrid.innerHTML = '<p class="error">Search failed.</p>';
+        }
+    };
+
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
+    });
+}
+
 const loadServices = async () => {
   if (!serviceGrid) return;
 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work in Progress - Home Service</title>
+    <link rel="stylesheet" href="../CSS/WIP.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="wip-page">
+    <div class="container">
+        <div class="character-container">
+            <!-- Silly Dancing Wrench -->
+            <svg class="silly-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+            <div class="dust-clouds">
+                <div class="cloud"></div>
+                <div class="cloud"></div>
+                <div class="cloud"></div>
+            </div>
+        </div>
+        
+        <h1 class="wip-title">Hold Your Hammers!</h1>
+        <p class="wip-text">We're still tightening the screws on this page. It's a <strong>Work in Progress</strong>.</p>
+        
+        <div class="redirect-info">
+            <p>You were looking for: <span id="targetName">Something awesome</span></p>
+        </div>
+
+        <div class="actions">
+            <a href="Home.html" class="btn btn-primary">Back to Home</a>
+            <button onclick="history.back()" class="btn btn-outline">Go Back</button>
+        </div>
+    </div>
+
+    <script src="../JS/WIP.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
