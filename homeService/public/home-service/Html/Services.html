@@ -43,6 +43,14 @@
 
   <main class="services-section">
     <aside class="filters" aria-labelledby="filterTitle">
+      <div class="search-card">
+        <h3>Search</h3>
+        <div class="search-box">
+          <input type="text" id="serviceSearchInput" placeholder="Search services...">
+          <button id="serviceSearchBtn" type="button"><i data-lucide="search"></i></button>
+        </div>
+      </div>
+      
       <h3 id="filterTitle">Filters</h3>
       <label for="filterServiceType">
         Service Type
@@ -163,6 +171,18 @@
     </div>
   </div>
 
+  <section class="newsletter" id="about">
+    <div class="newsletter-icon">
+      <i data-lucide="bell" aria-hidden="true"></i>
+    </div>
+    <h2>Don't Miss Out on Future Offers</h2>
+    <p>Subscribe to our newsletter and be the first to know about exclusive deals and special promotions.</p>
+    <form class="newsletter-form" action="#" method="POST">
+      <input type="email" name="email" placeholder="Enter your email address" required autocomplete="email" aria-label="Email for newsletter" />
+      <button type="submit">Subscribe Now</button>
+    </form>
+  </section>
+
   <footer class="footer">
     <div class="footer-grid">
       <div>
@@ -207,9 +227,9 @@
     <div class="footer-bottom">
       <p>© 2025 Home Services. All rights reserved.</p>
       <div>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Powered by Ready</a>
+        <a href="../Html/WIP.html?type=privacy">Privacy Policy</a>
+        <a href="../Html/WIP.html?type=terms">Terms of Service</a>
+        <a href="../Html/WIP.html?type=powered">Powered by Ready</a>
       </div>
     </div>
   </footer>

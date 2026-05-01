@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#11c5bb" />
+  <title>Home Service - Professional Home Maintenance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/Home.css" />
+</head>
+
+<body>
+  <header class="hero">
+    <nav class="navbar">
+      <div class="logo-circle">
+        <img src="../Image/logo.png" alt="Home Service Logo" width="40" height="40" />
+      </div>
+      <ul class="nav-links">
+        <li><a class="active" href="#">Home</a></li>
+        <li><a href="../Html/Services.html">Services</a></li>
+        <li><a href="../Html/Packages.html">Packages</a></li>
+        <li><a href="../Html/Offers.html">Offers</a></li>
+        <li><a href="../Html/Contact.html">Contact</a></li>
+        <li><a href="../Html/About.html">About</a></li>
+      </ul>
+      <div class="auth-links">
+        <a class="login" href="../Html/Login.html">Login</a>
+        <a class="signup" href="../Html/SignUp.html">Sign up</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1>Professional Home Service at Your Doorstep</h1>
+      <p>From cleaning to repairs, we provide trusted professionals for all your home service needs.</p>
+      <div class="hero-buttons">
+        <a href="../Html/Services.html" class="btn btn-primary">Book Now</a>
+        <a href="../Html/Packages.html" class="btn btn-light">View Packages</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section services" id="services">
+      <h2>Our Services</h2>
+      <p class="section-subtitle">Comprehensive home services delivered by verified professionals</p>
+
+      <div class="service-grid" id="homeServicesGrid" aria-live="polite">
+        <p class="services-status">Loading services…</p>
+      </div>
+
+      <a href="../Html/Services.html" class="btn btn-primary section-btn">View All Services</a>
+    </section>
+
+    <section class="section choose-us">
+      <h2>Why Choose Us</h2>
+      <p class="section-subtitle">We are committed to providing the best home services experience</p>
+
+      <div class="features-grid">
+        <article class="feature">
+          <div class="feature-icon"><i data-lucide="shield-check" aria-hidden="true"></i></div>
+          <h4>Verified Professionals</h4>
+          <p>All service providers are background checked and certified</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon"><i data-lucide="clock" aria-hidden="true"></i></div>
+          <h4>On-Time Service</h4>
+          <p>On-time service delivery is our top priority</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon"><i data-lucide="banknote" aria-hidden="true"></i></div>
+          <h4>Best Price</h4>
+          <p>Competitive pricing with transparent quotes</p>
+        </article>
+        <article class="feature">
+          <div class="feature-icon"><i data-lucide="headphones" aria-hidden="true"></i></div>
+          <h4>Customer Support</h4>
+          <p>Dedicated support team to assist you</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section testimonials">
+      <h2>What Our Customers Say</h2>
+      <p class="section-subtitle">Real feedback from satisfied customers</p>
+
+      <div class="testimonial-grid">
+        <article class="testimonial-card">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
+          <p>Excellent service! The cleaning team was professional and thorough. My home has never looked better.</p>
+          <div class="line"></div>
+          <h5>Sarah Johnson</h5>
+          <span>Home Cleaning</span>
+        </article>
+        <article class="testimonial-card">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
+          <p>Quick response for my plumbing emergency. The technician was skilled and fixed the issue in no time.</p>
+          <div class="line"></div>
+          <h5>Michael</h5>
+          <span>Plumbing Services</span>
+        </article>
+        <article class="testimonial-card">
+          <div class="stars" aria-label="5 stars">★★★★★</div>
+          <p>The painting crew did an amazing job. Attention to detail was impressive and they finished on time.</p>
+          <div class="line"></div>
+          <h5>Emily</h5>
+          <span>Painting Services</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <section class="cta">
+    <h2>Ready To Get Started?</h2>
+    <p>Book your service today and experience the difference</p>
+    <div class="cta-buttons">
+      <a href="../Html/Services.html" class="btn btn-light">Book a Service</a>
+      <a href="../Html/Contact.html" class="btn btn-secondary">Contact Us</a>
+    </div>
+  </section>
+
+  <section class="newsletter" id="about">
+    <div class="newsletter-icon">
+      <i data-lucide="bell" aria-hidden="true"></i>
+    </div>
+    <h2>Don't Miss Out on Future Offers</h2>
+    <p>Subscribe to our newsletter and be the first to know about exclusive deals and special promotions.</p>
+    <form class="newsletter-form" action="#" method="POST">
+      <input type="email" name="email" placeholder="Enter your email address" required autocomplete="email" aria-label="Email for newsletter" />
+      <button type="submit">Subscribe Now</button>
+    </form>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <p>Your trusted partner for all home services.<br />Professional, reliable, and affordable<br />solutions for your home.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook"><span><i data-lucide="facebook" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="Twitter"><span><i data-lucide="twitter" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="Instagram"><span><i data-lucide="instagram" aria-hidden="true"></i></span></a>
+          <a href="#" aria-label="LinkedIn"><span><i data-lucide="linkedin" aria-hidden="true"></i></span></a>
+        </div>
+      </div>
+
+      <nav aria-label="Footer Quick Links">
+        <h6>Quick Links</h6>
+        <a href="../Html/Home.html">Home</a>
+        <a href="../Html/Services.html">Services</a>
+        <a href="../Html/Packages.html">Packages</a>
+        <a href="../Html/Offers.html">Offers</a>
+        <a href="../Html/About.html">About Us</a>
+        <a href="../Html/Contact.html">Contact</a>
+      </nav>
+
+      <div id="popularServicesFooter">
+        <h6>Popular Services</h6>
+        <a href="#">Home Cleaning</a>
+        <a href="#">Plumbing Services</a>
+        <a href="#">Electrical Services</a>
+        <a href="#">Painting & Renovation</a>
+        <a href="#">Pest Control</a>
+        <a href="#">Appliance Repair</a>
+      </div>
+
+      <div class="footer-contact">
+        <h6>Contact Info</h6>
+        <a href="#"><i data-lucide="map-pin" aria-hidden="true"></i><span>123 Service Street, City, State 12345</span></a>
+        <a href="#"><i data-lucide="phone" aria-hidden="true"></i><span>+1 (555) 123-4567</span></a>
+        <a href="#"><i data-lucide="mail" aria-hidden="true"></i><span>info@homeservices.com</span></a>
+        <a href="#"><i data-lucide="clock" aria-hidden="true"></i><span>Mon - Sat: 8AM - 8PM</span></a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Home Services. All rights reserved.</p>
+      <div>
+        <a href="../Html/WIP.html?type=privacy">Privacy Policy</a>
+        <a href="../Html/WIP.html?type=terms">Terms of Service</a>
+        <a href="../Html/WIP.html?type=powered">Powered by Ready</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Supabase JS -->
+  <script src="../JS/home.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>

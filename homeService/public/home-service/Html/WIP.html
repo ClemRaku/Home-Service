@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work in Progress - Home Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/WIP.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="wip-body">
+    <div class="wip-container">
+        <div class="character-box">
+            <svg class="silly-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                <circle class="wrench-eye" cx="16" cy="10" r="1" fill="currentColor"></circle>
+                <circle class="wrench-eye" cx="19" cy="13" r="1" fill="currentColor"></circle>
+            </svg>
+            <div class="dust-puff"></div>
+        </div>
+        
+        <h1 class="wip-title">Tightening the Screws!</h1>
+        <p class="wip-desc">We are still working hard on <span id="featureName" class="feature-highlight">this feature</span>. It'll be ready before you can say "Fixed!"</p>
+        
+        <div class="wip-actions">
+            <a href="Home.html" class="btn-primary">Take Me Home</a>
+            <button onclick="history.back()" class="btn-secondary">Go Back</button>
+        </div>
+    </div>
+
+    <script src="../JS/WIP.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
