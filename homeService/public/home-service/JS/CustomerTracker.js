@@ -279,35 +279,29 @@ const renderLeafletMap = (custLat, custLng, empLat, empLng, empName) => {
 
   console.log('📍 Rendering map - Customer:', custLat, custLng, '| Employee:', empLat, empLng);
 
-  // Create map
+
   leafletMap = L.map(mapEl, { zoomControl: true, attributionControl: false }).setView([custLat, custLng], 14);
 
-  // Add OpenStreetMap tiles (free, no API key)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
   }).addTo(leafletMap);
 
-  // Customer marker (blue dot)
   customerMarker = L.marker([custLat, custLng], { icon: customerIcon })
     .bindPopup(`<b>${authUser?.name || 'You'}</b><br>Customer Location`)
     .addTo(leafletMap);
 
-  // Employee marker (orange dot)
   employeeMarker = L.marker([empLat, empLng], { icon: employeeIcon })
     .bindPopup(`<b>${empName}</b><br>Employee Location`)
     .addTo(leafletMap);
 
-  // Draw dashed line between them
   const line = L.polyline(
     [[custLat, custLng], [empLat, empLng]],
     { color: '#6b7280', weight: 2, dashArray: '6,6', opacity: 0.7 }
   ).addTo(leafletMap);
 
-  // Fit map to show both markers
   const bounds = L.latLngBounds([[custLat, custLng], [empLat, empLng]]);
   leafletMap.fitBounds(bounds, { padding: [40, 40] });
 
-  // Force Leaflet to recalculate size (modal may not be fully visible yet)
   setTimeout(() => leafletMap?.invalidateSize(), 200);
 };
 
