@@ -59,12 +59,6 @@ CREATE POLICY "anon read bookings" ON bookings
 CREATE POLICY "anon insert bookings" ON bookings
     FOR INSERT WITH CHECK (true);
 
-CREATE POLICY "anon update bookings" ON bookings
-    FOR UPDATE USING (true) WITH CHECK (true);
-
-CREATE POLICY "anon delete bookings" ON bookings
-    FOR DELETE USING (true);
-
 -- ============================================
 -- Table: contacts
 -- ============================================
@@ -79,12 +73,6 @@ CREATE POLICY "Allow public inserts" ON contacts
 
 CREATE POLICY "Allow admin to view all contacts" ON contacts
     FOR SELECT TO anon, authenticated USING (true);
-
-CREATE POLICY "Allow admin to update contacts" ON contacts
-    FOR UPDATE TO anon, authenticated USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow admin to delete contacts" ON contacts
-    FOR DELETE TO anon, authenticated USING (true);
 
 CREATE POLICY "Admins can manage contacts" ON contacts
     FOR ALL USING (
@@ -104,9 +92,6 @@ CREATE POLICY "Participants can read conversations" ON conversations
         auth.uid()::text = customer_email OR auth.uid()::text = employee_email
     );
 
-CREATE POLICY "anon_all_conversations" ON conversations
-    FOR ALL USING (true) WITH CHECK (true);
-
 -- ============================================
 -- Table: customers
 -- ============================================
@@ -115,9 +100,6 @@ CREATE POLICY "Public can read customers" ON customers
 
 CREATE POLICY "Allow anon insert on Sign up" ON customers
     FOR INSERT TO anon WITH CHECK (true);
-
-CREATE POLICY "anon full access" ON customers
-    FOR ALL TO anon USING (true) WITH CHECK (true);
 
 CREATE POLICY "Admins can manage customers" ON customers
     FOR ALL USING (
@@ -134,9 +116,6 @@ CREATE POLICY "Admins can manage customers" ON customers
 -- ============================================
 CREATE POLICY "Public can read employees" ON employees
     FOR SELECT USING (true);
-
-CREATE POLICY "anon full access" ON employees
-    FOR ALL TO anon USING (true) WITH CHECK (true);
 
 CREATE POLICY "Admins can manage employees" ON employees
     FOR ALL USING (
@@ -160,9 +139,6 @@ CREATE POLICY "Participants can read messages" ON messages
         )
     );
 
-CREATE POLICY "anon_all_messages" ON messages
-    FOR ALL USING (true) WITH CHECK (true);
-
 -- ============================================
 -- Table: offers
 -- ============================================
@@ -174,9 +150,6 @@ CREATE POLICY "Allow all select" ON offers
 
 CREATE POLICY "Allow anon insert on Offer" ON offers
     FOR INSERT TO anon WITH CHECK (true);
-
-CREATE POLICY "anon full access" ON offers
-    FOR ALL TO anon USING (true) WITH CHECK (true);
 
 CREATE POLICY "Admins can manage offers" ON offers
     FOR ALL USING (
@@ -193,9 +166,6 @@ CREATE POLICY "Admins can manage offers" ON offers
 -- ============================================
 CREATE POLICY "Public can read package_services" ON package_services
     FOR SELECT USING (true);
-
-CREATE POLICY "anon full access package_services" ON package_services
-    FOR ALL TO anon USING (true) WITH CHECK (true);
 
 CREATE POLICY "Admins can manage package_services" ON package_services
     FOR ALL USING (
@@ -216,17 +186,11 @@ CREATE POLICY "Public can read package_categories" ON package_categories
 CREATE POLICY "anon read package_categories" ON package_categories
     FOR SELECT USING (true);
 
-CREATE POLICY "anon all package_categories" ON package_categories
-    FOR ALL USING (true) WITH CHECK (true);
-
 -- ============================================
 -- Table: packages
 -- ============================================
 CREATE POLICY "Public can read packages" ON packages
     FOR SELECT USING (true);
-
-CREATE POLICY "anon full access" ON packages
-    FOR ALL TO anon USING (true) WITH CHECK (true);
 
 CREATE POLICY "Admins can manage packages" ON packages
     FOR ALL USING (
@@ -249,9 +213,6 @@ CREATE POLICY "Public can read service_performance" ON service_performance
 -- ============================================
 CREATE POLICY "Public can read services" ON services
     FOR SELECT USING (true);
-
-CREATE POLICY "anon full access" ON services
-    FOR ALL TO anon USING (true) WITH CHECK (true);
 
 CREATE POLICY "Admins can manage services" ON services
     FOR ALL USING (
